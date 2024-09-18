@@ -54,8 +54,8 @@
 4. Технологические требования
 
 4.1. Технологии и инструменты:
-- Frontend: HTML, CSS, JavaScript (Vue.js).
-- Backend: Python (Flask + SQLAlchemy).
+- Frontend: Vue.js.
+- Backend: Python (FastAPI + SQLAlchemy).
 - База данных: PostgreSQL.
 - Хостинг: VPS.
 
