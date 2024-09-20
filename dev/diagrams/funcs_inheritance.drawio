@@ -1,0 +1,71 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0" version="24.7.14">
+  <diagram name="Page-1" id="z_OGcN5KdWsTCNoQ80fU">
+    <mxGraphModel dx="1562" dy="826" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-1" value="&lt;div&gt;Не авторизированный&lt;/div&gt;&lt;div&gt;пользователь&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="20" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-2" value="&lt;div&gt;Заблокированный&lt;/div&gt;&lt;div&gt;пользователь&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="250" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-8" value="Пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="290" y="250" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-11" value="&lt;div&gt;Администратор&lt;/div&gt;&lt;div&gt;(модератор)&lt;br&gt;&lt;/div&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="290" y="490" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="q8SabeBCMEzDvK4uMKM8-8" target="q8SabeBCMEzDvK4uMKM8-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-13" value="&lt;div&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;Функционал&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;1. Просмотр страницы “О нас” (вместо главной)&lt;br&gt;2. Регистрация&lt;br&gt;3. Авторизация&lt;br&gt;&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;align=left;" vertex="1" parent="1">
+          <mxGeometry x="450" y="20" width="170" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;shape=link;" edge="1" parent="1" source="q8SabeBCMEzDvK4uMKM8-1" target="q8SabeBCMEzDvK4uMKM8-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-15" value="&lt;div&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;Функционал&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;1. Добавление контента&lt;br&gt;2. Удаление своего контента&lt;br&gt;3. Реакции&lt;br&gt;4. Комментарии&lt;br&gt;5. Сохранение контента&lt;br&gt;6. Создание контента&lt;br&gt;7. Выход&lt;br&gt;8. Удаление страницы&lt;br&gt;9. Статистика&lt;br&gt;10. Просмотр “Главной”&lt;br&gt;11. Просмотр категорий&lt;br&gt;12. Редактирование своего контента&lt;br&gt;13. Редактирование профиля&lt;br&gt;&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;align=left;" vertex="1" parent="1">
+          <mxGeometry x="450" y="195" width="170" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;shape=link;" edge="1" parent="1" source="q8SabeBCMEzDvK4uMKM8-8" target="q8SabeBCMEzDvK4uMKM8-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-17" value="&lt;div&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;Функционал&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;1. + от пользователя&lt;br&gt;2. Удаление чужого контента&lt;br&gt;3. Блокировка аккаунта&lt;br&gt;4. Разблокировка аккаунта&lt;br&gt;5. Выдача ролей&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;align=left;" vertex="1" parent="1">
+          <mxGeometry x="450" y="490" width="170" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;shape=link;" edge="1" parent="1" source="q8SabeBCMEzDvK4uMKM8-11" target="q8SabeBCMEzDvK4uMKM8-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="q8SabeBCMEzDvK4uMKM8-1" target="q8SabeBCMEzDvK4uMKM8-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="205" y="150" />
+              <mxPoint x="115" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="q8SabeBCMEzDvK4uMKM8-1" target="q8SabeBCMEzDvK4uMKM8-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="205" y="150" />
+              <mxPoint x="305" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-21" value="&lt;div&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;Функционал&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;1. Смотреть на плашку “Аккаунт заблокирован”&lt;br&gt;&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;align=left;" vertex="1" parent="1">
+          <mxGeometry x="20" y="490" width="170" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="q8SabeBCMEzDvK4uMKM8-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;shape=link;" edge="1" parent="1" source="q8SabeBCMEzDvK4uMKM8-2" target="q8SabeBCMEzDvK4uMKM8-21">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="280" />
+              <mxPoint x="200" y="400" />
+              <mxPoint x="105" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
