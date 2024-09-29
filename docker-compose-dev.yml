@@ -1,0 +1,89 @@
+services:
+
+  hosteypic_server:
+    tty: true
+    container_name: hosteypic_server
+    image: hosteypic_server
+    build:
+      context: ./server/
+    volumes:
+      - ./server/:/src/app
+    command: sh -c "sleep 15 && uvicorn hosteypic_server.main:app --host 0.0.0.0 --reload"
+    links:
+      - hosteypic_postgres
+    depends_on:
+      - hosteypic_postgres
+    environment:
+      DB_HOST: hosteypic_postgres                # WARNING!
+      DB_NAME: db_hosteypic
+      DB_USER: admin
+      DB_PASSWORD: my_super_password
+    ports:
+      - "8000:8000"
+    restart: always
+    networks:
+      - hosteypic
+  
+  # hosteypic_client:
+  #   tty: true
+  #   container_name: hosteypic_client
+  #   image: hosteypic_client
+  #   build:
+  #     context: client/
+  #   volumes:
+  #     - ./client/:/app
+  #   command: sh -c "nginx -g 'daemon off;'"
+  #   environment:
+  #     VUE_URL: "http://127.0.0.1:8000/api/"
+  #     DEBUG: "True"
+  #     VUE_API_URL: "/api"
+  #   restart: on-failure
+  #   networks:
+  #     - hosteypic
+
+  hosteypic_postgres:
+    image: postgres:latest
+    container_name: hosteypic_postgres
+    environment:
+      TZ: 'GMT-3'
+      PGTZ: 'GMT-3'
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: my_super_password
+      POSTGRES_DB: db_hosteypic
+      PGDATA: /var/lib/postgresql/data/pgdata/
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backup:/backup
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    tty: true
+    stdin_open: true
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U admin -d db_hosteypic"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 10s
+    networks:
+      - hosteypic
+  
+  hosteypic_pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: hosteypic_pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@hosteypic.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    volumes:
+      - ./pgadmin_data:/home/afk/server/data
+    networks:
+      - hosteypic
+
+volumes:
+  pgdata:
+
+networks:
+  hosteypic:
+    external: false

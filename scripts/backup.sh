@@ -1,0 +1,1 @@
+docker exec hosteypic_postgres bash -c "export now=$(date +"%m_%d_%Y"); export PGPASSWORD="my_secret_password"; pg_dump -U admin -h 127.0.0.1 db_hosteypic > ./backup/dump_$(date +"%Y_%m_%d_%H_%M").sql"

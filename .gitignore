@@ -1,8 +1,6 @@
 .vscode
 .idea
-__pycache__
-app/__pycache__
-venv
-logs
-*.db
-*.env
+__pycache__/
+backup
+postgresql
+pgadmin_data
