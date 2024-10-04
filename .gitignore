@@ -3,4 +3,4 @@
 __pycache__/
 backup
 postgresql
-pgadmin_data
+pgadmin

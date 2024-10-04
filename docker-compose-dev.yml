@@ -32,7 +32,6 @@ services:
   #     context: client/
   #   volumes:
   #     - ./client/:/app
-  #   command: sh -c "nginx -g 'daemon off;'"
   #   environment:
   #     VUE_URL: "http://127.0.0.1:8000/api/"
   #     DEBUG: "True"
@@ -55,7 +54,7 @@ services:
       - "5432:5432"
     volumes:
       - ./backup:/backup
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data/pgdata/
     restart: always
     tty: true
     stdin_open: true
@@ -77,7 +76,7 @@ services:
       - PGADMIN_DEFAULT_EMAIL=admin@hosteypic.com
       - PGADMIN_DEFAULT_PASSWORD=password
     volumes:
-      - ./pgadmin_data:/home/afk/server/data
+      - ./pgadmin/data:/var/lib/pgadmin/data
     networks:
       - hosteypic
 

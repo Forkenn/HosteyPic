@@ -9,7 +9,7 @@ Docker compose
 
 # Сборка бекенда
 
-docker build --pull --rm -f "server/Dockerfile" -t hosteypic_server:latest "server"
+docker build --pull --rm -f "server/dockerfile" -t hosteypic_server:latest "server"
 
 # Alembic
 
