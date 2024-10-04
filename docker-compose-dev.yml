@@ -1,5 +1,17 @@
 services:
 
+  hosteypic_ngnix:
+    command: nginx -g "daemon off;"
+    container_name: hosteypic_ngnix
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    networks:
+      - hosteypic
+
   hosteypic_server:
     tty: true
     container_name: hosteypic_server
