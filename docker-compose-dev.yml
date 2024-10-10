@@ -3,7 +3,7 @@ services:
   hosteypic_ngnix:
     command: nginx -g "daemon off;"
     container_name: hosteypic_ngnix
-    image: nginx:latest
+    image: nginx:1.27.2
     restart: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
@@ -30,8 +30,8 @@ services:
       DB_NAME: db_hosteypic
       DB_USER: admin
       DB_PASSWORD: my_super_password
-    ports:
-      - "8000:8000"
+#    ports:
+#      - "8000:8000"
     restart: always
     networks:
       - hosteypic
@@ -42,20 +42,20 @@ services:
     image: hosteypic_client
     build:
       context: client/
-    ports:
-      - '8080:80'
-    volumes:
-      - ./client/:/app
+#    ports:
+#      - '8080:80'
+    #volumes:
+    #  - ./client/:/app
+    #command: sh -c "http-server dist"
     environment:
-      VUE_URL: "http://127.0.0.1:8000/api/"
+      #VUE_URL: "http://127.0.0.1:8000/api/"
       DEBUG: "True"
-      VUE_API_URL: "/api"
     restart: on-failure
     networks:
       - hosteypic
 
   hosteypic_postgres:
-    image: postgres:latest
+    image: postgres:17.0
     container_name: hosteypic_postgres
     environment:
       TZ: 'GMT-3'
@@ -64,8 +64,8 @@ services:
       POSTGRES_PASSWORD: my_super_password
       POSTGRES_DB: db_hosteypic
       PGDATA: /var/lib/postgresql/data/pgdata/
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5432:5432"
     volumes:
       - ./backup:/backup
       - pgdata:/var/lib/postgresql/data/pgdata/
@@ -96,7 +96,6 @@ services:
 
 volumes:
   pgdata:
-
 
 networks:
   hosteypic:
