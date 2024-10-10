@@ -69,8 +69,11 @@ html {
     line-height: 64px;
     color: white;
 
-
-    margin-left: 40px;
+    height: 80px;
+    width: 190px;
+    margin-left: 80px;
+    display: flex;
+    align-items: center;
 }
 
 .color__white {
@@ -142,12 +145,12 @@ html {
 }
 
 .searchbar .input input {
-    font-family: 'Chewy';
-    font-style: normal;
+    font-family: Balsamiq Sans;
     font-size: 16px;
-    line-height: 1.2;
-    font-weight: normal;
-    ;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: left;
+
 
     position: absolute;
 
@@ -163,7 +166,7 @@ html {
 .bottom {
 
     margin-top: auto;
-    z-index: 999999;
+    z-index: 1000;
     background: #B1A73F;
     height: 80px;
     width: 100%;
@@ -211,5 +214,5 @@ html {
     right: 0;
     top: 0;
     bottom: 0;
-    z-index: 100;
+    z-index: 1500;
 }
