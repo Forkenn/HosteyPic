@@ -1,0 +1,215 @@
+/* inter-regular - latin */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    src: url('./fonts/inter-v18-latin-regular.woff2') format('woff2');
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* chewy-regular - latin */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Chewy';
+    font-style: normal;
+    font-weight: 400;
+    src: url('./fonts/chewy-v18-latin-regular.woff2') format('woff2');
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+html {
+    box-sizing: border-box;
+    caret-color: transparent;
+}
+
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+.page {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    position: sticky;
+    z-index: 1000;
+    overflow: hidden;
+    top: 0;
+    background: #B1A73F;
+    height: 80px;
+}
+
+.wrapper__header {
+    max-width: 1440px;
+    height: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+
+.header__logo {
+
+    font-family: Chewy;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 64px;
+    color: white;
+
+
+    margin-left: 40px;
+}
+
+.color__white {
+    color: white;
+
+
+}
+
+.color__black {
+    color: #474319;
+}
+
+.header__logo .header__logo-link {
+    text-decoration: none;
+}
+
+.user__icon {
+    margin-right: 20px;
+}
+
+
+.wrapper__searchbar {
+    box-sizing: content-box;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 75px;
+}
+
+.searchbar {
+
+
+
+    max-width: 875px;
+    height: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    top: 155px;
+    left: 280px;
+    gap: 0px;
+    border-radius: 20px;
+    border: 2px solid #B1A73F;
+    opacity: 0px;
+
+
+    background: #EFEDD9;
+
+    display: flex;
+
+}
+
+.searchbar__icon {
+    margin-left: auto;
+    margin-right: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.searchbar .input {
+
+    margin-left: 10px;
+    position: relative;
+    width: 835px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    justify-content: center;
+}
+
+.searchbar .input input {
+    font-family: 'Chewy';
+    font-style: normal;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: normal;
+    ;
+
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+    border: 0;
+    caret-color: #B1A73F;
+    color: #B1A73F;
+    outline: 0;
+    background: none;
+}
+
+.bottom {
+
+    margin-top: auto;
+    z-index: 999999;
+    background: #B1A73F;
+    height: 80px;
+    width: 100%;
+
+}
+
+.wrapper__bottom {
+
+    max-width: 1440px;
+    height: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    float: right;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wrapper__bottom .bot {
+
+    font-family: Chewy;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 64px;
+    color: white;
+    right: 0;
+    color: #474319;
+    margin-right: 40px;
+
+}
+
+.searchbar input::-webkit-input-placeholder {
+    color: #B1A73F;
+}
+
+.searchbar input:focus::placeholder {
+    color: transparent;
+}
+
+.gray {
+    background-color: rgba(1, 1, 1, 0.75);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+}
