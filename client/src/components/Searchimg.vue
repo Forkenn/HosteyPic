@@ -116,7 +116,7 @@ export default{
 #list img {
     height: 100%;
     width: 100%;
-    background-color: #ae2525;
+    background-color: #e5efd9;
 
     transition: transform 400ms ease-in;
 }
