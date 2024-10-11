@@ -91,7 +91,7 @@ html {
 }
 
 .user__icon {
-    margin-right: 20px;
+    margin-right: 80px;
 }
 
 
@@ -119,7 +119,7 @@ html {
     opacity: 0px;
 
 
-    background: #EFEDD9;
+    background: #FFFFFF;
 
     display: flex;
 
@@ -157,8 +157,8 @@ html {
     width: 100%;
     height: 100%;
     border: 0;
-    caret-color: #B1A73F;
-    color: #B1A73F;
+    caret-color: #474319;
+    color: #474319;
     outline: 0;
     background: none;
 }
@@ -200,7 +200,9 @@ html {
 }
 
 .searchbar input::-webkit-input-placeholder {
-    color: #B1A73F;
+    color: rgba(71, 67, 25, 0.7);
+
+
 }
 
 .searchbar input:focus::placeholder {

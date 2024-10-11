@@ -1,85 +1,84 @@
 <template>
-    
-<div class="wrapper__picture" >
-      <div id="list" >
-            <div v-for="(el, index) in res" :key="index" className="item"  :style=style(index)>
 
-                <img v-bind:src="'src/assets/img/svg/'+ el.src1" alt="">
+    <div class="wrapper__picture">
+        <div id="list">
+            <div v-for="(el, index) in res" :key="index" className="item" :style=style(index)>
+
+                <img v-bind:src="'src/assets/img/svg/' + el.src1" alt="">
             </div>
-      </div>
+        </div>
     </div>
 </template>
 
 <script>
 
-export default{
+export default {
     data() {
-    return {
-        
-    k:5,   
-    window: {
-            width: window.innerWidth,
-            height: window.innerHeight
+        return {
+
+            k: 5,
+            window: {
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight
+            }
+
         }
-    
-    }
-    
+
     },
-    props:{
+    props: {
         res: Object,
-    },  
+    },
     created() {
         window.addEventListener('resize', this.handleResize)
-        
-        this.handleResize();
-        
-        
-        },
 
-    methods:{
+        this.handleResize();
+
+
+    },
+
+    methods: {
         handleResize() {
-            this.window.width = window.innerWidth;
-            this.window.height = window.innerHeight;
-                this.k = 5
-                if (this.window.width < 1280) {
-                    this.k = 1;
+            this.window.width = document.documentElement.clientWidth;
+            this.window.height = document.documentElement.clientHeight;
+            this.k = 5
+            if (this.window.width < 1280) {
+                this.k = 1;
 
                 while (this.window.width - 270 * this.k + 70 > 0) {
                     this.k++;
                 }
                 this.k--;
-                }
+            }
         },
-        style(key){
+        style(key) {
             let styleobj = {
 
             }
             if ((key + 1) > this.k) {
-                styleobj.marginTop ='70px'
+                styleobj.marginTop = '70px'
 
             };
-            if (this.k!=1){
-            if ((key + 1) % this.k == 0 ){
-                styleobj.marginRight = 0
+            if (this.k != 1) {
+                if ((key + 1) % this.k == 0) {
+                    styleobj.marginRight = 0
+                }
             }
-            }
-            else{
+            else {
                 styleobj.marginLeft = '70px'
             }
-            if (key+1 == this.res.length){
+            if (key + 1 == this.res.length) {
                 styleobj.marginRight = 0
             }
             return styleobj
         },
-        
+
     }
-    
+
 }
 
 </script>
 
 <style scoped>
-
 .wrapper__picture {
     box-sizing: content-box;
     max-width: 1280px;
@@ -99,7 +98,7 @@ export default{
     align-items: center;
     text-align: justify;
     justify-content: center;
-    
+
 }
 
 .item {
