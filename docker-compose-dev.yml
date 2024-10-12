@@ -20,16 +20,17 @@ services:
       context: ./server/
     volumes:
       - ./server/:/src/app
-    command: sh -c "sleep 15 && uvicorn hosteypic_server.main:app --host 0.0.0.0 --reload"
+    command: sh -c "sleep 15 && alembic upgrade head && uvicorn hosteypic_server.main:app --host 0.0.0.0 --reload"
     links:
       - hosteypic_postgres
     depends_on:
       - hosteypic_postgres
     environment:
-      DB_HOST: hosteypic_postgres # WARNING!
+      DB_HOST: hosteypic_postgres   # WARNING ONLY FOR DEVELOPMENT!
       DB_NAME: db_hosteypic
       DB_USER: admin
-      DB_PASSWORD: my_super_password
+      DB_PASS: my_super_password
+      DB_PORT: 5432
 #    ports:
 #      - "8000:8000"
     restart: always
