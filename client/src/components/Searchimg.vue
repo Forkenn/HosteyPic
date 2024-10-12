@@ -4,7 +4,7 @@
         <div id="list">
             <div v-for="(el, index) in res" :key="index" className="item" :style=style(index)>
 
-                <img v-bind:src="'src/assets/img/svg/' + el.src1" alt="">
+                <img v-bind:src="'../src/assets/img/svg/' + el.src1" alt="">
             </div>
         </div>
     </div>
@@ -44,13 +44,15 @@ export default {
             if (this.window.width < 1280) {
                 this.k = 1;
 
-                while (this.window.width - 270 * this.k + 70 > 0) {
+                while (this.window.width - 270 * this.k + 70 >= 0) {
                     this.k++;
                 }
                 this.k--;
             }
+
         },
         style(key) {
+
             let styleobj = {
 
             }
@@ -62,12 +64,19 @@ export default {
                 if ((key + 1) % this.k == 0) {
                     styleobj.marginRight = 0
                 }
+
             }
             else {
                 styleobj.marginLeft = '70px'
             }
             if (key + 1 == this.res.length) {
-                styleobj.marginRight = 0
+                // styleobj.marginLeft = '70px'
+                if (this.res.length % 2 == 1 & this.res.length % this.k == 1) {
+                    styleobj.marginRight = '35px'
+                    styleobj.marginLeft = '35px'
+                }
+                else
+                    styleobj.marginRight = 0
             }
             return styleobj
         },

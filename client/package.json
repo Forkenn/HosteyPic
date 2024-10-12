@@ -1,5 +1,5 @@
 {
-  "name": "hostey",
+  "name": "vue-route",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,12 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "cross-env": "^7.0.3",
-    "vue": "^3.4.29",
+    "axios": "^1.7.7",
+    "vue": "^3.5.11",
+    "vue-axios": "^3.5.2",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.5",
-    "vite": "^5.3.1"
+    "@vitejs/plugin-vue": "^5.1.4",
+    "vite": "^5.4.8"
   }
 }

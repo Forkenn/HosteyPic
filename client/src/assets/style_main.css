@@ -86,14 +86,17 @@ html {
     color: #474319;
 }
 
-.header__logo .header__logo-link {
-    text-decoration: none;
-}
 
 .user__icon {
+    width: 50px;
+    height: 50px;
     margin-right: 80px;
 }
 
+.user__icon img {
+    max-width: 100%;
+    max-height: 100%;
+}
 
 .wrapper__searchbar {
     box-sizing: content-box;
@@ -163,41 +166,7 @@ html {
     background: none;
 }
 
-.bottom {
 
-    margin-top: auto;
-    z-index: 1000;
-    background: #B1A73F;
-    height: 80px;
-    width: 100%;
-
-}
-
-.wrapper__bottom {
-
-    max-width: 1440px;
-    height: 80px;
-    margin-left: auto;
-    margin-right: auto;
-    float: right;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.wrapper__bottom .bot {
-
-    font-family: Chewy;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 64px;
-    color: white;
-    right: 0;
-    color: #474319;
-    margin-right: 40px;
-
-}
 
 .searchbar input::-webkit-input-placeholder {
     color: rgba(71, 67, 25, 0.7);

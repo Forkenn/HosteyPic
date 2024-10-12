@@ -27,7 +27,7 @@
 
 
                 <div v-if="!login" class="wrap">
-                    <button class="login" type="button" @click=printinfo2()>
+                    <button class="login" type="button" @click=fun_login()>
                         Войти
                     </button>
                 </div>
@@ -38,7 +38,7 @@
                     <div class="line"></div>
                 </div>
                 <div class="wrap" v-if="login">
-                    <button class="sing_in1" type="button" @click=printinfo()>
+                    <button class="sing_in1" type="button" @click=sing_in()>
                         Зарегистрироваться
                     </button>
                 </div>
@@ -243,7 +243,7 @@ button.sing_in2 {
 </style>
 
 <script>
-
+import axios from "axios";
 export default {
     data() {
         return {
@@ -264,32 +264,60 @@ export default {
             this.login = !this.login
 
         },
-        printinfo() {
-            setTimeout(() => {
-                this.$emit('login', {
-                    email: this.e_mail,
-                    Username: this.Username,
-                    Password: this.Password
+        sing_in() {
+            this.$emit('login', {
+                username: this.Username,
+                email: this.e_mail,
+                password: this.Password
+            })
+            this.$emit('show_ch', true)
+            this.$emit('authorised1', true)
+
+            axios.post('http://localhost/api/auth/register', {
+                username: this.Username,
+                email: this.e_mail,
+                password: this.Password
+            })
+                .then(response => {
+                    console.log(response);
                 })
-                this.$emit('show_ch', true)
-                this.$emit('authorised1', true)
-            }, 200);
-
-
-
+                .catch(error => {
+                    console.log(error);
+                });
         },
+        fun_login() {
+            console.log(this.Username, this.Password)
 
-        printinfo2() {
-            setTimeout(() => {
-                this.$emit('show_ch', true)
-                this.$emit('authorised1', true)
-                this.$emit('login', {
-                    Username: this.Username,
-                    Password: this.Password
+            this.$emit('show_ch', true)
+            this.$emit('authorised1', true)
+            this.$emit('login', {
+                Username: this.Username,
+                Password: this.Password
+            })
 
+            // axios.post('http://localhost/api/login', {
+            //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            //     username: this.Username,
+            //     password: this.Password
+            // })
+            axios({
+                method: 'post',
+                url: 'http://localhost/api/login',
+                data: {
+                    username: this.Username,
+                    password: this.Password
+                },
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(response => {
+                    console.log(response);
                 })
-            }, 200);
-
+                .catch(error => {
+                    console.log(error);
+                });
         }
     },
 
