@@ -10,12 +10,18 @@ app = FastAPI(title='HosteyPic', root_path='/api')
 origins = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://localhost:8080",    # VUE DEV URLs
+    "http://127.0.0.1:8080",
+    "http://localhost:5176",
+    "http://127.0.0.1:5176",
+    "http://172.19.0.4",
     "http://127.0.0.1",
     "http://localhost"
 ]
 
 app.add_middleware(
     CORSMiddleware,
+    allow_credentials=True,
     allow_origins=origins,
     allow_methods=['*'],
     allow_headers=['*']
