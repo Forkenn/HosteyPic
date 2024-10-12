@@ -10,6 +10,10 @@ HosteyPic - хостинг картинок с возможностью загр
 
 HosteyPic - picture hosting with the ability to upload, tag, save and add collections.
 
+# Design
+
+https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH/HosteyPIC
+
 # Our Team
 
 Forkenn (@OnBell) - maintainer, back-end dev.
