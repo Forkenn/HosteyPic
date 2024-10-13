@@ -9,19 +9,10 @@
 
     <body>
         <div class="page">
-            <header class="header">
-                <div class="wrapper__header">
-                    <div class="header__logo" @click="goToHome">
-                        <p> <span class="color__white">Hostey</span>
-                            <span class="color__black">PIC</span>
-                        </p>
-                    </div>
+            <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
+            <HeaderAuth v-if="authorised" />
 
-                    <div class="user__icon">
-                        <img src="../assets/img/svg/userIconmain.svg" alt="">
-                    </div>
-                </div>
-            </header>
+
             <div class="userinfo__wrap">
                 <div class="userinfo">
                     <div class="userIcon">
@@ -71,13 +62,13 @@
                     <div class="tabs-body">
                         <div class="tabs-body-item" v-show="activeTab === 1">
                             <p v-if="countImg == 0" style="margin-top: 75px;">Здесь пока ничего нет... Тогда
-                                <button class="create" @click="loadImg(6)">
+                                <button class="create" @click="goToUpload">
                                     Создай
                                 </button>
 
                                 что-нибудь!
                             </p>
-                            <button v-else class="create">
+                            <button v-else class="create" @click="goToUpload">
                                 Создать
                             </button>
                             <Searchimg :res="result" />
@@ -96,7 +87,7 @@
     </body>
 </template>
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import '../assets/reset.css';
 
@@ -123,67 +114,12 @@ html {
 }
 
 .page {
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-.header {
-    position: sticky;
-    z-index: 1000;
-    overflow: hidden;
-    top: 0;
-    background: #B1A73F;
-    height: 80px;
-}
 
-.wrapper__header {
-    max-width: 1440px;
-    height: 80px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-}
-
-
-
-.header__logo {
-
-    font-family: Chewy;
-    font-size: 48px;
-    font-weight: 400;
-    line-height: 64px;
-    color: white;
-
-    height: 80px;
-    width: 190px;
-    margin-left: 80px;
-    display: flex;
-    align-items: center;
-}
-
-.color__white {
-    color: white;
-}
-
-.color__black {
-    color: #474319;
-}
-
-.user__icon {
-    width: 50px;
-    height: 50px;
-    margin-right: 80px;
-}
-
-.user__icon img {
-    max-width: 100%;
-    max-height: 100%;
-}
 
 
 .userinfo {
@@ -353,18 +289,21 @@ button {
 <script>
 import Bottom from "../components/Bottom.vue"
 import Searchimg from "../components/Searchimg.vue";
+import HeaderAuth from "@/components/HeaderAuth.vue";
+import HeaderNoAuth from "@/components/HeaderNoAuth.vue";
 
 const data = ['searchicon.svg', 'userIcon.svg', 'logo.svg']
 
 export default {
-    components: { Bottom, Searchimg },
+    components: { Bottom, Searchimg, HeaderAuth, HeaderNoAuth },
     data() {
         return {
+            authorised: true,
             activeTab: 1,
             userName: "Пользователь",
             countSubscribers: 0,
             result: [],
-            countImg: 0,
+            countImg: Math.floor(Math.random() * 10),
         }
 
     },
@@ -372,11 +311,9 @@ export default {
         this.loadImg(this.countImg);
     },
     methods: {
-        goToHome() {
-            this.$router.push({ name: 'homeview' })
+        goToUpload() {
+            this.$router.push({ name: 'uploadimgview' })
         },
-
-
         loadImg(tagImg) {
             this.result = []
 

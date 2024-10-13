@@ -282,7 +282,13 @@ export default {
                     console.log(response);
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$router.push({
+                        name: 'codeerrorview',
+                        query: {
+                            ErrorNum: error.status
+                        }
+                    })
+                    console.log(error.status);
                 });
         },
         fun_login() {
@@ -301,6 +307,7 @@ export default {
             //     password: this.Password
             // })
             axios({
+                timeoute: 1000,
                 method: 'post',
                 url: 'http://localhost/api/login',
                 data: {
@@ -316,7 +323,16 @@ export default {
                     console.log(response);
                 })
                 .catch(error => {
-                    console.log(error);
+                    if (error.status != null) {
+                        this.$router.push({
+                            name: 'codeerrorview',
+                            query: {
+                                ErrorNum: error.status
+                            }
+                        })
+                    }
+                    console.log(error.message);
+                    console.log(error.toJSON())
                 });
         }
     },

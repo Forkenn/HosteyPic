@@ -75,7 +75,7 @@ export default {
                     styleobj.marginRight = '35px'
                     styleobj.marginLeft = '35px'
                 }
-                else
+                else if (this.k != 1)
                     styleobj.marginRight = 0
             }
             return styleobj
@@ -89,6 +89,7 @@ export default {
 
 <style scoped>
 .wrapper__picture {
+
     box-sizing: content-box;
     max-width: 1280px;
     margin-left: auto;

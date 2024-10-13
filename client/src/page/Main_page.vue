@@ -16,31 +16,9 @@
         <div class="page">
 
 
+            <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
+            <HeaderAuth v-if="authorised" />
 
-            <header class="header">
-                <div class="wrapper__header">
-                    <div class="header__logo" @click="goToAbout">
-
-
-                        <p> <span class="color__white">Hostey</span>
-                            <span class="color__black">PIC</span>
-                        </p>
-
-                    </div>
-                    <div class="user__icon" v-if="authorised" v-on:click="goToUser">
-                        <img src="../assets/img/svg/userIcon.svg" alt="">
-                    </div>
-                    <div class="wrap_login" v-if="!authorised">
-                        <button class="login" v-on:click="show_login(false), login = false">
-                            Вход
-                        </button>
-                        <button class="sing_in" v-on:click="show_login(false), login = true">
-                            Регистрация
-                        </button>
-                    </div>
-
-                </div>
-            </header>
 
 
             <div class="wrapper__searchbar">
@@ -155,11 +133,13 @@ button.sing_in:active {
 import Searchimg from "../components/Searchimg.vue"
 import Login from "../components/Login.vue"
 import Bottom from "../components/Bottom.vue"
+import HeaderNoAuth from "@/components/HeaderNoAuth.vue"
+import HeaderAuth from "@/components/HeaderAuth.vue"
 
 const data = ['searchicon.svg', 'userIcon.svg', 'logo.svg']
 
 export default {
-    components: { Searchimg, Login, Bottom },
+    components: { Searchimg, Login, Bottom, HeaderNoAuth, HeaderAuth },
     data() {
         return {
             userId: 0,
@@ -178,6 +158,7 @@ export default {
     },
     methods: {
         show_login(show) {
+            // console.log(show, this.login)
             if (show) {
                 this.show = false
             }
@@ -185,6 +166,9 @@ export default {
                 this.show = true
             }
 
+        },
+        login_ch(login) {
+            this.login = login
         },
         loadImg(tagImg) {
             if (this.serach.length > 0)

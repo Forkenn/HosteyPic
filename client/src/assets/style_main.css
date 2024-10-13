@@ -33,7 +33,7 @@ html {
 }
 
 .page {
-    overflow: hidden;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -99,10 +99,8 @@ html {
 }
 
 .wrapper__searchbar {
-    box-sizing: content-box;
-    max-width: 1440px;
-    margin-left: auto;
-    margin-right: auto;
+    /* box-sizing: content-box; */
+
     margin-top: 75px;
 }
 
@@ -110,7 +108,7 @@ html {
 
 
 
-    max-width: 875px;
+    max-width: 835px;
     height: 40px;
     margin-left: auto;
     margin-right: auto;
@@ -125,6 +123,7 @@ html {
     background: #FFFFFF;
 
     display: flex;
+    justify-content: space-between;
 
 }
 
@@ -139,7 +138,8 @@ html {
 
     margin-left: 10px;
     position: relative;
-    width: 835px;
+    max-width: 835px;
+    width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -155,7 +155,7 @@ html {
     text-align: left;
 
 
-    position: absolute;
+    /* position: absolute; */
 
     width: 100%;
     height: 100%;
