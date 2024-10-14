@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .auth.config import fastapi_users, auth_backend
+from .auth.config import auth_backend
+from .auth.manager import fastapi_users
 from .auth.schemas import SUserRead, SUserCreate
+from .users.router import router as router_users
 from .test.router import router as router_test
 
 app = FastAPI(title='HosteyPic', root_path='/api')
@@ -49,4 +51,5 @@ app.include_router(
     tags=["Auth"],
 )
 
+app.include_router(router_users)
 app.include_router(router_test)

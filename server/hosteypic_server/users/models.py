@@ -22,3 +22,6 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     # is_verified: orm.Mapped[bool] = orm.mapped_column(Boolean(), default=False)
     # is_active: orm.Mapped[bool] = orm.mapped_column(Boolean(), default=False)
     # is_superuser: orm.Mapped[bool] = orm.mapped_column(Boolean(), default=False)
+
+    def __repr__(self):
+        return f"User with id:{self.id}"
