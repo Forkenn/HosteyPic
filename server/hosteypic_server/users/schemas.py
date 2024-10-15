@@ -1,11 +1,10 @@
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr
 
 class SUserRead(BaseModel):
     id: int
     username: str
-    email: str
     about_me: str | None
     avatar_link: str | None
     vk_link: str | None
@@ -13,10 +12,36 @@ class SUserRead(BaseModel):
     github_link: str | None
     gitlab_link: str | None
     is_active: bool
-    is_verified: bool
     is_moderator: bool
-    is_superuser: bool
+
+class SUserReadFull(SUserRead):
+    is_verified: bool
+    email: str
 
 class SMultiUserRead(BaseModel):
     count: int
     items: List[SUserRead]
+
+class SUserEdit(BaseModel):
+    about_me: str | None
+    vk_link: str | None
+    ok_link: str | None
+    github_link: str | None
+    gitlab_link: str | None
+
+class SUserUsernameEdit(BaseModel):
+    username: str = Field(
+        default=...,
+        min_length=5,
+        max_length=10,
+        description="Username from 5 to 10 symbols"
+    )
+
+class SUserEmailEdit(BaseModel):
+    email: EmailStr
+
+class SUserActiveSet(BaseModel):
+    is_active: bool
+
+class SUserModeratorSet(BaseModel):
+    is_moderator: bool
