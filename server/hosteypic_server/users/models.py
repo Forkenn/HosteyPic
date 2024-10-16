@@ -17,6 +17,8 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     gitlab_link: orm.Mapped[str] = orm.mapped_column(String(128), nullable=True)
     is_moderator: orm.Mapped[bool] = orm.mapped_column(Boolean(), default=False)
 
+    posts: orm.WriteOnlyMapped['Post'] = orm.relationship(back_populates='author')
+
     # fastapi-users fields by default:
     # hashed_password: orm.Mapped[str] = orm.mapped_column(String(256))
     # is_verified: orm.Mapped[bool] = orm.mapped_column(Boolean(), default=False)
@@ -25,3 +27,5 @@ class User(SQLAlchemyBaseUserTable[int], Base):
 
     def __repr__(self):
         return f"User with id:{self.id}"
+
+from hosteypic_server.posts.models import Post
