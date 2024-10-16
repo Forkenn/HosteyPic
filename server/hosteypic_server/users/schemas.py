@@ -39,9 +39,3 @@ class SUserUsernameEdit(BaseModel):
 
 class SUserEmailEdit(BaseModel):
     email: EmailStr
-
-class SUserActiveSet(BaseModel):
-    is_active: bool
-
-class SUserModeratorSet(BaseModel):
-    is_moderator: bool
