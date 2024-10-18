@@ -12,7 +12,7 @@ class Config:
     DB_NAME = os.environ.get('DB_NAME') or 'db_hosteypic'
 
     VERIFY_URL = os.environ.get('VERIFY_PATH') or 'http://localhost/verify?token={token}'
-    RESET_EMAIL_URL = os.environ.get('VERIFY_PATH') or 'http://localhost/verify?token={token}&new_email={new_email}'
+    CHANGE_EMAIL_URL = os.environ.get('CHANGE_EMAIL_URL') or 'http://localhost/change-email?token={token}&new_email={new_email}'
 
     SECRET_TOKEN = os.environ.get('SECRET_TOKEN') or 'dev_secret_key'
     ALGORITHM = "HS256"

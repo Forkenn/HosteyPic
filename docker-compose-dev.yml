@@ -34,7 +34,7 @@ services:
       DB_PASS: my_super_password
       DB_PORT: 5432"
       VERIFY_URL: "http://localhost/verify?token={token}"
-      RESET_EMAIL_URL: "http://localhost/verify?token={token}&new_email={new_email}"
+      CHANGE_EMAIL_URL: "http://localhost/change-email?token={token}&new_email={new_email}"
 #    ports:
 #      - "8000:8000"
     restart: always

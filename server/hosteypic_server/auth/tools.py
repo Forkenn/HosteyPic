@@ -11,7 +11,7 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
 
 async def send_email_change_email(token: str, email: str, new_email: str):
-    change_link = Config.RESET_EMAIL_PATH.format(token=token, new_email=new_email)
+    change_link = Config.CHANGE_EMAIL_URL.format(token=token, new_email=new_email)
     await send_email(
         subject="Запрос на смену E-mail",
         sender="admin@hosteypic.ru",
@@ -21,7 +21,7 @@ async def send_email_change_email(token: str, email: str, new_email: str):
     )
 
 async def send_verify_email(token: str, email: str):
-    verify_link = Config.VERIFY_PATH.format(token=token)
+    verify_link = Config.VERIFY_URL.format(token=token)
     await send_email(
         subject="Подтверждение E-mail",
         sender="admin@hosteypic.ru",
