@@ -21,11 +21,12 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # overwrite alembic.ini db urls from the config file
-DB_USER = os.environ.get('DB_USER')
-DB_PASS = os.environ.get('DB_PASS')
-DB_HOST = os.environ.get('DB_HOST')
-DB_PORT = os.environ.get('DB_PORT')
-DB_NAME = os.environ.get('DB_NAME')
+# DB_USER = os.environ.get('DB_USER') or 'admin'
+DB_USER = os.environ.get('DB_USER') or 'admin'
+DB_PASS = os.environ.get('DB_PASS') or 'my_super_password'
+DB_HOST = os.environ.get('DB_HOST') or 'localhost'
+DB_PORT = os.environ.get('DB_PORT') or 5432
+DB_NAME = os.environ.get('DB_NAME') or 'db_hosteypic'
 
 database_url = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}?async_fallback=True"
 config.set_main_option('sqlalchemy.url', database_url)
