@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('attachment', sa.String(length=256), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'],  ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_posts_user_id'), 'posts', ['user_id'], unique=False)

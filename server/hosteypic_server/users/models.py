@@ -26,17 +26,17 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     gitlab_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
     is_moderator: orm.Mapped[bool] = orm.mapped_column(alch.Boolean(), default=False)
 
-    posts: orm.WriteOnlyMapped['Post'] = orm.relationship(back_populates='author')
+    posts: orm.WriteOnlyMapped['Post'] = orm.relationship(back_populates='author', cascade="all, delete")
 
     following: orm.WriteOnlyMapped['User'] = orm.relationship(
         secondary=followers, primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
-        back_populates='followers'
+        back_populates='followers', cascade="all, delete"
     )
     followers: orm.WriteOnlyMapped['User'] = orm.relationship(
         secondary=followers, primaryjoin=(followers.c.followed_id == id),
         secondaryjoin=(followers.c.follower_id == id),
-        back_populates='following'
+        back_populates='following', cascade="all, delete"
     )
 
     # fastapi-users fields by default:

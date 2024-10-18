@@ -23,8 +23,8 @@ def upgrade() -> None:
     op.create_table('followers',
     sa.Column('follower_id', sa.Integer(), nullable=False),
     sa.Column('followed_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['followed_id'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['follower_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['followed_id'], ['users.id'], ondelete='CASCADE'), # Manually added CASCADE
+    sa.ForeignKeyConstraint(['follower_id'], ['users.id'], ondelete='CASCADE'), # Manually added CASCADE
     sa.PrimaryKeyConstraint('follower_id', 'followed_id')
     )
     # ### end Alembic commands ###
