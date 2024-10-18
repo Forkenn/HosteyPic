@@ -7,9 +7,11 @@ load_dotenv()
 class Config:
     DB_USER = os.environ.get('DB_USER') or 'admin'
     DB_PASS = os.environ.get('DB_PASS') or 'my_super_password'
-    DB_HOST = os.environ.get('DB_HOST') or 'hosteypic_postgres'
+    DB_HOST = os.environ.get('DB_HOST') or 'localhost'
     DB_PORT = os.environ.get('DB_PORT') or 5432
     DB_NAME = os.environ.get('DB_NAME') or 'db_hosteypic'
+
+    VERIFY_PATH = os.environ.get('VERIFY_PATH') or 'http://localhost/verify/'
 
     SECRET_TOKEN = os.environ.get('SECRET_TOKEN') or 'dev_secret_key'
     ALGORITHM = "HS256"
