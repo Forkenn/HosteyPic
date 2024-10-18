@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .auth.config import auth_backend
 from .auth.manager import fastapi_users
 from .auth.schemas import SUserRead, SUserCreate
+from .auth.router import router as router_auth
 from .users.router import router as router_users
 from .test.router import router as router_test
 
@@ -51,5 +52,6 @@ app.include_router(
     tags=["Auth"],
 )
 
+app.include_router(router_auth)
 app.include_router(router_users)
 app.include_router(router_test)

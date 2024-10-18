@@ -127,25 +127,6 @@ async def change_username_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.patch('/change_email', responses=responses)
-async def change_email(
-        new_email: SUserEmailEdit,
-        session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_user)
-):
-    query = alch.select(User).where(User.email == new_email.email)
-    user_check = (await session.execute(query)).scalar()
-
-    if user_check:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="EMAIL_ALREADY_TAKEN"
-        )
-    
-    await change_user(user.id, new_email)
-
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
 @router.patch('/change_password', responses=responses)
 async def change_password(
         old: str,

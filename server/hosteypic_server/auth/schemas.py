@@ -1,4 +1,4 @@
-from pydantic import Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr
 from fastapi_users import schemas
 
 class SUserRead(schemas.BaseUser[int]):
@@ -16,3 +16,9 @@ class SUserCreate(schemas.CreateUpdateDictModel):
 
 class SUserUpdate(schemas.BaseUserUpdate):
     pass
+
+class SUserRequestChangeEmail(BaseModel):
+    new_email: EmailStr
+
+class SUserChangeEmail(SUserRequestChangeEmail):
+    token: str
