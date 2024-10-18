@@ -33,6 +33,7 @@ services:
       DB_USER: admin
       DB_PASS: my_super_password
       DB_PORT: 5432
+      VERIFY_PATH: http://localhost/verify?token=
 #    ports:
 #      - "8000:8000"
     restart: always

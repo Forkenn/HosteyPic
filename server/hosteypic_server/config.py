@@ -11,7 +11,7 @@ class Config:
     DB_PORT = os.environ.get('DB_PORT') or 5432
     DB_NAME = os.environ.get('DB_NAME') or 'db_hosteypic'
 
-    VERIFY_PATH = os.environ.get('VERIFY_PATH') or 'http://localhost/verify/'
+    VERIFY_PATH = os.environ.get('VERIFY_PATH') or 'http://localhost/verify?token='
 
     SECRET_TOKEN = os.environ.get('SECRET_TOKEN') or 'dev_secret_key'
     ALGORITHM = "HS256"
