@@ -57,16 +57,6 @@ async def get_user_by_id(
 
     return response
 
-@router.delete('/current', responses=responses)
-async def delete_current_user(
-        session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_user)
-):
-    await session.delete(user)
-    await session.commit()
-
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
 @router.delete('/{user_id}', responses=responses)
 async def delete_user_by_id(
         user_id: int,
