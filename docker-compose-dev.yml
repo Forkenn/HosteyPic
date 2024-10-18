@@ -32,8 +32,9 @@ services:
       DB_NAME: db_hosteypic
       DB_USER: admin
       DB_PASS: my_super_password
-      DB_PORT: 5432
-      VERIFY_PATH: http://localhost/verify?token=
+      DB_PORT: 5432"
+      VERIFY_URL: "http://localhost/verify?token={token}"
+      RESET_EMAIL_URL: "http://localhost/verify?token={token}&new_email={new_email}"
 #    ports:
 #      - "8000:8000"
     restart: always
