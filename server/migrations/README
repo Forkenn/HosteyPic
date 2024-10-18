@@ -1,1 +1,3 @@
-Generic single-database configuration with an async dbapi.
+# Предупреждение
+
+С 18.10.2024 миграции af49ab4c124b, b57486197dc5 и ebab73fe5014 исправлены. Перед локальным развертыванием базу удалить и применить миграции заново!
