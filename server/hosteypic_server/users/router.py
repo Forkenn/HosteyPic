@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, status, Response, Depends
-from fastapi_users.password import PasswordHelper
 
 import sqlalchemy as alch
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,8 +8,7 @@ from hosteypic_server.database import get_async_session
 from hosteypic_server.users.dao import change_user, change_fields
 from hosteypic_server.users.models import User
 from hosteypic_server.users.schemas import (
-    SUserRead, SMultiUserRead, SUserEdit, SUserReadFull, SUserEmailEdit,
-    SUserUsernameEdit
+    SUserRead, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
 )
 
 router = APIRouter(prefix='/users', tags=['Users'])
@@ -88,7 +86,7 @@ async def edit_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.patch('/change_username/current', responses=responses)
+@router.patch('/change-username/current', responses=responses)
 async def change_username(
         new_username: SUserUsernameEdit,
         session: AsyncSession = Depends(get_async_session),
@@ -107,7 +105,7 @@ async def change_username(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.patch('/change_username/{user_id}', responses=responses)
+@router.patch('/change-username/{user_id}', responses=responses)
 async def change_username_by_id(
         user_id: int,
         new_username: SUserUsernameEdit,
@@ -124,30 +122,6 @@ async def change_username_by_id(
         )
     
     await change_user(user_id, new_username)
-
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-@router.patch('/change_password', responses=responses)
-async def change_password(
-        old: str,
-        new: str,
-        session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_user)
-):
-    password_helper = PasswordHelper()
-
-    if not password_helper.verify_and_update(old, user.hashed_password)[0]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="LOGIN_BAD_CREDENTIALS"
-        )
-    
-    query = alch.update(User).values(
-        hashed_password=password_helper.hash(new)
-    ).where(User.id == user.id)
-
-    await session.execute(query)
-    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 

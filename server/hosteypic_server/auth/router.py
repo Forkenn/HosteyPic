@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Response, Depends
 
 from fastapi_users import exceptions
+from fastapi_users.password import PasswordHelper
 
 import sqlalchemy as alch
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +14,30 @@ from hosteypic_server.users.models import User
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
 current_user = fastapi_users.current_user(active=True, verified=True)
+
+@router.post('/change-password')
+async def change_password(
+        old: str,
+        new: str,
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(current_user)
+):
+    password_helper = PasswordHelper()
+
+    if not password_helper.verify_and_update(old, user.hashed_password)[0]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="LOGIN_BAD_CREDENTIALS"
+        )
+    
+    query = alch.update(User).values(
+        hashed_password=password_helper.hash(new)
+    ).where(User.id == user.id)
+
+    await session.execute(query)
+    await session.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.post('/request-change-email')
 async def request_change_email(
