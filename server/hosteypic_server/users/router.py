@@ -215,7 +215,7 @@ async def unfollow_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.get('/is_following/{user_id}', responses=responses)
+@router.get('/is-following/{user_id}', responses=responses)
 async def check_following_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
@@ -235,7 +235,7 @@ async def check_following_by_id(
 
     return {'is_followed': response}
 
-@router.get('/followers_count/{user_id}', responses=responses)
+@router.get('/followers-count/{user_id}', responses=responses)
 async def get_followed_count_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
