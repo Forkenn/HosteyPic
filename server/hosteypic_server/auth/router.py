@@ -13,9 +13,18 @@ from hosteypic_server.users.models import User
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
-current_user = fastapi_users.current_user(active=True, verified=True)
+current_user = fastapi_users.current_user(active=True)
+current_user_verified = fastapi_users.current_user(active=True, verified=True)
 
-@router.post('/change-password')
+responses ={
+    404: {"description": "Item not found"},
+    401: {"description": "Missing token or inactive/unverified user."},
+    400: {"description": "Bad Request"},
+    204: {"description": "Successful Response"},
+    202: {"description": "Successful Response"}
+}
+
+@router.post('/change-password', responses=responses)
 async def change_password(
         old: str,
         new: str,
@@ -39,12 +48,12 @@ async def change_password(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/request-change-email')
+@router.post('/request-change-email', responses=responses)
 async def request_change_email(
         data: SUserRequestChangeEmail,
         session: AsyncSession = Depends(get_async_session),
         user_manager: UserManager = Depends(fastapi_users.get_user_manager),
-        user: User = Depends(current_user)
+        user: User = Depends(current_user_verified)
 ):
     query = alch.select(User).where(User.email == data.new_email)
     user_check = (await session.execute(query)).scalar()
@@ -57,14 +66,14 @@ async def request_change_email(
 
     await user_manager.request_change_email(user, data.new_email)
     
-    return Response(status_code=status.HTTP_202_ACCEPTED)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/change-email')
+@router.post('/change-email', responses=responses)
 async def change_email(
         data: SUserChangeEmail,
         session: AsyncSession = Depends(get_async_session),
         user_manager: UserManager = Depends(fastapi_users.get_user_manager),
-        user: User = Depends(current_user)
+        user: User = Depends(current_user_verified)
 ) -> SUserRead:
     try:
         await user_manager.verify(data.token)
