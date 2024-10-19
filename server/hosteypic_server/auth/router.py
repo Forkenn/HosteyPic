@@ -8,7 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hosteypic_server.database import get_async_session
 from hosteypic_server.auth.manager import fastapi_users, UserManager
-from hosteypic_server.auth.schemas import SUserRequestChangeEmail, SUserChangeEmail, SUserRead
+from hosteypic_server.auth.schemas import (
+    SUserRequestChangeEmail, SUserChangeEmail, SUserRead, SUserChangePassword
+)
 from hosteypic_server.users.models import User
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
@@ -26,21 +28,20 @@ responses ={
 
 @router.post('/change-password', responses=responses)
 async def change_password(
-        old: str,
-        new: str,
+        data: SUserChangePassword,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
     password_helper = PasswordHelper()
 
-    if not password_helper.verify_and_update(old, user.hashed_password)[0]:
+    if not password_helper.verify_and_update(data.old, user.hashed_password)[0]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="LOGIN_BAD_CREDENTIALS"
         )
     
     query = alch.update(User).values(
-        hashed_password=password_helper.hash(new)
+        hashed_password=password_helper.hash(data.new)
     ).where(User.id == user.id)
 
     await session.execute(query)
@@ -104,4 +105,4 @@ async def change_email(
     await session.commit()
 
     query = alch.select(User).where(User.id == user.id)
-    return await session.execute(query)
+    return (await session.execute(query)).scalar()

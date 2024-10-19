@@ -42,3 +42,16 @@ async def send_verify_email(token: str, email: str):
         text_body=f'Перейдите по ссылке, чтобы подтвердить E-mail: {verify_link}',
         html_body=''
     )
+
+async def send_reset_password_email(token: str, email: str):
+    reset_link = Config.RESET_URL.format(token=token)
+    await send_email(
+        subject="Сброс пароля HosteyPic",
+        sender="admin@hosteypic.ru",
+        recipients=[email],
+        text_body=(
+            f'Перейдите по ссылке, чтобы сбросить пароль: {reset_link}\n'
+            'Если Вы не отправляли запрос, игнорируйте данное письмо.'
+        ),
+        html_body=''
+    )

@@ -6,7 +6,9 @@ from fastapi_users.jwt import generate_jwt
 from fastapi_users.db import SQLAlchemyUserDatabase
 
 from hosteypic_server.config import Config
-from hosteypic_server.auth.tools import get_user_db, send_email_change_email, send_verify_email
+from hosteypic_server.auth.tools import (
+    get_user_db, send_email_change_email, send_verify_email, send_reset_password_email
+)
 from hosteypic_server.auth.config import auth_backend
 from hosteypic_server.users.models import User
 
@@ -37,8 +39,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        # TODO: E-mail send!
         print(f"User {user.id} has forgot their password. Reset token: {token}")
+        await send_reset_password_email(token, user.email)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None

@@ -13,6 +13,7 @@ class Config:
 
     VERIFY_URL = os.environ.get('VERIFY_PATH') or 'http://localhost/verify?token={token}'
     CHANGE_EMAIL_URL = os.environ.get('CHANGE_EMAIL_URL') or 'http://localhost/change-email?token={token}&new_email={new_email}'
+    RESET_URL = os.environ.get('RESET_URL') or 'http://localhost/reset-password?token={token}'
 
     SECRET_TOKEN = os.environ.get('SECRET_TOKEN') or 'dev_secret_key'
     ALGORITHM = "HS256"

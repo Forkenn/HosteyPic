@@ -22,3 +22,8 @@ class SUserRequestChangeEmail(BaseModel):
 
 class SUserChangeEmail(SUserRequestChangeEmail):
     token: str
+
+
+class SUserChangePassword(BaseModel):
+    old: str
+    new: str
