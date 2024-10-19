@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field, EmailStr
 
@@ -12,10 +12,14 @@ class SUserRead(BaseModel):
     github_link: str | None
     gitlab_link: str | None
     is_active: bool
+    is_verified: bool
     is_moderator: bool
 
+class SUserReadSingle(SUserRead):
+    is_following: Optional[bool] = False
+    followers_count: Optional[int] = 0
+
 class SUserReadFull(SUserRead):
-    is_verified: bool
     email: str
 
 class SMultiUserRead(BaseModel):

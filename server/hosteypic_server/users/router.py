@@ -1,3 +1,5 @@
+from typing import Union
+
 from fastapi import APIRouter, HTTPException, status, Response, Depends
 
 import sqlalchemy as alch
@@ -8,7 +10,7 @@ from hosteypic_server.database import get_async_session
 from hosteypic_server.users.dao import change_user, change_fields
 from hosteypic_server.users.models import User
 from hosteypic_server.users.schemas import (
-    SUserRead, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
+    SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
 )
 
 router = APIRouter(prefix='/users', tags=['Users'])
@@ -45,13 +47,16 @@ async def get_user_by_id(
     user_id: int,
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user)
-) -> SUserRead:
+) -> SUserReadSingle:
     query = alch.select(User).where(User.id == user_id)
-    response = (await session.execute(query)).scalar()
-    if not response:
+    user_resp = (await session.execute(query)).scalar()
+    if not user_resp:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,  detail="ITEM_NOT_FOUND"
         )
+    response = SUserReadSingle(**user_resp.__dict__)                # TODO: fix stupid code
+    response.is_following = await user.is_following(user_resp)
+    response.followers_count = await user_resp.followers_count()
 
     return response
 
@@ -182,6 +187,12 @@ async def follow_by_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="USER_NOT_FOUND"
         )
+    
+    if not follow_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="CAN_NOT_FOLLOW_BANNED"
+        )
 
     await user.follow(follow_user)
     await session.commit()
@@ -233,7 +244,7 @@ async def check_following_by_id(
 
     response = await user.is_following(follow_user)
 
-    return {'is_followed': response}
+    return {'is_following': response}
 
 @router.get('/followers-count/{user_id}', responses=responses)
 async def get_followed_count_by_id(
