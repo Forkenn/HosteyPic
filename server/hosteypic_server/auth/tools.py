@@ -12,11 +12,24 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
 
 async def send_email_change_email(token: str, email: str, new_email: str):
     change_link = Config.CHANGE_EMAIL_URL.format(token=token, new_email=new_email)
+    subject = "Запрос на смену E-mail"
+    sender = "admin@hosteypic.ru"
     await send_email(
-        subject="Запрос на смену E-mail",
-        sender="admin@hosteypic.ru",
-        recipients=[email],
+        subject=subject,
+        sender=sender,
+        recipients=[new_email],
         text_body=f'Перейдите по ссылке, чтобы подтвердить смену E-mail: {change_link}',
+        html_body=''
+    )
+
+    await send_email(
+        subject=subject,
+        sender=sender,
+        recipients=[email],
+        text_body=(
+            f'Был осуществлен запрос на смену E-mail на {new_email}.\n'
+            'Если Вы не отправляли запрос, свяжитесь с тех. поддержкой.'
+        ),
         html_body=''
     )
 
