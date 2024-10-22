@@ -7,9 +7,9 @@ from hosteypic_server.database import Base, async_session_maker
 
 followers = alch.Table(
     'followers', Base.metadata,
-    alch.Column('follower_id', alch.Integer, alch.ForeignKey('users.id'),
+    alch.Column('follower_id', alch.Integer, alch.ForeignKey('users.id', ondelete='CASCADE'),
         primary_key=True),
-    alch.Column('followed_id', alch.Integer, alch.ForeignKey('users.id'),
+    alch.Column('followed_id', alch.Integer, alch.ForeignKey('users.id', ondelete='CASCADE'),
         primary_key=True)
 )
 
@@ -19,24 +19,24 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     username: orm.Mapped[str] = orm.mapped_column(alch.String(15), index=True, unique=True)
     email: orm.Mapped[str] = orm.mapped_column(alch.String(120), index=True, unique=True)
     about_me: orm.Mapped[str] = orm.mapped_column(alch.String(140), nullable=True)
-    avatar_link: orm.Mapped[str] = orm.mapped_column(alch.String(256), nullable=True)
+    avatar: orm.Mapped[str] = orm.mapped_column(alch.String(256), nullable=True)
     vk_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
     ok_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
     github_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
     gitlab_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
     is_moderator: orm.Mapped[bool] = orm.mapped_column(alch.Boolean(), default=False)
 
-    posts: orm.WriteOnlyMapped['Post'] = orm.relationship(back_populates='author', cascade="all, delete")
+    posts: orm.WriteOnlyMapped['Post'] = orm.relationship(back_populates='author')
 
     following: orm.WriteOnlyMapped['User'] = orm.relationship(
         secondary=followers, primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
-        back_populates='followers', cascade="all, delete"
+        back_populates='followers'
     )
     followers: orm.WriteOnlyMapped['User'] = orm.relationship(
         secondary=followers, primaryjoin=(followers.c.followed_id == id),
         secondaryjoin=(followers.c.follower_id == id),
-        back_populates='following', cascade="all, delete"
+        back_populates='following'
     )
 
     # fastapi-users fields by default:

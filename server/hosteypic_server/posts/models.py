@@ -18,7 +18,7 @@ class Post(Base):
     )
     attachment: orm.Mapped[str] = orm.mapped_column(String(256))
     user_id: orm.Mapped[int] = orm.mapped_column(
-        ForeignKey(User.id), index=True
+        ForeignKey(User.id, ondelete='CASCADE'), index=True
     )
 
     author: orm.Mapped['User'] = orm.relationship(back_populates='posts')
