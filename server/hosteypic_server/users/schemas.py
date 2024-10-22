@@ -6,7 +6,7 @@ class SUserRead(BaseModel):
     id: int
     username: str
     about_me: str | None
-    avatar_link: str | None
+    avatar: str | None
     vk_link: str | None
     ok_link: str | None
     github_link: str | None
