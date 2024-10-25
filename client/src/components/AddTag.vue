@@ -32,7 +32,7 @@
 
 
     display: flex;
-    max-width: 300px;
+    max-width: 360px;
     height: 40px;
     align-items: center;
     justify-content: space-between;

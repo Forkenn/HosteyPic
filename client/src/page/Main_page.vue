@@ -9,7 +9,7 @@
 
     <body>
         <div v-if="show">
-            <Login :login1="login" @authorised1="authorised1" @show_ch='show_login' @login="log_login" />
+            <Login :login1="login" @authorised1="authorised1" @show_ch='show_login' />
             <div class="gray" @click=show_login(true)></div>
         </div>
 
@@ -126,8 +126,6 @@ button.sing_in:active {
 
 }
 </style>
-
-
 <script>
 
 import Searchimg from "../components/Searchimg.vue"
@@ -135,8 +133,9 @@ import Login from "../components/Login.vue"
 import Bottom from "../components/Bottom.vue"
 import HeaderNoAuth from "@/components/HeaderNoAuth.vue"
 import HeaderAuth from "@/components/HeaderAuth.vue"
+import axios from "axios";
 
-const data = ['searchicon.svg', 'userIcon.svg', 'logo.svg']
+const data = ['красивый фон.jpg', 'пальмы.jpg', 'test.jpg', 'vkTm8xmeOTo.jpg']
 
 export default {
     components: { Searchimg, Login, Bottom, HeaderNoAuth, HeaderAuth },
@@ -154,6 +153,25 @@ export default {
         };
     },
     mounted() {
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: 'http://localhost/api/users/',
+
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.status == 200) { this.authorised = true }
+                console.log(response);
+
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
         this.loadImg(30);
     },
     methods: {
@@ -175,17 +193,12 @@ export default {
                 tagImg = this.serach
             this.result = []
             for (let index = 0; index < tagImg; index++) {
-                this.srcimg = data[index % 3],
+                this.srcimg = data[index % 4],
                     this.result.push({
                         src1: this.srcimg,
                         tag: this.tag
                     })
             }
-        },
-        log_login(data) {
-            this.data = data
-            this.userId = data.Username
-            // console.log(data)
         },
         authorised1(authorised) {
             this.authorised = authorised

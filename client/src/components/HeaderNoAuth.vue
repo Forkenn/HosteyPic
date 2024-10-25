@@ -11,9 +11,6 @@
                 </p>
 
             </div>
-            <div class="user__icon" v-if="authorised" v-on:click="goToUser">
-                <img src="../assets/img/svg/userIcon.svg" alt="">
-            </div>
             <div class="wrap_login">
                 <button class="login" v-on:click="show_login()">
                     Вход

@@ -24,7 +24,9 @@
                     Повторите пароль:
                 </label>
                 <input v-if="login" v-model="confirm_password" type="password" required>
-
+                <p class="forgot" v-if="!login">
+                    <a href="http://localhost:5173/error?ErrorNum=404">Забыли пароль?</a>
+                </p>
 
                 <div v-if="!login" class="wrap">
                     <button class="login" type="button" @click=fun_login()>
@@ -33,7 +35,7 @@
                 </div>
                 <div class="wrap__line__or" v-if="!login">
                     <div class="line"></div>
-                    <p> <span class="or">ИЛИ</span>
+                    <p> <span class="or">или</span>
                     </p>
                     <div class="line"></div>
                 </div>
@@ -91,8 +93,8 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     padding: 10px 20px;
     transition: transform 0.2s;
-    width: 1000px;
-    height: 685px;
+    width: 500px;
+    height: 548px;
 
     text-align: center;
     justify-content: center;
@@ -112,6 +114,7 @@ label {
     font-weight: 400;
     line-height: 38.4px;
     text-align: left;
+
     color: #474319;
     padding-left: 53px;
     margin-bottom: 6px;
@@ -126,27 +129,29 @@ input {
     text-align: left;
 
 
-    width: 874px;
+    width: 461px;
     height: 40px;
     gap: 0px;
     border-radius: 20px;
     border: 2px 0px 0px 0px;
     opacity: 0px;
-    margin-bottom: 12px;
+    /* margin-bottom: 12px; */
 
 }
 
 button.login {
 
     font-family: Balsamiq Sans;
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 400;
-    line-height: 57.6px;
+    line-height: 43.2px;
+    text-align: center;
+
     text-align: center;
 
 
     border-radius: 10px;
-    margin-top: 64px;
+    margin-top: 20px;
 
     border: 4px solid #B1A73F;
 
@@ -155,7 +160,7 @@ button.login {
 
     border-radius: 30px;
     width: 180px;
-    height: 100px;
+    height: 79px;
 }
 
 button:active {
@@ -165,16 +170,16 @@ button:active {
 button.sing_in1 {
 
     font-family: Balsamiq Sans;
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 400;
-    line-height: 57.6px;
+    line-height: 43.2px;
     text-align: center;
+
     color: #474319;
 
-    margin-top: 58px;
-    width: 484px;
-    height: 100px;
-    gap: 0px;
+    margin-top: 39px;
+    width: 424px;
+    height: 79px;
     border-radius: 30px;
     border: 4px solid #B1A73F;
     opacity: 0px;
@@ -188,15 +193,16 @@ form {
 button.sing_in2 {
 
     font-family: Balsamiq Sans;
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 400;
-    line-height: 57.6px;
+    line-height: 43.2px;
     text-align: center;
+
     color: #474319;
 
-    margin-top: 44px;
-    width: 484px;
-    height: 100px;
+    margin-top: 0px;
+    width: 424px;
+    height: 79px;
     gap: 0px;
     border-radius: 30px;
     border: 4px solid #B1A73F;
@@ -205,11 +211,10 @@ button.sing_in2 {
 }
 
 .wrap__line__or {
-    margin-top: 38px;
-    /* margin-bottom: 38px; */
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 19px 0px 19px 0px;
 }
 
 .or {
@@ -218,10 +223,12 @@ button.sing_in2 {
     font-weight: 400;
     line-height: 48px;
     text-align: center;
+
+
     color: #474319;
 
 
-    margin: 0px 17px 0px 17px;
+    margin: 0px 30px 0px 30px;
 }
 
 .line {
@@ -239,6 +246,22 @@ button.sing_in2 {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.forgot {
+    font-family: Balsamiq Sans;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: right;
+
+    margin-top: 10px;
+}
+
+a {
+    color: rgba(84, 51, 217, 1);
+
+    /* text-decoration: none */
 }
 </style>
 
@@ -265,11 +288,6 @@ export default {
 
         },
         sing_in() {
-            this.$emit('login', {
-                username: this.Username,
-                email: this.e_mail,
-                password: this.Password
-            })
             this.$emit('show_ch', true)
             this.$emit('authorised1', true)
 
@@ -280,6 +298,7 @@ export default {
             })
                 .then(response => {
                     console.log(response);
+                    window.location.reload()
                 })
                 .catch(error => {
                     this.$router.push({
@@ -290,22 +309,13 @@ export default {
                     })
                     console.log(error.status);
                 });
+
         },
         fun_login() {
             console.log(this.Username, this.Password)
 
             this.$emit('show_ch', true)
             this.$emit('authorised1', true)
-            this.$emit('login', {
-                Username: this.Username,
-                Password: this.Password
-            })
-
-            // axios.post('http://localhost/api/login', {
-            //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            //     username: this.Username,
-            //     password: this.Password
-            // })
             axios({
                 timeoute: 1000,
                 method: 'post',
@@ -321,6 +331,7 @@ export default {
             })
                 .then(response => {
                     console.log(response);
+                    window.location.reload()
                 })
                 .catch(error => {
                     if (error.status != null) {

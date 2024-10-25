@@ -110,9 +110,13 @@ export default {
     components: { Bottom },
     data() {
         return {
-            Error: this.$route.query.ErrorNum,
+            Error: 404,
         }
 
+    },
+    mounted() {
+        if (this.$route.query.ErrorNum)
+            this.Error = this.$route.query.ErrorNum
     },
     methods: {
         goToHome() {

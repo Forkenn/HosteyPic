@@ -8,6 +8,10 @@
     </head>
 
     <body>
+        <div v-if="show">
+            <Login :login1="login" @authorised1="authorised1" @show_ch='show_login' />
+            <div class="gray" @click=show_login(true)></div>
+        </div>
         <div class="page">
             <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
             <HeaderAuth v-if="authorised" />
@@ -28,20 +32,25 @@
 
                     </div>
                     <div class="socialmedia">
-                        <div class="github">
-                            <img src="../assets/img/svg/GitHub.svg" alt="">
+                        <div v-if="github" class="github">
+                            <a :href=this.github target="_blank">
+                                <img src="../assets/img/svg/GitHub.svg" alt="">
+                            </a>
                         </div>
-                        <div class="gitlab">
-                            <img src="../assets/img/svg/GitLab.svg" alt="">
+                        <div v-if="gitlab" class="gitlab">
+                            <a :href=this.gitlab target="_blank">
+                                <img src="../assets/img/svg/GitLab.svg" alt="">
+                            </a>
                         </div>
-                        <div class="rutube">
-                            <img src="../assets/img/svg/RuTube.svg" alt="">
+                        <div v-if="vk" class="vk">
+                            <a :href=this.vk target="_blank">
+                                <img src="../assets/img/svg/VK.svg" alt="">
+                            </a>
                         </div>
-                        <div class="vk">
-                            <img src="../assets/img/svg/VK.svg" alt="">
-                        </div>
-                        <div class="ok">
-                            <img src="../assets/img/svg/OK.svg" alt="">
+                        <div v-if="ok" class="ok">
+                            <a :href=this.ok target="_blank">
+                                <img src="../assets/img/svg/OK.svg" alt="">
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -57,6 +66,9 @@
                         </button>
                         <button class="tabs-btn" @click="activeTab = 2, loadImg()"
                             :class="{ active: activeTab === 2 }">Понравившееся
+                        </button>
+
+                        <button class="tabs-btn" @click="activeTab = 3" :class="{ active: activeTab === 3 }">Альбомы
                         </button>
                     </div>
                     <div class="tabs-body">
@@ -76,6 +88,12 @@
                         </div>
                         <div class="tabs-body-item" v-show="activeTab === 2">
                             <Searchimg :res="result" />
+                        </div>
+                        <div class="tabs-body-item" v-show="activeTab === 3">
+                            <div class="collections">
+                                <img src="../assets/img/svg/Newcollection.svg" alt="">
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -111,6 +129,16 @@ html {
 *::before,
 *::after {
     box-sizing: inherit;
+}
+
+.gray {
+    background-color: rgba(1, 1, 1, 0.75);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1500;
 }
 
 .page {
@@ -234,9 +262,17 @@ button {
     display: inline-block;
     color: rgba(53, 50, 50, 0.5);
     border-radius: 25px 25px 0 0;
-    border: 4px solid rgba(177, 167, 63, 0.5)
+    border: 4px solid rgba(177, 167, 63, 0.5);
+    position: relative;
 }
 
+/* .tabs-btn.active::after {
+    content: "";
+    background-color: #000;
+    height: 10px;
+    width: 10px;
+    z-index: 100;
+} */
 
 
 .tabs-btn.active {
@@ -284,6 +320,19 @@ button {
     border-radius: 30px;
     border: 4px solid rgba(177, 167, 63, 1)
 }
+
+button.create:active {
+    transform: scale(0.90);
+}
+
+.collections {
+    margin-top: 70px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    margin-bottom: 200px;
+}
 </style>
 
 <script>
@@ -291,26 +340,105 @@ import Bottom from "../components/Bottom.vue"
 import Searchimg from "../components/Searchimg.vue";
 import HeaderAuth from "@/components/HeaderAuth.vue";
 import HeaderNoAuth from "@/components/HeaderNoAuth.vue";
+import Login from "@/components/Login.vue";
+import axios from "axios";
 
-const data = ['searchicon.svg', 'userIcon.svg', 'logo.svg']
+const data = ['красивый фон.jpg', 'пальмы.jpg', 'test.jpg', 'vkTm8xmeOTo.jpg']
 
 export default {
-    components: { Bottom, Searchimg, HeaderAuth, HeaderNoAuth },
+    components: { Login, Bottom, Searchimg, HeaderAuth, HeaderNoAuth },
     data() {
         return {
-            authorised: true,
+            authorised: false,
+            login: true,
+            show: false,
             activeTab: 1,
             userName: "Пользователь",
             countSubscribers: 0,
             result: [],
             countImg: Math.floor(Math.random() * 10),
+
+            github: "",
+            gitlab: "",
+            vk: "",
+            ok: "",
+
         }
 
     },
     mounted() {
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: 'http://localhost/api/users/',
+
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.status == 200) { this.authorised = true }
+                // console.log(response);
+            })
+            .catch(error => {
+                // console.log(error.message);
+            });
+        this.loadImg(this.countImg);
+        console.log()
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: (`http://localhost/api/users/${this.$route.params.id}`),
+            // params: {
+            //     user_id: this.$route.params.id
+            // },
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.status == 200) {
+                    console.log(response);
+                    this.userName = response.data.username
+                    this.github = response.data.github_link
+                    this.gitlab = response.data.gitlab_link
+                    this.vk = response.data.vk_link
+                    this.ok = response.data.ok_link
+                }
+
+            })
+            .catch(error => {
+                if (error.status != null) {
+                    this.$router.push({
+                        name: 'codeerrorview',
+                        query: {
+                            ErrorNum: error.status
+                        }
+                    })
+                }
+            });
         this.loadImg(this.countImg);
     },
     methods: {
+        authorised1(authorised) {
+            this.authorised = authorised
+        },
+        show_login(show) {
+            // console.log(show, this.login)
+            if (show) {
+                this.show = false
+            }
+            else {
+                this.show = true
+            }
+
+        },
+        login_ch(login) {
+            this.login = login
+        },
         goToUpload() {
             this.$router.push({ name: 'uploadimgview' })
         },
