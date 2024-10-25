@@ -96,21 +96,7 @@ async def edit_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.get('/avatar/{user_id}', responses=responses)
-async def get_avatar_by_id(
-        user_id: int,
-        session: AsyncSession = Depends(get_async_session)
-):
-    query = alch.select(User).where(User.id == user_id)
-    user_resp = (await session.execute(query)).scalar()
-    if not user_resp:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,  detail="ITEM_NOT_FOUND"
-        )
-    
-    return {'avatar': user_resp.avatar}
-
-@router.post('/avatar', responses=responses)
+@router.post('/current/avatar', responses=responses)
 async def set_avatar(
     image: UploadFile,
     session: AsyncSession = Depends(get_async_session),
@@ -139,7 +125,7 @@ async def set_avatar(
 
     return {'avatar': filename}
 
-@router.patch('/username/current', responses=responses)
+@router.patch('/current/username', responses=responses)
 async def change_username(
         new_username: SUserUsernameEdit,
         session: AsyncSession = Depends(get_async_session),
@@ -158,7 +144,7 @@ async def change_username(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.patch('/username/{user_id}', responses=responses)
+@router.patch('/{user_id}/username', responses=responses)
 async def change_username_by_id(
         user_id: int,
         new_username: SUserUsernameEdit,
@@ -178,7 +164,7 @@ async def change_username_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/ban/{user_id}', responses=responses)
+@router.post('/{user_id}/ban/', responses=responses)
 async def ban_user_by_id(
         user_id: int,
         user: User = Depends(current_moderator)
@@ -187,7 +173,7 @@ async def ban_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/unban/{user_id}', responses=responses)
+@router.post('/{user_id}/unban/', responses=responses)
 async def unban_user_by_id(
         user_id: int,
         user: User = Depends(current_moderator)
@@ -196,7 +182,7 @@ async def unban_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/moder/{user_id}', responses=responses)
+@router.post('/{user_id}/moder/', responses=responses)
 async def user_to_moderator_by_id(
         user_id: int,
         user: User = Depends(current_moderator)
@@ -205,7 +191,7 @@ async def user_to_moderator_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/unmoder/{user_id}', responses=responses)
+@router.post('/{user_id}/unmoder', responses=responses)
 async def moderator_to_user_by_id(
         user_id: int,
         user: User = Depends(current_moderator)
@@ -214,7 +200,7 @@ async def moderator_to_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/follow/{user_id}', responses=responses)
+@router.post('/{user_id}/follow', responses=responses)
 async def follow_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
@@ -247,7 +233,7 @@ async def follow_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/unfollow/{user_id}', responses=responses)
+@router.post('/{user_id}/unfollow', responses=responses)
 async def unfollow_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
@@ -274,7 +260,7 @@ async def unfollow_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.get('/is-following/{user_id}', responses=responses)
+@router.get('/{user_id}/is-following', responses=responses)
 async def check_following_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
@@ -294,7 +280,7 @@ async def check_following_by_id(
 
     return {'is_following': response}
 
-@router.get('/followers-count/{user_id}', responses=responses)
+@router.get('/{user_id}/is-following', responses=responses)
 async def get_followed_count_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
