@@ -164,7 +164,7 @@ async def change_username_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/{user_id}/ban/', responses=responses)
+@router.post('/{user_id}/ban', responses=responses)
 async def ban_user_by_id(
         user_id: int,
         user: User = Depends(current_moderator)
@@ -173,7 +173,7 @@ async def ban_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/{user_id}/unban/', responses=responses)
+@router.post('/{user_id}/unban', responses=responses)
 async def unban_user_by_id(
         user_id: int,
         user: User = Depends(current_moderator)
@@ -182,7 +182,7 @@ async def unban_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.post('/{user_id}/moder/', responses=responses)
+@router.post('/{user_id}/moder', responses=responses)
 async def user_to_moderator_by_id(
         user_id: int,
         user: User = Depends(current_moderator)
