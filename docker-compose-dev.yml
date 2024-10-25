@@ -22,6 +22,7 @@ services:
       context: ./server/
     volumes:
       - ./server/:/src/app
+      - ./client/dist/uploads:/src/app/uploads
     command: sh -c "sleep 15 && alembic upgrade head && uvicorn hosteypic_server.main:app --host 0.0.0.0 --reload"
     links:
       - hosteypic_postgres
@@ -36,8 +37,6 @@ services:
       VERIFY_URL: "http://localhost/verify?token={token}"
       CHANGE_EMAIL_URL: "http://localhost/change-email?token={token}&new_email={new_email}"
       RESET_URL: "http://localhost/reset-password?token={token}"
-#    ports:
-#      - "8000:8000"
     restart: always
     networks:
       - hosteypic
@@ -48,11 +47,6 @@ services:
     image: hosteypic_client
     build:
       context: client/
-#    ports:
-#      - '8080:80'
-    #volumes:
-    #  - ./client/:/app
-    #command: sh -c "http-server dist"
     environment:
       VITE_BACKEND_URL: "http://localhost/api/"
       DEBUG: "True"
