@@ -1,12 +1,16 @@
-from typing import Union
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
-from fastapi import APIRouter, HTTPException, status, Response, Depends
+from fastapi import (
+    UploadFile, APIRouter, HTTPException, status, Response, Depends
+)
 
 import sqlalchemy as alch
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hosteypic_server.auth.manager import fastapi_users, RoleManager
 from hosteypic_server.database import get_async_session
+from hosteypic_server.image import ImageManager
 from hosteypic_server.users.dao import change_user, change_fields
 from hosteypic_server.users.models import User
 from hosteypic_server.users.schemas import (
@@ -54,6 +58,7 @@ async def get_user_by_id(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,  detail="ITEM_NOT_FOUND"
         )
+
     response = SUserReadSingle(**user_resp.__dict__)                # TODO: fix stupid code
     response.is_following = await user.is_following(user_resp)
     response.followers_count = await user_resp.followers_count()
@@ -91,7 +96,50 @@ async def edit_user_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.patch('/change-username/current', responses=responses)
+@router.get('/avatar/{user_id}', responses=responses)
+async def get_avatar_by_id(
+        user_id: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    query = alch.select(User).where(User.id == user_id)
+    user_resp = (await session.execute(query)).scalar()
+    if not user_resp:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,  detail="ITEM_NOT_FOUND"
+        )
+    
+    return {'avatar': user_resp.avatar}
+
+@router.post('/avatar', responses=responses)
+async def set_avatar(
+    image: UploadFile,
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_verified_user)
+):
+    if image.content_type not in ('image/jpeg', 'image/png'):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="INVALID_FILE_TYPE"
+        )
+    
+    current_loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor() as pool:
+        filename = await current_loop.run_in_executor(
+            pool, ImageManager.upload_avatar, image.file
+        )
+
+    if not filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="WRONG_IMAGE_PARAMS"
+        )
+    
+    user.avatar = filename
+    await session.commit()
+
+    return {'avatar': filename}
+
+@router.patch('/username/current', responses=responses)
 async def change_username(
         new_username: SUserUsernameEdit,
         session: AsyncSession = Depends(get_async_session),
@@ -110,7 +158,7 @@ async def change_username(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.patch('/change-username/{user_id}', responses=responses)
+@router.patch('/username/{user_id}', responses=responses)
 async def change_username_by_id(
         user_id: int,
         new_username: SUserUsernameEdit,
