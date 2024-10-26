@@ -1,9 +1,9 @@
-import sqlalchemy.orm as orm
-from sqlalchemy import ForeignKey
-
 from datetime import datetime, timezone
 from typing import Optional
-from sqlalchemy import String
+
+import sqlalchemy.orm as orm
+from sqlalchemy import ForeignKey, String, DateTime
+from sqlalchemy.sql import func
 
 from hosteypic_server.database import Base
 from hosteypic_server.users.models import User
@@ -13,8 +13,8 @@ class Post(Base):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     title: orm.Mapped[str] = orm.mapped_column(String(100))
     body: orm.Mapped[str] = orm.mapped_column(String(500))
-    timestamp: orm.Mapped[Optional[datetime]] = orm.mapped_column(
-        default=lambda: datetime.now(timezone.utc)
+    timestamp: orm.Mapped[datetime] = orm.mapped_column(
+        DateTime(timezone=True), default=func.now()
     )
     attachment: orm.Mapped[str] = orm.mapped_column(String(256))
     user_id: orm.Mapped[int] = orm.mapped_column(
