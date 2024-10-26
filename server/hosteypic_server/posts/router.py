@@ -10,6 +10,7 @@ from hosteypic_server.users.models import User
 from hosteypic_server.posts.models import Post
 from hosteypic_server.posts.schemas import SPostRead, SPostsRead, SPostCreate
 from hosteypic_server.posts.tools import get_validate_post
+from hosteypic_server.tools.exceptions import FileTypeException
 
 router = APIRouter(prefix='/posts', tags=['Posts'])
 
@@ -64,10 +65,7 @@ async def create_post(
         user: User = Depends(current_user)
 ):
     if attachment.content_type not in ('image/jpeg', 'image/png'):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="INVALID_FILE_TYPE"
-        )
+        raise FileTypeException()
     
     post_dict = post_data.model_dump()
     post_dict.update({'user_id': user.id, 'attachment': 'test.jpg'})
@@ -87,10 +85,7 @@ async def edit_post_by_id(
         user: User = Depends(current_user)
 ):
     if attachment and attachment.content_type not in ('image/jpeg', 'image/png'):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="INVALID_FILE_TYPE"
-        )
+        raise FileTypeException()
     
     # attachment upload|delete
     post: Post = await get_validate_post(session, user, post_id)

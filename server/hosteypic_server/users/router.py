@@ -1,9 +1,7 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
-from fastapi import (
-    UploadFile, APIRouter, HTTPException, status, Response, Depends
-)
+from fastapi import UploadFile, APIRouter, status, Response, Depends
 
 import sqlalchemy as alch
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,10 +14,14 @@ from hosteypic_server.users.models import User
 from hosteypic_server.users.schemas import (
     SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
 )
+from hosteypic_server.tools.exceptions import (
+    FileTypeException, FIleParamsException, AlreadyExistException, YourselfException,
+    BannedException
+)
 
 router = APIRouter(prefix='/users', tags=['Users'])
 
-responses ={
+responses = {
     404: {"description": "Item not found"},
     400: {"description": "Bad params or no access rights"},
     204: {"description": "Successful Response"}
@@ -103,10 +105,7 @@ async def set_avatar(
     user: User = Depends(current_verified_user)
 ):
     if image.content_type not in ('image/jpeg', 'image/png'):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="INVALID_FILE_TYPE"
-        )
+        raise FileTypeException()
     
     current_loop = asyncio.get_running_loop()
     with ThreadPoolExecutor() as pool:
@@ -115,10 +114,7 @@ async def set_avatar(
         )
 
     if not filename:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="WRONG_IMAGE_PARAMS"
-        )
+        raise FIleParamsException()
     
     user.avatar = filename
     await session.commit()
@@ -135,10 +131,7 @@ async def change_username(
     user_check = (await session.execute(query)).scalar()
 
     if user_check:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="USERNAME_ALREADY_TAKEN"
-        )
+        raise AlreadyExistException()
     
     user.username = new_username.username
     await session.commit()
@@ -156,10 +149,7 @@ async def change_username_by_id(
     user_check = (await session.execute(query)).scalar()
 
     if user_check:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="USERNAME_ALREADY_TAKEN"
-        )
+        raise AlreadyExistException()
     
     user_check.username = new_username.username
     await session.commit()
@@ -221,17 +211,11 @@ async def follow_by_id(
         user: User = Depends(current_verified_user)
 ):
     if user_id == user.id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="CAN_NOT_FOLLOW_YOURSELF"
-        )
+        raise YourselfException()
 
     follow_user: User = await get_object_by_id(user_id, session)
     if not follow_user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="CAN_NOT_FOLLOW_BANNED"
-        )
+        raise BannedException()
 
     await user.follow(follow_user)
     await session.commit()
@@ -245,10 +229,7 @@ async def unfollow_by_id(
         user: User = Depends(current_verified_user)
 ):
     if user_id == user.id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="CAN_NOT_UNFOLLOW_YOURSELF"
-        )
+        raise YourselfException()
 
     unfollow_user: User = await get_object_by_id(user_id, session)
     await user.unfollow(unfollow_user)
