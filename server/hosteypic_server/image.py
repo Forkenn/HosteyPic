@@ -45,7 +45,7 @@ class ImageManager():
     
     @classmethod
     def upload_avatar(cls, image_file: SpooledTemporaryFile) -> str | None:
-        image: Image.Image = Image.open(image_file)
+        image: Image.Image = Image.open(image_file).convert('RGB')
 
         if not cls._validate_image(image, 1.0):
             return None
