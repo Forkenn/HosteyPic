@@ -31,8 +31,9 @@ class ImageManager():
             return False
         
         return True
-        
-    def _images_resize(sizes: List[int], image: Image.Image) -> List[Image.Image]:
+    
+    @classmethod
+    def _images_resize(cls, sizes: List[int], image: Image.Image) -> List[Image.Image]:
         images: List[Image.Image] = []
         for size in sizes:
             wpercent = (size / float(image.size[0]))
@@ -80,5 +81,37 @@ class ImageManager():
         StorageManager.delete_file(filename, Path(f'avatars/original'))
 
     @classmethod
-    def upload_attachment(image: SpooledTemporaryFile):
-        pass
+    def upload_attachment(cls, image_file: SpooledTemporaryFile):
+        image: Image.Image = Image.open(image_file).convert('RGB')
+
+        if not cls._validate_image(image):
+            return None
+
+        filename: str = None
+        with SpooledTemporaryFile() as image_file:
+            image.save(image_file, format="JPEG")
+            image_file.seek(0)
+            filename = StorageManager.save_file(
+                image_file, Path('attachments/original'), strict_filetype='jpg'
+            )
+
+        if not filename:
+            return None
+
+        resized_images: List[Image.Image] = cls._images_resize(cls.ATTACHMENT_SIZES, image)
+        for resized_image in resized_images:
+            with SpooledTemporaryFile() as image_file:              # TODO: EDIT TYPE
+                resized_image.save(image_file, format="JPEG")
+                image_file.seek(0)
+                StorageManager.save_file(
+                    image_file, Path(f'attachments/{resized_image.size[0]}x'), strict_filename=filename
+                )
+
+        return filename
+
+    @classmethod
+    def delete_attachment(cls, filename):
+        for size in cls.ATTACHMENT_SIZES:
+            StorageManager.delete_file(filename, Path(f'attachments/{size}x'))
+
+        StorageManager.delete_file(filename, Path(f'attachments/original'))
