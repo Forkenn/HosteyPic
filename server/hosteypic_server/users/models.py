@@ -1,9 +1,9 @@
 import sqlalchemy as alch
 import sqlalchemy.orm as orm
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_users.db import SQLAlchemyBaseUserTable
 
 from hosteypic_server.database import Base, async_session_maker
+from hosteypic_server.tools.mixins import ModelMixin
 
 followers = alch.Table(
     'followers', Base.metadata,
@@ -13,7 +13,7 @@ followers = alch.Table(
         primary_key=True)
 )
 
-class User(SQLAlchemyBaseUserTable[int], Base):
+class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
     __tablename__ = 'users'
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     username: orm.Mapped[str] = orm.mapped_column(alch.String(15), index=True, unique=True)

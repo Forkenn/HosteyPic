@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from hosteypic_server.auth.manager import fastapi_users, RoleManager
 from hosteypic_server.database import get_async_session
 from hosteypic_server.image import ImageManager
-from hosteypic_server.users.dao import change_user, change_fields
+from hosteypic_server.users.tools import get_object_by_id
 from hosteypic_server.users.models import User
 from hosteypic_server.users.schemas import (
     SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
@@ -52,13 +52,7 @@ async def get_user_by_id(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user)
 ) -> SUserReadSingle:
-    query = alch.select(User).where(User.id == user_id)
-    user_resp = (await session.execute(query)).scalar()
-    if not user_resp:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,  detail="ITEM_NOT_FOUND"
-        )
-
+    user_resp: User = await get_object_by_id(user_id, session)
     response = SUserReadSingle(**user_resp.__dict__)                # TODO: fix stupid code
     response.is_following = await user.is_following(user_resp)
     response.followers_count = await user_resp.followers_count()
@@ -80,9 +74,11 @@ async def delete_user_by_id(
 @router.patch('/current', responses=responses)
 async def edit_current_user(
         data: SUserEdit,
+        session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_verified_user)
 ):
-    await change_user(user.id, data)
+    await user.update(**data.model_dump())
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -90,9 +86,13 @@ async def edit_current_user(
 async def edit_user_by_id(
         user_id: int,
         data: SUserEdit,
+        session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
-):
-    await change_user(user_id, data)
+):  
+    user_resp: User = await get_object_by_id(user_id, session)
+
+    await user_resp.update(**data.model_dump())
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -140,7 +140,8 @@ async def change_username(
             detail="USERNAME_ALREADY_TAKEN"
         )
     
-    await change_user(user.id, new_username)
+    user.username = new_username.username
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -160,43 +161,56 @@ async def change_username_by_id(
             detail="USERNAME_ALREADY_TAKEN"
         )
     
-    await change_user(user_id, new_username)
+    user_check.username = new_username.username
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.post('/{user_id}/ban', responses=responses)
 async def ban_user_by_id(
         user_id: int,
+        session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):
-    await change_fields(user_id, {'is_active': False})
+    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp.is_active = False
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.post('/{user_id}/unban', responses=responses)
 async def unban_user_by_id(
         user_id: int,
+        session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):
-    await change_fields(user_id, {'is_active': True})
+    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp.is_active = True
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.post('/{user_id}/moder', responses=responses)
 async def user_to_moderator_by_id(
         user_id: int,
+        session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):
-    await change_fields(user_id, {'is_moderator': True})
+    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp.is_moderator = True
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.post('/{user_id}/unmoder', responses=responses)
 async def moderator_to_user_by_id(
         user_id: int,
+        session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):
-    await change_fields(user_id, {'is_moderator': False})
+    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp.is_moderator = False
+    await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -212,16 +226,7 @@ async def follow_by_id(
             detail="CAN_NOT_FOLLOW_YOURSELF"
         )
 
-    follow_user: User = await session.scalar(
-        alch.select(User).where(User.id == user_id)
-    )
-
-    if follow_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="USER_NOT_FOUND"
-        )
-    
+    follow_user: User = await get_object_by_id(user_id, session)
     if not follow_user.is_active:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -245,16 +250,7 @@ async def unfollow_by_id(
             detail="CAN_NOT_UNFOLLOW_YOURSELF"
         )
 
-    unfollow_user: User = await session.scalar(
-        alch.select(User).where(User.id == user_id)
-    )
-
-    if unfollow_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="USER_NOT_FOUND"
-        )
-
+    unfollow_user: User = await get_object_by_id(user_id, session)
     await user.unfollow(unfollow_user)
     await session.commit()
 
@@ -266,36 +262,18 @@ async def check_following_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
-    follow_user: User = await session.scalar(
-        alch.select(User).where(User.id == user_id)
-    )
-
-    if follow_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="USER_NOT_FOUND"
-        )
-
-    response = await user.is_following(follow_user)
+    user_resp: User = await get_object_by_id(user_id, session)
+    response = await user.is_following(user_resp)
 
     return {'is_following': response}
 
 @router.get('/{user_id}/is-following', responses=responses)
-async def get_followed_count_by_id(
+async def get_following_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
-    check_user = await session.scalar(
-        alch.select(User).where(User.id == user_id)
-    )
-
-    if check_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="USER_NOT_FOUND"
-        )
-
+    check_user: User = await get_object_by_id(user_id, session)
     response = await check_user.followers_count()
 
     return {'followers': response}
