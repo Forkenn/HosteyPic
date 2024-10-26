@@ -20,7 +20,7 @@ class Config:
     CHANGE_EMAIL_URL = os.environ.get('CHANGE_EMAIL_URL') or 'http://localhost/change-email?token={token}&new_email={new_email}'
     RESET_URL = os.environ.get('RESET_URL') or 'http://localhost/reset-password?token={token}'
 
-    MIN_IMAGE_SIZE = (800, 800)
+    MIN_IMAGE_SIZE = (256, 256)
     MAX_IMAGE_SIZE = (4000, 4000)
     MIN_IMAGE_RATIO = 2
     MAX_IMAGE_RATIO = 0.45
