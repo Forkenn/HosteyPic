@@ -37,8 +37,8 @@ class SUserUsernameEdit(BaseModel):
     username: str = Field(
         default=...,
         min_length=5,
-        max_length=10,
-        description="Username from 5 to 10 symbols"
+        max_length=30,
+        description="Username from 5 to 30 symbols"
     )
 
 class SUserEmailEdit(BaseModel):

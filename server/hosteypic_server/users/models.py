@@ -16,7 +16,7 @@ followers = alch.Table(
 class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
     __tablename__ = 'users'
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-    username: orm.Mapped[str] = orm.mapped_column(alch.String(15), index=True, unique=True)
+    username: orm.Mapped[str] = orm.mapped_column(alch.String(31), index=True, unique=True)
     email: orm.Mapped[str] = orm.mapped_column(alch.String(120), index=True, unique=True)
     about_me: orm.Mapped[str] = orm.mapped_column(alch.String(140), nullable=True)
     avatar: orm.Mapped[str] = orm.mapped_column(alch.String(256), nullable=True)
