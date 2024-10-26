@@ -6,7 +6,7 @@ from .auth.manager import fastapi_users
 from .auth.schemas import SUserRead, SUserCreate
 from .auth.router import router as router_auth
 from .users.router import router as router_users
-from .test.router import router as router_test
+from .posts.router import router as router_posts
 
 app = FastAPI(title='HosteyPic', root_path='/api')
 
@@ -54,4 +54,4 @@ app.include_router(
 
 app.include_router(router_auth)
 app.include_router(router_users)
-app.include_router(router_test)
+app.include_router(router_posts)

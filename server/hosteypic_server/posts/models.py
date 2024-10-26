@@ -1,14 +1,14 @@
 from datetime import datetime, timezone
-from typing import Optional
 
 import sqlalchemy.orm as orm
 from sqlalchemy import ForeignKey, String, DateTime
 from sqlalchemy.sql import func
 
 from hosteypic_server.database import Base
+from hosteypic_server.tools.mixins import ModelMixin
 from hosteypic_server.users.models import User
 
-class Post(Base):
+class Post(Base, ModelMixin):
     __tablename__ = 'posts'
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     title: orm.Mapped[str] = orm.mapped_column(String(100))
@@ -25,5 +25,5 @@ class Post(Base):
 
     # tags: orm.WriteOnlyMapped[Tag] = orm.relationship(back_populates='post')
 
-    def __repr__(self):
+    async def __repr__(self):
         return f"Post with id:{self.id}"
