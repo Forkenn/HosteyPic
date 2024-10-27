@@ -1,5 +1,8 @@
 import sqlalchemy as alch
 import sqlalchemy.orm as orm
+
+from typing import List
+
 from fastapi_users.db import SQLAlchemyBaseUserTable
 
 from hosteypic_server.database import Base, async_session_maker
@@ -28,6 +31,16 @@ class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
 
     posts: orm.WriteOnlyMapped['Post'] = orm.relationship(back_populates='author')
 
+    # many-to-many relationship to Post, bypassing the Like class
+    liked: orm.Mapped[List["Post"]] = orm.relationship(
+        secondary="likes", back_populates="liked_by", viewonly=True
+    )
+
+    # association between Child -> Association -> Parent
+    post_associations: orm.Mapped[List["Like"]] = orm.relationship(
+        back_populates="user"
+    )
+
     following: orm.WriteOnlyMapped['User'] = orm.relationship(
         secondary=followers, primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
@@ -45,6 +58,13 @@ class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
     # is_active: orm.Mapped[bool] = orm.mapped_column(Boolean(), default=False)
     # is_superuser: orm.Mapped[bool] = orm.mapped_column(Boolean(), default=False)
 
+    async def is_following(self, user) -> bool:
+        query = self.following.select().where(User.id == user.id)
+        async with async_session_maker() as session:
+            flag: bool = await session.scalar(query) is not None
+
+        return flag
+
     async def follow(self, user) -> None:
         if not await self.is_following(user):
             self.following.add(user)
@@ -52,13 +72,6 @@ class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
     async def unfollow(self, user) -> None:
         if await self.is_following(user):
             self.following.remove(user)
-
-    async def is_following(self, user) -> bool:
-        query = self.following.select().where(User.id == user.id)
-        async with async_session_maker() as session:
-            flag: bool = await session.scalar(query) is not None
-
-        return flag
 
     async def followers_count(self) -> int:
         query = alch.select(alch.func.count()).select_from(
@@ -82,3 +95,4 @@ class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
         return f"User with id: {self.id}"
 
 from hosteypic_server.posts.models import Post
+from hosteypic_server.likes.models import Like

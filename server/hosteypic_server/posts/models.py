@@ -2,13 +2,15 @@ from datetime import datetime, timezone
 
 import sqlalchemy as alch
 import sqlalchemy.orm as orm
+
+from typing import List
+
 from sqlalchemy import ForeignKey, String, DateTime
 from sqlalchemy.sql import func
 
 from hosteypic_server.database import Base
 from hosteypic_server.mixins import ModelMixin
 from hosteypic_server.users.models import User
-from hosteypic_server.likes.models import likes
 
 class Post(Base, ModelMixin):
     __tablename__ = 'posts'
@@ -25,13 +27,25 @@ class Post(Base, ModelMixin):
 
     author: orm.Mapped['User'] = orm.relationship(back_populates='posts')
 
+    # many-to-many relationship to User, bypassing the Like class
+    liked_by: orm.Mapped[List["User"]] = orm.relationship(
+        secondary="likes", back_populates="liked", viewonly=True
+    )
+
+    # association between Post -> Like -> User
+    user_associations: orm.Mapped[List["Like"]] = orm.relationship(
+        back_populates="post"
+    )
+
     # tags: orm.WriteOnlyMapped[Tag] = orm.relationship(back_populates='post')
 
     async def __repr__(self):
         return f"Post with id:{self.id}"
+    
+from hosteypic_server.likes.models import Like
 
 Post.likes_count = orm.column_property(
-    alch.select(func.count(likes.c.post_id))
-    .where(Post.id == likes.c.post_id)
+    alch.select(func.count(Like.post_id))
+    .where(Post.id == Like.post_id)
     .scalar_subquery()
 )
