@@ -14,7 +14,7 @@ from hosteypic_server.users.models import User
 from hosteypic_server.users.schemas import (
     SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
 )
-from hosteypic_server.tools.exceptions import (
+from hosteypic_server.exceptions import (
     FileTypeException, FIleParamsException, AlreadyExistException, YourselfException,
     BannedException
 )

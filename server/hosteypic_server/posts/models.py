@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
 
+import sqlalchemy as alch
 import sqlalchemy.orm as orm
 from sqlalchemy import ForeignKey, String, DateTime
 from sqlalchemy.sql import func
 
 from hosteypic_server.database import Base
-from hosteypic_server.tools.mixins import ModelMixin
+from hosteypic_server.mixins import ModelMixin
 from hosteypic_server.users.models import User
 
 class Post(Base, ModelMixin):

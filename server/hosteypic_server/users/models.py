@@ -3,7 +3,7 @@ import sqlalchemy.orm as orm
 from fastapi_users.db import SQLAlchemyBaseUserTable
 
 from hosteypic_server.database import Base, async_session_maker
-from hosteypic_server.tools.mixins import ModelMixin
+from hosteypic_server.mixins import ModelMixin
 
 followers = alch.Table(
     'followers', Base.metadata,

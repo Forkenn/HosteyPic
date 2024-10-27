@@ -15,7 +15,7 @@ from hosteypic_server.users.models import User
 from hosteypic_server.posts.models import Post
 from hosteypic_server.posts.schemas import SPostRead, SPostsRead, SPostCreate
 from hosteypic_server.posts.tools import get_validate_post
-from hosteypic_server.tools.exceptions import FileTypeException, FIleParamsException
+from hosteypic_server.exceptions import FileTypeException, FIleParamsException
 
 router = APIRouter(prefix='/posts', tags=['Posts'])
 
