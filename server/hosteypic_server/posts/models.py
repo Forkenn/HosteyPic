@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 from hosteypic_server.database import Base
 from hosteypic_server.mixins import ModelMixin
 from hosteypic_server.users.models import User
+from hosteypic_server.likes.models import likes
 
 class Post(Base, ModelMixin):
     __tablename__ = 'posts'
@@ -28,3 +29,9 @@ class Post(Base, ModelMixin):
 
     async def __repr__(self):
         return f"Post with id:{self.id}"
+
+Post.likes_count = orm.column_property(
+    alch.select(func.count(likes.c.post_id))
+    .where(Post.id == likes.c.post_id)
+    .scalar_subquery()
+)
