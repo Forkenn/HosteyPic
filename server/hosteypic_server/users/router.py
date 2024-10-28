@@ -1,23 +1,28 @@
 import asyncio
+
+import sqlalchemy as alch
+
+from typing import List
 from concurrent.futures import ThreadPoolExecutor
 
 from fastapi import UploadFile, APIRouter, status, Response, Depends
-
-import sqlalchemy as alch
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hosteypic_server.auth.manager import fastapi_users, RoleManager
 from hosteypic_server.database import get_async_session
-from hosteypic_server.image import ImageManager
-from hosteypic_server.users.tools import get_object_by_id
-from hosteypic_server.users.models import User
-from hosteypic_server.users.schemas import (
-    SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
-)
 from hosteypic_server.exceptions import (
     FileTypeException, FIleParamsException, AlreadyExistException, YourselfException,
     BannedException
 )
+from hosteypic_server.image import ImageManager
+from hosteypic_server.users.tools import get_object_by_id
+from hosteypic_server.users.models import User
+#from hosteypic_server.users.models import Like
+from hosteypic_server.users.schemas import (
+    SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
+)
+#from hosteypic_server.posts.models import Post
 
 router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -27,6 +32,7 @@ responses = {
     204: {"description": "Successful Response"}
 }
 
+current_optional_user = fastapi_users.current_user(optional=True, active=True)
 current_user = fastapi_users.current_user(active=True)
 current_verified_user = fastapi_users.current_user(active=True, verified=True)
 current_moderator = RoleManager(is_moderator=True)
@@ -52,13 +58,16 @@ async def get_current_user(user: User = Depends(current_user)) -> SUserReadFull:
 async def get_user_by_id(
     user_id: int,
     session: AsyncSession = Depends(get_async_session),
-    user: User = Depends(current_user)
+    user: User = Depends(current_optional_user)
 ) -> SUserReadSingle:
     user_resp: User = await get_object_by_id(user_id, session)
     response = SUserReadSingle(**user_resp.__dict__)                # TODO: fix stupid code
-    response.is_following = await user.is_following(user_resp)
-    response.followers_count = await user_resp.followers_count()
+    response.is_following = None
 
+    if user:
+        response.is_following = await user.is_following(user_resp)
+
+    response.followers_count = await user_resp.followers_count()
     return response
 
 @router.delete('/{user_id}', responses=responses)
