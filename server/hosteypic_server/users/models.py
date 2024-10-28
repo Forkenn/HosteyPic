@@ -36,7 +36,7 @@ class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
         secondary="likes", back_populates="liked_by", viewonly=True
     )
 
-    # association between Child -> Association -> Parent
+    # association between User -> Like -> Post
     post_associations: orm.Mapped[List["Like"]] = orm.relationship(
         back_populates="user"
     )

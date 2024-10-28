@@ -13,24 +13,39 @@ from hosteypic_server.image import ImageManager
 from hosteypic_server.auth.manager import fastapi_users
 from hosteypic_server.users.models import User
 from hosteypic_server.posts.models import Post
-from hosteypic_server.posts.schemas import SPostRead, SPostsRead, SPostCreate
+from hosteypic_server.posts.schemas import SPostRead, SPostsPreviews, SPostPreview, SPostCreate
 from hosteypic_server.posts.tools import get_validate_post
-from hosteypic_server.exceptions import FileTypeException, FIleParamsException
+from hosteypic_server.exceptions import FileTypeException, FIleParamsException, NotFoundException
 
 router = APIRouter(prefix='/posts', tags=['Posts'])
 
+current_optional_user = fastapi_users.current_user(optional=True)
 current_user = fastapi_users.current_user(active=True, verified=True)
 
 @router.get('/')
 async def get_last_posts(
         start: int,
         end: int,
-        session: AsyncSession = Depends(get_async_session)
-) -> SPostsRead:
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(current_optional_user)
+) -> SPostsPreviews:
     query = alch.select(Post).order_by(Post.timestamp.asc()).slice(start, end)
     posts = (await session.execute(query)).scalars().all()
 
-    return {'count': len(posts), 'items': posts}
+    if not user:
+        return {'count': len(posts), 'items': posts}
+    
+    response_list = []
+    for post in posts:
+        response = SPostPreview(**post.__dict__)
+        response.is_deletable = await post.deletable_flag(user)
+        response.is_editable = await post.editable_flag(user)
+
+        response_list.append(response)
+
+    response_list.reverse()     #TODO: temporary solution
+
+    return {'count': len(response_list), 'items': response_list}
 
 @router.get('/followed')
 async def get_followed_posts(
@@ -38,7 +53,7 @@ async def get_followed_posts(
         end: int,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
-) -> SPostsRead:
+) -> SPostsPreviews:
     Author = orm.aliased(User)
     Follower = orm.aliased(User)
 
@@ -49,8 +64,18 @@ async def get_followed_posts(
     )).group_by(Post).order_by(Post.timestamp.desc()).slice(start, end)
 
     posts = (await session.execute(query)).scalars().all()
+    response_list = []
 
-    return {'count': len(posts), 'items': posts}
+    for post in posts:
+        response = SPostPreview(**post.__dict__)
+        response.is_deletable = await post.deletable_flag(user)
+        response.is_editable = await post.editable_flag(user)
+
+        response_list.append(response)
+
+    response_list.reverse()     #TODO: temporary solution
+
+    return {'count': len(response_list), 'items': response_list}
 
 @router.get('/{post_id}')
 async def get_post_by_id(
@@ -59,8 +84,17 @@ async def get_post_by_id(
         user: User = Depends(current_user)
 ) -> SPostRead:
     query = alch.select(Post).where(Post.id == post_id)
+    post = (await session.execute(query)).scalar()
 
-    return (await session.execute(query)).scalar()
+    if not post:
+        raise NotFoundException()
+    
+    response = SPostRead(**post.__dict__)
+    response.is_deletable = await post.deletable_flag(user)
+    response.is_editable = await post.editable_flag(user)
+    response.is_liked = await post.liked_flag(user)
+
+    return response
 
 @router.post('/')
 async def create_post(

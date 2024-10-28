@@ -8,7 +8,7 @@ from typing import List
 from sqlalchemy import ForeignKey, String, DateTime
 from sqlalchemy.sql import func
 
-from hosteypic_server.database import Base
+from hosteypic_server.database import Base, async_session_maker
 from hosteypic_server.mixins import ModelMixin
 from hosteypic_server.users.models import User
 
@@ -38,6 +38,29 @@ class Post(Base, ModelMixin):
     )
 
     # tags: orm.WriteOnlyMapped[Tag] = orm.relationship(back_populates='post')
+
+    async def liked_flag(self, user: User) -> bool:
+        query = alch.select(Like).where(
+            alch.and_(Like.post_id == self.id, Like.user_id == user.id)
+        )
+
+        async with async_session_maker() as session:
+            is_liked = (await session.execute(query)).scalar() is not None
+
+        return is_liked
+
+    async def deletable_flag(self, user: User) -> bool:
+        if self.user_id != user.id and not user.is_moderator:
+            return False
+        
+        return True
+        
+    async def editable_flag(self, user: User) -> bool:
+        if not (await self.deletable_flag(user)):
+            return False
+
+        delta = datetime.now(timezone.utc) - self.timestamp
+        return not delta.days
 
     async def __repr__(self):
         return f"Post with id:{self.id}"

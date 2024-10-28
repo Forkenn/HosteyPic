@@ -18,11 +18,12 @@ from hosteypic_server.exceptions import (
 from hosteypic_server.image import ImageManager
 from hosteypic_server.users.tools import get_object_by_id
 from hosteypic_server.users.models import User
-#from hosteypic_server.users.models import Like
+from hosteypic_server.likes.models import Like
 from hosteypic_server.users.schemas import (
     SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
 )
-#from hosteypic_server.posts.models import Post
+from hosteypic_server.posts.models import Post
+from hosteypic_server.posts.schemas import SPostsPreviews, SPostPreview
 
 router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -246,24 +247,56 @@ async def unfollow_by_id(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.get('/{user_id}/is-following', responses=responses)
-async def check_following_by_id(
+@router.get('/{user_id}/posts/liked')
+async def get_user_liked_posts(
         user_id: int,
+        start: int = 0,
+        end: int = 5,
         session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_user)
-):
+        user: User = Depends(current_optional_user)
+) -> SPostsPreviews:
+    query = alch.select(Like).where(
+        Like.user_id == user_id
+    ).slice(start, end).options(selectinload(Like.post))
+
+    likes_obj_list = (await session.execute(query)).scalars().all()
+    response_list = []
+    for like in likes_obj_list:
+        response = SPostPreview(**like.post.__dict__)
+        if user:
+            response.is_deletable = await like.post.deletable_flag(user)
+            response.is_editable = await like.post.editable_flag(user)
+
+        response_list.append(response)
+
+    response_list.reverse()     #TODO: temporary solution
+    return {'count': len(response_list), 'items': response_list}
+
+@router.get('/{user_id}/posts')
+async def get_user_posts_by_id(
+        user_id: int,
+        start: int = 0,
+        end: int = 5,
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(current_optional_user)
+) -> SPostsPreviews:
     user_resp: User = await get_object_by_id(user_id, session)
-    response = await user.is_following(user_resp)
+    query = user_resp.posts.select().order_by(
+        Post.timestamp.desc()
+    ).slice(start, end)
 
-    return {'is_following': response}
+    posts = (await session.execute(query)).scalars().all()
 
-@router.get('/{user_id}/is-following', responses=responses)
-async def get_following_by_id(
-        user_id: int,
-        session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_user)
-):
-    check_user: User = await get_object_by_id(user_id, session)
-    response = await check_user.followers_count()
+    if not user:
+        return {'count': len(posts), 'items': posts}
+    
+    response_list = []
+    for post in posts:
+        response = SPostPreview(**post.__dict__)
+        response.is_deletable = await post.deletable_flag(user)
+        response.is_editable = await post.editable_flag(user)
 
-    return {'followers': response}
+        response_list.append(response)
+
+    response_list.reverse()     #TODO: temporary solution
+    return {'count': len(response_list), 'items': response_list}
