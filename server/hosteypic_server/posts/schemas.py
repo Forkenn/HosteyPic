@@ -24,9 +24,9 @@ class SPostsPreviews(BaseModel):
 class SPostCreate(BaseModel):
     title: str = Field(
         default=...,
-        min_length=10,
+        min_length=4,
         max_length=100,
-        description="Title from 10 to 100 symbols"
+        description="Title from 4 to 100 symbols"
     )
     body: str = Field(
         default=...,
