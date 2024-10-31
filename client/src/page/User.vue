@@ -61,15 +61,14 @@
 
                     <div class="tabs-header">
 
-                        <button class="tabs-btn" @click="activeTab = 1, loadImg()"
-                            :class="{ active: activeTab === 1 }">Созданные
+                        <button class="tabs-btn" @click="activeTab = 1" :class="{ active: activeTab === 1 }">Созданные
                         </button>
-                        <button class="tabs-btn" @click="activeTab = 2, loadImg()"
+                        <button class="tabs-btn" @click="activeTab = 2"
                             :class="{ active: activeTab === 2 }">Понравившееся
                         </button>
 
-                        <button class="tabs-btn" @click="activeTab = 3" :class="{ active: activeTab === 3 }">Альбомы
-                        </button>
+                        <!-- <button class="tabs-btn" @click="activeTab = 3" :class="{ active: activeTab === 3 }">Альбомы
+                        </button> -->
                     </div>
                     <div class="tabs-body">
                         <div class="tabs-body-item" v-show="activeTab === 1">
@@ -83,18 +82,18 @@
                             <button v-else class="create" @click="goToUpload">
                                 Создать
                             </button>
-                            <Searchimg :res="result" />
+                            <Searchimg :res="result" :urlstr="'users/' + this.$route.params.id + '/posts'" />
 
                         </div>
                         <div class="tabs-body-item" v-show="activeTab === 2">
-                            <Searchimg :res="result" />
+                            <Searchimg :res="liked" :urlstr="'users/' + this.$route.params.id + '/posts/liked'" />
                         </div>
-                        <div class="tabs-body-item" v-show="activeTab === 3">
+                        <!-- <div class="tabs-body-item" v-show="activeTab === 3">
                             <div class="collections">
                                 <img src="../assets/img/svg/Newcollection.svg" alt="">
                             </div>
 
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -356,8 +355,9 @@ export default {
             userName: "Пользователь",
             countSubscribers: 0,
             result: [],
+            liked: [],
             countImg: Math.floor(Math.random() * 10),
-
+            user: {},
             github: "",
             gitlab: "",
             vk: "",
@@ -371,7 +371,7 @@ export default {
         axios({
             timeoute: 1000,
             method: 'get',
-            url: 'http://localhost/api/users/',
+            url: import.meta.env.VITE_BACKEND_URL + 'users/current',
 
             withCredentials: true,
             headers: {
@@ -379,18 +379,62 @@ export default {
             }
         })
             .then(response => {
-                if (response.status == 200) { this.authorised = true }
+                if (response.status == 200) {
+                    this.user = response.data
+                    this.authorised = true
+                }
                 // console.log(response);
             })
             .catch(error => {
                 // console.log(error.message);
             });
-        this.loadImg(this.countImg);
-        console.log()
+
         axios({
             timeoute: 1000,
             method: 'get',
-            url: (`http://localhost/api/users/${this.$route.params.id}`),
+            url: import.meta.env.VITE_BACKEND_URL + `users/${this.$route.params.id}/posts?start=0&end=20`,
+
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                this.result = response.data.items
+                // console.log(this.result);
+                // console.log(response.data)
+
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: import.meta.env.VITE_BACKEND_URL + `users/${this.$route.params.id}/posts/liked?start=0&end=20`,
+
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                this.liked = response.data.items
+                // console.log(this.result);
+                // console.log(response.data)
+
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: (import.meta.env.VITE_BACKEND_URL + `users/${this.$route.params.id}`),
             // params: {
             //     user_id: this.$route.params.id
             // },
@@ -420,7 +464,7 @@ export default {
                     })
                 }
             });
-        this.loadImg(this.countImg);
+        // this.loadImg(this.countImg);
     },
     methods: {
         authorised1(authorised) {

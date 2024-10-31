@@ -21,7 +21,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url(../assets/reset.css);
 
@@ -106,6 +106,8 @@
 
 <script>
 import Bottom from "../components/Bottom.vue"
+import axios from "axios";
+
 export default {
     components: { Bottom },
     data() {

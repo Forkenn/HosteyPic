@@ -36,7 +36,7 @@
 
 
 
-            <Searchimg :res="result" />
+            <Searchimg :res="result" :urlstr="'posts'" />
 
             <Bottom />
 
@@ -157,7 +157,7 @@ export default {
         axios({
             timeoute: 1000,
             method: 'get',
-            url: 'http://localhost/api/users/',
+            url: import.meta.env.VITE_BACKEND_URL + 'users/current',
 
             withCredentials: true,
             headers: {
@@ -166,13 +166,35 @@ export default {
         })
             .then(response => {
                 if (response.status == 200) { this.authorised = true }
-                console.log(response);
+                // console.log(response);
 
             })
             .catch(error => {
                 console.log(error.message);
             });
-        this.loadImg(30);
+
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: import.meta.env.VITE_BACKEND_URL + 'posts?start=0&end=20',
+
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                this.result = response.data.items
+                // console.log(this.result);
+                // console.log(response.data)
+
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+
+        // this.loadImg(30);
     },
     methods: {
         show_login(show) {

@@ -5,11 +5,15 @@
 
     <header class="header">
         <div class="wrapper__header">
-            <div class="header__logo" @click="goToAbout">
+            <div class="header__logo">
                 <p> <span class="color__white">Hostey</span>
                     <span class="color__black">PIC</span>
                 </p>
 
+            </div>
+            <div class="nav">
+                <p @click="goToHome">Главная</p>
+                <p>Подписки</p>
             </div>
             <div class="wrap_login">
                 <button class="login" v-on:click="show_login()">
@@ -43,6 +47,7 @@
     height: 80px;
     margin-left: auto;
     margin-right: auto;
+    cursor: default;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -135,6 +140,24 @@ button.sing_in:active {
 
 
 }
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    /* width: calc(100% - 190px - 80px - 463px); */
+}
+
+.nav p {
+    font-family: Balsamiq Sans;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 43.2px;
+    text-align: left;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-left: 30px;
+}
 </style>
 
 <script>
@@ -155,6 +178,9 @@ export default {
         show_registration() {
             this.$emit('show_ch', false)
             this.$emit('login', true)
+        },
+        goToHome() {
+            this.$router.push({ name: 'homeview' })
         },
     }
 }

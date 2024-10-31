@@ -1,21 +1,30 @@
 <template>
+
     <div class="page">
         <HeaderAuth />
-
+        <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.email" :edit="true" />
         <div class="wrap__edit">
 
             <div class="wrap__item">
                 <label>Фото</label>
                 <div class="icon_btn">
-                    <img src="../assets/img/svg/userIconmain.svg" alt="аватарка">
-                    <button class="btn_edit">Изменить</button>
+                    <!-- <input id="file" type="file" @change="onFileSelected" hidden accept="image/*,.png,.jpeg,.jpg" /> -->
+                    <div class="img__wrap">
+                        <img v-if="image.name" :src="image.url" alt="аватарка">
+                        <img v-else :src="`../../dist/uploads/avatars/original/${this.avatar}`" alt="аватарка">
+
+                    </div>
+                    <button @click="show_edit" class="btn_edit">Изменить</button>
+                </div>
+                <div v-if="show" class="editavatar">
+                    <AvatarUploader :avatar="avatar" />
                 </div>
             </div>
             <div class="wrap__item">
                 <label>Псевдоним</label>
                 <div class="inptbtn">
-                    <input type="text" placeholder="Псевдоним">
-                    <button class="btn_edit">Изменить</button>
+                    <input v-model="username" type="text" placeholder="Псевдоним">
+                    <button @click="SetUsername" class="btn_edit">Изменить</button>
                 </div>
             </div>
             <div class="wrap__item">
@@ -25,19 +34,20 @@
             <div class="wrap__item">
                 <label>Почта</label>
                 <div class="inptbtn">
-                    <input type="text" placeholder="user_mail@mail.ru">
-                    <button class="btn_edit">Изменить</button>
+                    <input type="text" v-model=email>
+                    <button class="btn_edit" @click="EditEmail(); ShowAnnouncement()">Изменить</button>
                 </div>
             </div>
             <div class="wrap__item">
                 <p>Пароль</p>
-                <label style="font-size: 24px;">Введите новый пароль</label>
-                <div class="inptbtn">
-                    <input type="password" placeholder="********">
-                    <button class="btn_edit">Изменить</button>
+                <label class="lbl_social" style="font-size: 24px;">Введите старый пароль</label>
+                <input v-model="password.first" type="password" placeholder="********">
+
+                <label style="font-size: 24px; margin-top: 10px;">Введите новый пароль</label>
+                <div class="inptbtn"><input v-model="password.second" type="password" placeholder="********">
+
+                    <button @click="EditPassword" class="btn_edit">Изменить</button>
                 </div>
-                <label style="font-size: 24px;">Подтвердите пароль</label>
-                <input type="password" placeholder="********">
             </div>
             <div class="wrap__item">
                 <p>Ссылки</p>
@@ -73,7 +83,7 @@
 
 .wrap__edit {
 
-    width: 540px;
+    width: 482px;
     /* height: 1145px; */
     margin: auto;
     margin-top: 60px;
@@ -92,14 +102,32 @@
     flex-direction: column;
 }
 
-.wrap__item img {
+/* .wrap__item img {
     height: 100px;
     width: 100px;
+} */
+
+.img__wrap {
+    /* min-width: 256px; */
+    width: 100px;
+    height: 100px;
+    /* overflow: hidden; */
+    position: relative;
 }
 
 .icon_btn {
     display: flex;
     align-items: center;
+}
+
+.icon_btn img {
+    border-radius: 50%;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .wrap__item {
@@ -184,6 +212,14 @@ input::placeholder {
     color: rgba(71, 67, 25, 0.7);
 }
 
+input:focus::placeholder {
+    color: transparent
+}
+
+textarea:focus::placeholder {
+    color: transparent
+}
+
 .inpt_social {
     width: 473px;
     height: 40px;
@@ -232,20 +268,44 @@ p {
     border-radius: 30px;
     border: 4px solid rgba(177, 167, 63, 1)
 }
+
+button:active {
+    transform: scale(0.9);
+}
+
+.editavatar {
+    height: 350px;
+    margin-top: 10px;
+}
 </style>
 
 <script>
 import HeaderAuth from '@/components/HeaderAuth.vue';
 import Bottom from '@/components/Bottom.vue';
+import AvatarUploader from '@/components/AvatarUploader.vue';
+import Announcement from '@/components/Announcement.vue';
 
 import axios from 'axios';
 
 
 export default {
-    components: { Bottom, HeaderAuth },
+    components: { Bottom, HeaderAuth, AvatarUploader, Announcement },
     data() {
         return {
-
+            showannouncement: false,
+            file: Object,
+            username: "",
+            avatar: "",
+            email: "",
+            image: {
+                name: "",
+                url: "",
+            },
+            password: {
+                first: "",
+                second: "",
+            },
+            show: false,
         }
 
     },
@@ -253,7 +313,7 @@ export default {
         axios({
             timeoute: 1000,
             method: 'get',
-            url: (`http://localhost/api/users/current`),
+            url: (import.meta.env.VITE_BACKEND_URL + `users/current`),
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json'
@@ -262,8 +322,15 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     console.log(response);
-                    this.userName = response.data.username
+                    this.username = response.data.username
                     this.userId = response.data.id
+                    if (response.data.avatar) {
+                        this.avatar = response.data.avatar
+                    }
+                    else {
+                        this.avatar = "0Z9fPWMyZfPi2VAUi9LvdRiAr9HhDM.jpg"
+                    }
+                    this.email = response.data.email
                 }
 
             })
@@ -283,6 +350,123 @@ export default {
             });
     },
     methods: {
+        show_edit() {
+            this.show = !this.show
+        },
+        onFileSelected(event) {
+            this.file = event.target.files[0];
+            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(this.file.type))
+                alert('неверный файл')
+            else {
+                const reader = new FileReader(); // Создаём новый экземпляр FileReader 
+                reader.onload = ({ target }) => {
+                    const img = new Image(); // Подготавливаем изображение для работы с ним 
+                    img.onload = () => {
+                        // img.width
+                        // alert(`Размер: ${this.file.size} байт, Ширина: ${img.width}px, Высота: ${img.height}px`); // И вот что у нас получилось! 
+                        if (img.width < 256) {
+                            console.log("ошибка")
+                        }
+                        else {
+                            this.image.name = this.file.name
+                            this.image.url = URL.createObjectURL(this.file)
+                        }
+                    };
+                    img.src = target.result;
+
+                };
+                reader.readAsDataURL(this.file); // Преобразуем файл в формат Base64 
+            }
+        },
+        SetUsername() {
+            console.log(this.file)
+            axios({
+                timeoute: 1000,
+                method: 'patch',
+                url: import.meta.env.VITE_BACKEND_URL + 'users/current/username',
+                data: { username: this.username },
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    window.location.reload()
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        // this.$router.push({
+                        //     name: 'codeerrorview',
+                        //     query: {
+                        //         ErrorNum: error.status
+                        //     }
+                        // })
+                    }
+                    console.log(error.message);
+                    // console.log(error.toJSON())
+                });
+        },
+        EditEmail() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: import.meta.env.VITE_BACKEND_URL + 'auth/request-change-email',
+                data: { new_email: this.email },
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    // window.location.reload()
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        // this.$router.push({
+                        //     name: 'codeerrorview',
+                        //     query: {
+                        //         ErrorNum: error.status
+                        //     }
+                        // })
+                    }
+                    console.log(error.message);
+                });
+        },
+        EditPassword() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: import.meta.env.VITE_BACKEND_URL + 'auth/change-password',
+                data: {
+                    old: this.password.first,
+                    new: this.password.second
+                },
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    // window.location.reload()
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        // this.$router.push({
+                        //     name: 'codeerrorview',
+                        //     query: {
+                        //         ErrorNum: error.status
+                        //     }
+                        // })
+                    }
+                    console.log(error.message);
+                });
+        },
+        ShowAnnouncement() {
+            this.showannouncement = !this.showannouncement
+        }
 
     }
 }

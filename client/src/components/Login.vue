@@ -4,15 +4,15 @@
         <div class="wrapper_login">
 
             <form>
-                <label>
+                <label v-if="login">
                     Имя пользователя:
                 </label>
-                <input v-model="Username" type="text" required>
+                <input v-if="login" maxlength="27" v-model="Username" type="text" required>
 
-                <label v-if="login">
+                <label>
                     Почта:
                 </label>
-                <input v-if="login" v-model="e_mail" type="text" required>
+                <input v-model="e_mail" type="text" required>
 
 
 
@@ -116,26 +116,27 @@ label {
     text-align: left;
 
     color: #474319;
-    padding-left: 53px;
+    margin-left: 10px;
     margin-bottom: 6px;
 }
 
 
 input {
     font-family: Balsamiq Sans;
-    font-size: 32px;
+    font-size: 16px;
     font-weight: 400;
-    line-height: 38.4px;
+    line-height: 19.2px;
     text-align: left;
 
-
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: none;
     width: 461px;
     height: 40px;
     gap: 0px;
     border-radius: 20px;
-    border: 2px 0px 0px 0px;
-    opacity: 0px;
-    /* margin-bottom: 12px; */
+    border: 2px solid rgba(177, 167, 63, 1)
+        /* margin-bottom: 12px; */
 
 }
 
@@ -291,14 +292,17 @@ export default {
             this.$emit('show_ch', true)
             this.$emit('authorised1', true)
 
-            axios.post('http://localhost/api/auth/register', {
+            axios.post(import.meta.env.VITE_BACKEND_URL + 'auth/register', {
                 username: this.Username,
                 email: this.e_mail,
                 password: this.Password
             })
                 .then(response => {
                     console.log(response);
-                    window.location.reload()
+
+                    localStorage.showver = 1
+                    this.fun_login()
+                    // window.location.reload()
                 })
                 .catch(error => {
                     this.$router.push({
@@ -312,16 +316,16 @@ export default {
 
         },
         fun_login() {
-            console.log(this.Username, this.Password)
+            // console.log(this.Username, this.Password)
 
             this.$emit('show_ch', true)
             this.$emit('authorised1', true)
             axios({
                 timeoute: 1000,
                 method: 'post',
-                url: 'http://localhost/api/login',
+                url: import.meta.env.VITE_BACKEND_URL + 'login',
                 data: {
-                    username: this.Username,
+                    username: this.e_mail,
                     password: this.Password
                 },
                 withCredentials: true,

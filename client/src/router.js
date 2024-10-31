@@ -6,6 +6,9 @@ import UserView from './page/User.vue'
 import CodeErrorView from './page/CodeError.vue'
 import UploadimgView from './page/Uploadimg.vue';
 import EditProfileView from './page/EditProfile.vue'
+import PicturePost from './page/PicturePost.vue'
+import ChangeEmail from './page/ChangeEmail.vue'
+import Verify from './page/Verify.vue'
 
 const routes = [
     { path: '/', component: HomeView, name: "homeview" },
@@ -14,7 +17,10 @@ const routes = [
     { path: '/error', component: CodeErrorView, name: "codeerrorview", props: true },
     { path: '/upload', component: UploadimgView, name: "uploadimgview", props: true },
     { path: '/edit', component: EditProfileView, name: "editprofileview", props: true },
-    { path: '/:pathMatch(.*)*', component: CodeErrorView }
+    { path: '/:pathMatch(.*)*', component: CodeErrorView },
+    { path: '/post/:id', component: PicturePost, name: "postview" },
+    { path: '/change-email', component: ChangeEmail, name: "changeemailview" },
+    { path: '/verify', component: Verify, name: "verifyview" },
 ]
 
 const router = createRouter({

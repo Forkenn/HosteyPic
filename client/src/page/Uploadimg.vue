@@ -3,7 +3,7 @@
         <HeaderAuth />
         <div class="wrap">
             <div class="drag__drop__wrap">
-                <input id="file" type="file" @change="onFileSelected" hidden />
+                <input id="file" type="file" @change="onFileSelected" hidden accept="image/*,.png,.jpeg,.jpg" />
                 <div v-if="!droped" onclick="file.click()" class="drag__drop" @dragover.prevent="onDragOver"
                     @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
 
@@ -23,16 +23,20 @@
 
                 </div>
                 <div v-else class="dropimg__wrap">
-                    <img class="drop_img" :src="image.url" alt="drop_img">
+                    <div class="img__wrap">
+                        <img class="drop_img" :src="image.url" :style="this.styleobj" alt="drop_img">
+                    </div>
                     <div style="display: flex; align-items: center; justify-content: center;">
-                        <button>Опубликовать</button>
+                        <button @click="UploadImg">Опубликовать</button>
                     </div>
                 </div>
                 <div :class="[{ input__wrap: droped }, { disable: !droped }]">
                     <label>Название</label>
-                    <textarea class="name" placeholder="Придумайте название" :readonly="!droped"></textarea>
+                    <textarea class="name" v-model="title" placeholder="Придумайте название"
+                        :readonly="!droped"></textarea>
                     <label>Описание</label>
-                    <textarea :readonly="!droped" class="description" placeholder="Подробно опишите"></textarea>
+                    <textarea :readonly="!droped" v-model="body" class="description"
+                        placeholder="Подробно опишите"></textarea>
                     <label>Альбом</label>
                     <textarea :readonly="!droped" placeholder="Выберите альбом"></textarea>
                     <label>Теги</label>
@@ -229,17 +233,20 @@ input:focus::placeholder {
     align-self: flex-start;
     margin-left: 80px;
     max-width: 420px;
-    max-height: 600px;
+    /* max-height: 600px; */
+    /* overflow: hidden; */
+}
+
+.img__wrap {
+    /* min-width: 256px; */
+    width: 420px;
+    height: 600px;
     overflow: hidden;
 }
 
 .drop_img {
-    width: 100%;
-    /* border-radius: 50px; */
-    /* border: 2px solid #B1A73F; */
-
-    /* height: 100%; */
-    object-fit: cover;
+    border-radius: 50px;
+    border: 4px solid rgba(177, 167, 63, 1)
 }
 
 button {
@@ -250,7 +257,7 @@ button {
     text-align: center;
     color: rgba(71, 67, 25, 1);
     padding: 6px 40px 6px 40px;
-    margin-top: 94px;
+    margin-top: 42px;
     /* margin-left: 65px; */
     width: 290px;
     height: 50px;
@@ -312,26 +319,34 @@ export default {
     components: { HeaderAuth, Bottom, AddTag },
     data() {
         return {
+            binary: "",
+            title: "",
+            body: "",
             input__wrap: 'input__wrap',
             disable: 'disable',
             taginput: "",
             tag: "",
             ArrayTag: [],
             droped: false,
-            files: Object,
+            file: Object,
             image: {
                 name: "",
                 url: "",
+            },
+            styleobj: {
+                width: "",
+                height: "",
+
             },
         }
 
     },
     mounted() {
+
         axios({
             timeoute: 1000,
             method: 'get',
-            url: 'http://localhost/api/users/',
-
+            url: import.meta.env.VITE_BACKEND_URL + 'users/current',
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json'
@@ -372,19 +387,112 @@ export default {
         onDrop(event) {
             event.preventDefault();
 
-            this.files = event.dataTransfer.files;
-            this.image.name = this.files[0].name
-            this.image.url = URL.createObjectURL(this.files[0])
-            this.droped = true
-            // console.log(this.files)
-            // console.log(this.image.url)
+            this.file = event.dataTransfer.files[0];
+            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(this.file.type))
+                alert('неверный файл')
+            else {
+
+                const reader = new FileReader(); // Создаём новый экземпляр FileReader 
+                reader.onload = ({ target }) => {
+                    const img = new Image(); // Подготавливаем изображение для работы с ним 
+                    img.onload = () => {
+                        // img.width
+                        // alert(`Размер: ${this.file.size} байт, Ширина: ${img.width}px, Высота: ${img.height}px`); // И вот что у нас получилось! 
+                        if (img.width < 256) {
+                            console.log("ошиька")
+                        }
+                        else {
+                            this.image.name = this.file.name
+                            this.image.url = URL.createObjectURL(this.file)
+                            this.droped = true
+                            if (img.height / img.width <= 1.5) {
+                                this.styleobj.width = '100%'
+                                this.styleobj.height = 'auto'
+                            } else {
+                                this.styleobj.height = '100%'
+                                this.styleobj.width = 'auto'
+                            }
+                            console.log(this.styleobj)
+                        }
+                    };
+                    img.src = target.result;
+
+                };
+                this.binary = reader.readAsArrayBuffer(this.file)
+                reader.readAsDataURL(this.file); // Преобразуем файл в формат Base64 
+            }
         },
         onFileSelected(event) {
-            this.files = event.target.files;
-            this.image.name = this.files[0].name
-            this.image.url = URL.createObjectURL(this.files[0])
-            this.droped = true
-        }
+            this.file = event.target.files[0];
+            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(this.file.type))
+                alert('неверный файл')
+            else {
+                const reader = new FileReader(); // Создаём новый экземпляр FileReader 
+                reader.onload = ({ target }) => {
+                    const img = new Image(); // Подготавливаем изображение для работы с ним 
+                    img.onload = () => {
+                        // img.width
+                        // alert(`Размер: ${this.file.size} байт, Ширина: ${img.width}px, Высота: ${img.height}px`); // И вот что у нас получилось! 
+                        if (img.width < 256) {
+                            console.log("ошиька")
+                        }
+                        else {
+                            this.image.name = this.file.name
+                            this.image.url = URL.createObjectURL(this.file)
+                            this.droped = true
+                            if (img.height / img.width <= 1.5) {
+                                this.styleobj.width = '100%'
+                                this.styleobj.height = 'auto'
+                            } else {
+                                this.styleobj.height = '100%'
+                                this.styleobj.width = 'auto'
+                            }
+                            console.log(this.styleobj)
+                        }
+                    };
+                    img.src = target.result;
+
+                };
+
+                reader.readAsDataURL(this.file); // Преобразуем файл в формат Base64 
+
+            }
+        },
+        UploadImg() {
+            // console.log(this.file)
+            // const reader = new FileReader();
+
+            // reader.onload = () => {
+            //     console.log(reader.result);
+            // };
+
+            // reader.readAsBinaryString(this.file);
+
+            // console.log(this.binary)
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: import.meta.env.VITE_BACKEND_URL + `posts?title=${this.title}&body=${this.body}`,
+                withCredentials: true,
+                data: { attachment: this.file },
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(response => {
+
+                    console.log(response)
+
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        // this.$router.push({
+                        //     name: 'homeview',
+                        // })
+                    }
+                    console.log(error.message);
+                });
+        },
     }
 }
 </script>

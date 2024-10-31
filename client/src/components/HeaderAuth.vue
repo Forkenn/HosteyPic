@@ -2,23 +2,34 @@
 
 
 
-
+    <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.email" :edit="true" />
     <header class="header">
 
         <div class="wrapper__header">
-            <div class="header__logo" @click="goToHome">
+            <div v-if="!is_verified" @click="verefi(); ShowAnnouncement()" class="alert">
+                <p>Подтвердите почту!</p>
+            </div>
+            <div v-if="countshow == '11'" class="confirme">
+                <p>Почта подтверждена!</p>
+            </div>
+            <div class="header__logo">
                 <p> <span class="color__white">Hostey</span>
                     <span class="color__black">PIC</span>
                 </p>
 
             </div>
+
+            <div class="nav">
+                <p @click="goToHome">Главная</p>
+                <p>Подписки</p>
+            </div>
             <div class="user__icon">
-                <img src="../assets/img/svg/userIconmain.svg" @click="show" id="icon" alt="">
+                <img :src="`../../dist/uploads/avatars/original/${this.avatar}`" @click="show" id="icon" alt="">
 
                 <div v-show="usershow" class="wrap" id="menu">
                     <div class="user__menu">
                         <div class="user__icon" @click="goToUser">
-                            <img src="../assets/img/svg/userIconmain.svg" alt="">
+                            <img :src="`../../dist/uploads/avatars/original/${this.avatar}`" alt="">
                         </div>
                         <p>{{ userName }}</p>
                         <button @click="goToEdit">Редактировать профиль</button>
@@ -27,6 +38,7 @@
                     </div>
                 </div>
             </div>
+
 
 
         </div>
@@ -41,7 +53,7 @@
 .header {
     position: sticky;
     z-index: 1000;
-    overflow: hidden;
+    overflow: visible;
     top: 0;
     background: #B1A73F;
     height: 80px;
@@ -56,6 +68,7 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 }
 
 
@@ -67,12 +80,13 @@
     font-weight: 400;
     line-height: 64px;
     color: white;
-
+    cursor: default;
     height: 80px;
     width: 190px;
     margin-left: 80px;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .color__white {
@@ -94,6 +108,7 @@
 }
 
 .user__icon img {
+    border-radius: 50%;
     max-width: 100%;
     max-height: 100%;
 }
@@ -167,26 +182,95 @@ button:active {
     background: rgba(193, 185, 101, 1);
 
 }
+
+.alert {
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+
+
+    position: absolute;
+    z-index: 2000;
+    width: 211px;
+    height: 29px;
+    top: 80px;
+    left: 80px;
+    gap: 0px;
+    border-radius: 0px 0px 16px 16px;
+    background: rgba(189, 38, 38, 1);
+
+
+}
+
+.confirme {
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+
+
+    position: absolute;
+    z-index: 2000;
+    width: 211px;
+    height: 29px;
+    top: 80px;
+    left: 80px;
+    gap: 0px;
+    border-radius: 0px 0px 16px 16px;
+    background: rgba(36, 211, 50, 1);
+
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    /* width: calc(100% - 190px - 80px - 463px); */
+}
+
+.nav p {
+    font-family: Balsamiq Sans;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 43.2px;
+    text-align: left;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-left: 30px;
+}
 </style>
 
 <script>
 
 import axios from 'axios';
-
+import Announcement from './Announcement.vue';
 
 
 export default {
     data() {
         return {
+            showannouncement: false,
             userName: "",
+            email: "",
             usershow: false,
             userId: 1,
+            avatar: "",
+            is_verified: Boolean,
+            countshow: localStorage.showver
         }
     },
     props: {
     },
-
+    components: {
+        Announcement
+    },
     mounted() {
+
         const menu = document.getElementById('menu');
         const icon = document.getElementById('icon');
         document.addEventListener('click', (e) => {
@@ -201,7 +285,7 @@ export default {
         axios({
             timeoute: 1000,
             method: 'get',
-            url: (`http://localhost/api/users/current`),
+            url: (import.meta.env.VITE_BACKEND_URL + `users/current`),
             // params: {
             //     user_id: this.$route.params.id
             // },
@@ -214,6 +298,26 @@ export default {
                 if (response.status == 200) {
                     this.userName = response.data.username
                     this.userId = response.data.id
+
+                    if (response.data.avatar) {
+                        this.avatar = response.data.avatar
+                    }
+                    else {
+                        this.avatar = "0Z9fPWMyZfPi2VAUi9LvdRiAr9HhDM.jpg"
+                    }
+
+                    this.is_verified = response.data.is_verified
+                    if (this.is_verified & this.$route.name == "homeview" & localStorage.showver.length < 3) {
+                        localStorage.showver += 1
+                        this.countshow = localStorage.showver
+                    }
+                    else if (this.is_verified & localStorage.showver.length == 2) {
+                        console.log(123)
+                        localStorage.showver += 1
+                        this.countshow = localStorage.showver
+                    }
+                    this.email = response.data.email
+
                 }
 
             })
@@ -228,6 +332,7 @@ export default {
                         })
                 }
             });
+
     },
     methods: {
         goToUser() {
@@ -249,7 +354,7 @@ export default {
             axios({
                 timeoute: 1000,
                 method: 'post',
-                url: (`http://localhost/api/logout`),
+                url: (import.meta.env.VITE_BACKEND_URL + `logout`),
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
@@ -269,6 +374,49 @@ export default {
                     }
                 });
 
+        },
+        verefi() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `auth/request-verify-token`),
+                withCredentials: true,
+                data: {
+                    email: this.email
+                },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        this.$router.push({
+                            name: 'codeerrorview',
+                            query: {
+                                ErrorNum: error.status
+                            }
+                        })
+                    }
+                });
+        },
+        ShowAnnouncement() {
+            this.showannouncement = !this.showannouncement
+        },
+    },
+
+    watch: {
+        countshow(newVal) {
+            if (newVal == '11') {
+
+                setTimeout(() => {
+                    localStorage.showver += 1
+                    console.log(123)
+                    this.countshow = localStorage.showver
+                }, 3000);
+            }
         }
     },
 

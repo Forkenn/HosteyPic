@@ -1,12 +1,13 @@
 <template>
 
-    <div class="wrapper__picture">
+    <div id="wrapper__picture" class="wrapper__picture" style="position: relative;">
         <div id="list" v-if="res.length > 0">
 
             <div class="column1" :style=style(1)>
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
-                    <img class="picture" v-bind:src="'../../dist/uploads/' + this.column1[(el - 1)].src1"
-                        :alt="'img ' + el">
+                    <img class="picture" v-if="el - 1 < this.column1.length"
+                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column1[(el - 1)].attachment"
+                        :alt="'img ' + this.column1[(el - 1)].id" @click="goToPicturePost(this.column1[(el - 1)].id)">
                     <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
                             style="background: none;"></button>
                     <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
@@ -20,77 +21,93 @@
             <div class="column2" :style=style(2) v-if="column2.length > 0 & this.k >= 2">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column2.length"
-                        v-bind:src="'../../dist/uploads/' + this.column2[(el - 1)].src1"
-                        :alt="'img ' + this.countImg * 2">
-                    <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
-                            style="background: none;"></button>
+                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column2[(el - 1)].attachment"
+                        :alt="'img ' + this.column2[(el - 1)].id" @click="goToPicturePost(this.column2[(el - 1)].id)">
+                    <div v-if="el - 1 < this.column2.length">
+                        <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
+                                style="background: none;"></button>
+                    </div>
                 </div>
             </div>
             <div class="column3" :style=style(3) v-if="column3.length > 0 & this.k >= 3">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column3.length"
-                        v-bind:src="'../../dist/uploads/' + this.column3[(el - 1)].src1"
-                        :alt="'img ' + this.countImg * 3">
-                    <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
-                            style="background: none;"></button>
+                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column3[(el - 1)].attachment"
+                        :alt="'img ' + this.column3[(el - 1)].id" @click="goToPicturePost(this.column3[(el - 1)].id)">
+                    <div v-if="el - 1 < this.column3.length">
+                        <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
+                                style="background: none;"></button>
+                    </div>
                 </div>
             </div>
             <div class="column4" :style=style(4) v-if="column4.length > 0 & this.k >= 4">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column4.length"
-                        v-bind:src="'../../dist/uploads/' + this.column4[(el - 1)].src1"
-                        :alt="'img ' + this.countImg * 4">
-                    <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
-                            style="background: none;"></button>
+                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column4[(el - 1)].attachment"
+                        :alt="'img ' + this.column4[(el - 1)].id" @click="goToPicturePost(this.column4[(el - 1)].id)">
+                    <div v-if="el - 1 < this.column4.length">
+                        <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
+                                style="background: none;"></button>
+                        <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
+                                style="background: none;"></button>
+                    </div>
                 </div>
             </div>
             <div class="column5" v-if="column5.length > 0 & this.k == 5">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img v-if="el - 1 < this.column5.length"
-                        v-bind:src="'../../dist/uploads/' + this.column5[(el - 1)].src1"
+                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column5[(el - 1)].src1"
                         :alt="'img ' + this.countImg * 5">
                 </div>
             </div>
 
+        </div>
+
+        <div v-if="verticalScroll > 200" class="go_top" :style="styletop()">
+            <button @click="goToUp">
+                <img src="../assets/img/svg/Arrowup.svg" alt="">
+            </button>
         </div>
     </div>
 </template>
 
 <script>
 
+import axios from 'axios';
 
 
+// const config = dotenv.config()
 export default {
     data() {
         return {
-
+            verticalScroll: 0,
             column1: [],
             column2: [],
             column3: [],
             column4: [],
             column5: [],
-
+            pushin: 0,
+            loadstop: true,
+            page: 1,
             countImg: 4,
             newmas: this.res,
-            k: 5,
+            k: 4,
             window: {
                 width: document.documentElement.clientWidth,
                 height: document.documentElement.clientHeight
@@ -101,7 +118,7 @@ export default {
     },
     props: {
         res: Object,
-
+        urlstr: String,
     },
 
     created() {
@@ -110,8 +127,8 @@ export default {
             if (this.countImg > this.res.length)
                 this.countImg = this.res.length
         }
-        window.addEventListener('resize', this.handleResize)
 
+        window.addEventListener('resize', this.handleResize)
         this.handleResize();
 
 
@@ -122,97 +139,199 @@ export default {
 
         },
         k: function (newVal, oldVal) {
+            this.page = 1
+            this.loadstop = true
             this.createColumn();
 
+        },
+        countImg() {
+
+
+            // if (this.countImg > 4 & this.loadstop & this.res.length == 20)
+            // console.log(`http://localhost/api/${this.urlstr}?start=${(this.page) * 20}&end=${(this.page + 1) * 20}`)
+            if (this.countImg > 4 & this.loadstop & this.res.length == 20)
+                axios({
+                    timeoute: 1000,
+                    method: 'get',
+                    url: import.meta.env.VITE_BACKEND_URL + `${this.urlstr}?start=${(this.page) * 20}&end=${(this.page + 1) * 20}`,
+
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        // this.result = response.data.items
+                        // console.log(this.result);
+                        this.columnadd(response.data.items)
+                        if (response.data.count == 20) {
+                            this.page++
+                        }
+                        else {
+                            this.loadstop = false
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error.message);
+                    });
         }
     },
     mounted() {
-
         window.addEventListener('scroll', () => {
             const documentReact = document.documentElement.getBoundingClientRect();
-
+            this.verticalScroll = window.scrollY;
+            // this.style()
             if (documentReact.bottom < document.documentElement.clientHeight + 300) {
-                if (this.countImg + 4 < this.res.length / this.k) {
+
+                if (this.countImg + 4 < this.column1.length) {
                     this.countImg += 4
                 }
                 else {
-                    this.countImg = Math.ceil(this.res.length / this.k)
+                    this.countImg = Math.ceil(this.column1.length)
                 }
             }
 
         })
-
+        setTimeout(() => {
+            this.handleResize()
+        }, 100);
     },
 
 
     methods: {
+        columnpush(column, start, end, res) {
+            for (let index = start; index < end; index++) {
 
+
+                column.push(res[index]);
+            }
+
+
+            // return column
+        },
+
+        columnadd(res) {
+
+            let count = Math.floor(res.length / this.k)
+            if (this.k > 0) {
+
+                this.columnpush(this.column1, 0, count, res)
+                if (this.k > 1) {
+                    this.columnpush(this.column2, count, 2 * count, res)
+                    if (this.k > 2) {
+                        this.columnpush(this.column3, 2 * count, 3 * count, res)
+                        if (this.k > 3) {
+                            this.columnpush(this.column4, 3 * count, 4 * count, res)
+                        }
+                    }
+                }
+            }
+
+            if (count * this.k != res.length) {
+
+                let ostatok = res.length - count * this.k
+                while (ostatok > 0) {
+                    if (this.pushin == 0 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column1, res.length - ostatok, res.length - ostatok + 1, res)
+                        ostatok--
+                        this.pushin++
+
+                    }
+                    else if (this.pushin == 1 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column2, res.length - ostatok, res.length - ostatok + 1, res)
+
+                        ostatok--
+                        this.pushin++
+
+                    }
+                    else if (this.pushin == 2 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column3, res.length - ostatok, res.length - ostatok + 1, res)
+
+                        ostatok--
+                        this.pushin++
+
+                    }
+                    else if (this.pushin == 3 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column4, res.length - ostatok, res.length - ostatok + 1, res)
+
+                        ostatok--
+                        this.pushin = 0
+
+                    }
+                    if (this.pushin + 1 > this.k) {
+                        this.pushin = 0
+                    }
+
+
+
+                }
+            }
+        },
         createColumn() {
             if (this.res)
-                if (this.res.length < 15) {
+                if (this.res.length < 16) {
                     this.countImg = Math.ceil(this.res.length / this.k)
                 }
-                else if (this.res.length > 15) {
+                else if (this.res.length >= 16) {
                     this.countImg = 4
                 }
+            let count = Math.floor(this.res.length / this.k)
 
             this.column1 = []
             this.column2 = []
             this.column3 = []
             this.column4 = []
-            this.column5 = []
 
+            if (this.k > 0) {
 
-            for (let index = 0; index < this.res.length; index++) {
-                if (index < (this.res.length - (this.res.length % this.k)) / this.k) {
-                    this.column1.push(this.res[index])
-
+                this.columnpush(this.column1, 0, count, this.res)
+                if (this.k > 1) {
+                    this.columnpush(this.column2, count, 2 * count, this.res)
+                    if (this.k > 2) {
+                        this.columnpush(this.column3, 2 * count, 3 * count, this.res)
+                        if (this.k > 3) {
+                            this.columnpush(this.column4, 3 * count, 4 * count, this.res)
+                        }
+                    }
                 }
-                if ((index >= (this.res.length - (this.res.length % this.k)) / this.k) & (index < ((this.res.length - (this.res.length % this.k)) / this.k) * 2)) {
-                    this.column2.push(this.res[index])
-
-                }
-                if ((index >= ((this.res.length - (this.res.length % this.k)) / this.k) * 2) & (index < ((this.res.length - (this.res.length % this.k)) / this.k) * 3)) {
-                    this.column3.push(this.res[index])
-
-                }
-                if ((index >= ((this.res.length - (this.res.length % this.k)) / this.k) * 3) & (index < ((this.res.length - (this.res.length % this.k)) / this.k) * 4)) {
-                    this.column4.push(this.res[index])
-                }
-                // if ((index >= ((this.res.length - (this.res.length % this.k)) / this.k) * 4) & (index < ((this.res.length - (this.res.length % this.k)) / this.k) * 5)) {
-                //     this.column5.push(this.res[index])
-                // }
             }
-            if (this.res.length % this.k != 0) {
-                for (let index = this.res.length - this.res.length % this.k; index < this.res.length; index++) {
-                    if (this.res.length > 5) {
-                        if (index % this.k == 0) {
-                            this.column1.push(this.res[index - 1])
-                        }
-                        if (index % this.k == 1 & this.k > 2) {
-                            this.column2.push(this.res[index - 1])
-                        }
-                        if (index % this.k == 2 & this.k > 3) {
-                            this.column3.push(this.res[index - 1])
-                        }
-                        if (index % this.k == 3 & this.k > 4) {
-                            this.column4.push(this.res[index - 1])
-                        }
+
+            if (count * this.k != this.res.length) {
+
+                let ostatok = this.res.length - count * this.k
+                while (ostatok > 0) {
+                    if (this.pushin == 0 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column1, this.res.length - ostatok, this.res.length - ostatok + 1, this.res)
+
+                        ostatok--
+                        this.pushin++
+
                     }
-                    else {
-                        if (index % this.k == 0) {
-                            this.column1.push(this.res[index])
-                        }
-                        if (index % this.k == 1 & this.k > 2) {
-                            this.column2.push(this.res[index])
-                        }
-                        if (index % this.k == 2 & this.k > 3) {
-                            this.column3.push(this.res[index])
-                        }
-                        if (index % this.k == 3 & this.k > 4) {
-                            this.column4.push(this.res[index])
-                        }
+                    else if (this.pushin == 1 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column2, this.res.length - ostatok, this.res.length - ostatok + 1, this.res)
+
+                        ostatok--
+                        this.pushin++
+
                     }
+                    else if (this.pushin == 2 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column3, this.res.length - ostatok, this.res.length - ostatok + 1, this.res)
+                        ostatok--
+                        this.pushin++
+
+                    }
+                    else if (this.pushin == 3 & this.pushin + 1 <= this.k) {
+                        this.columnpush(this.column4, this.res.length - ostatok, this.res.length - ostatok + 1, this.res)
+                        ostatok--
+                        this.pushin = 0
+
+                    }
+                    if (this.pushin + 1 > this.k) {
+                        this.pushin = 0
+                    }
+
+
+
                 }
             }
 
@@ -229,7 +348,9 @@ export default {
                 }
                 this.k--;
             }
-
+        },
+        goToPicturePost(id) {
+            this.$router.push({ name: 'postview', params: { id: id } })
         },
         style(key) {
 
@@ -240,6 +361,38 @@ export default {
             }
             return styleobj
         },
+        styletop() {
+            let styleobj = {
+            }
+            // var h = 5000
+            var h = document.getElementById('wrapper__picture');
+
+            if (h) {
+                if (this.urlstr == "posts")
+                    if (this.verticalScroll + 700 > h.clientHeight) {
+                        styleobj.bottom = '-70px'
+                    }
+                    else {
+                        styleobj.top = this.verticalScroll + 600 + 'px'
+                    }
+                else if (this.urlstr == 'users/' + this.$route.params.id + '/posts') {
+                    if (this.verticalScroll > h.clientHeight) {
+                        styleobj.bottom = '-70px'
+                    }
+                    else {
+                        styleobj.top = this.verticalScroll + 'px'
+                    }
+                }
+            }
+
+            return styleobj
+        },
+        goToUp() {
+            scroll({
+                top: 0,
+                behavior: "smooth"
+            });
+        },
 
 
     }
@@ -249,6 +402,10 @@ export default {
 </script>
 
 <style scoped>
+button {
+    cursor: pointer;
+}
+
 .wrapper__picture {
 
 
@@ -360,5 +517,21 @@ export default {
 .item:hover .button__hov {
     opacity: 1;
     /* transition: opacity .35s ease; */
+}
+
+.go_top {
+    position: absolute;
+    /* bottom: 20px; */
+    right: 0;
+    z-index: 500;
+
+}
+
+.go_top button {
+    width: 80px;
+    height: 80px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(177, 167, 63, 1);
 }
 </style>

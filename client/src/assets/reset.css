@@ -139,6 +139,9 @@ html {
     caret-color: transparent;
 }
 
+input {
+    caret-color: rgba(71, 67, 25, 1);
+}
 
 *,
 *::before,
