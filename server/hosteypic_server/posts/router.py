@@ -22,7 +22,7 @@ router = APIRouter(prefix='/posts', tags=['Posts'])
 current_optional_user = fastapi_users.current_user(optional=True)
 current_user = fastapi_users.current_user(active=True, verified=True)
 
-@router.get('/')
+@router.get('')
 async def get_last_posts(
         start: int,
         end: int,
@@ -96,7 +96,7 @@ async def get_post_by_id(
 
     return response
 
-@router.post('/')
+@router.post('')
 async def create_post(
         attachment: UploadFile,
         post_data: SPostCreate = Depends(),

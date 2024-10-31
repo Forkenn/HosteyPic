@@ -39,7 +39,7 @@ current_verified_user = fastapi_users.current_user(active=True, verified=True)
 current_moderator = RoleManager(is_moderator=True)
 current_superuser = fastapi_users.current_user(superuser=True)
 
-@router.get('/')
+@router.get('')
 async def get_users(
         start: int = 0,
         end: int = 5,
