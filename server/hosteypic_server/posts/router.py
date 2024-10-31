@@ -81,7 +81,7 @@ async def get_followed_posts(
 async def get_post_by_id(
         post_id: int,
         session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_user)
+        user: User = Depends(current_optional_user)
 ) -> SPostRead:
     query = alch.select(Post).where(Post.id == post_id)
     post = (await session.execute(query)).scalar()
