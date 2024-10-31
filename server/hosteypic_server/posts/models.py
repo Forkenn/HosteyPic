@@ -62,7 +62,7 @@ class Post(Base, ModelMixin):
         delta = datetime.now(timezone.utc) - self.timestamp
         return not delta.days
 
-    async def __repr__(self):
+    def __repr__(self):
         return f"Post with id:{self.id}"
     
 from hosteypic_server.likes.models import Like
