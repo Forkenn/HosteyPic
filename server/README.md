@@ -21,3 +21,8 @@ alembic downgrade -<1, 2, ...> - откат миграций
 # Поднятие базы
 
 Docker compose, смотреть scripts
+
+# Доп. SQL-запросы
+
+ALTER SEQUENCE table_id_seq RESTART WITH 1;
+UPDATE table SET id=nextval('table_id_seq');
