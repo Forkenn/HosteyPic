@@ -11,6 +11,7 @@ from sqlalchemy.sql import func
 from hosteypic_server.database import Base, async_session_maker
 from hosteypic_server.mixins import ModelMixin
 from hosteypic_server.users.models import User
+from hosteypic_server.tags.models import Tag, tags_posts
 
 class Post(Base, ModelMixin):
     __tablename__ = 'posts'
@@ -37,7 +38,7 @@ class Post(Base, ModelMixin):
         back_populates="post"
     )
 
-    # tags: orm.WriteOnlyMapped[Tag] = orm.relationship(back_populates='post')
+    tags: orm.Mapped[List["Tag"]] = orm.relationship(secondary=tags_posts)
 
     async def liked_flag(self, user: User) -> bool:
         query = alch.select(Like).where(
