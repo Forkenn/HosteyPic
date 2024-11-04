@@ -35,3 +35,6 @@ class YourselfException(BadRequestException):
 
 class BannedException(BadRequestException):
     detail = 'REQUESTED_OBJECT_BANNED'
+
+class MaxObjectsException(BadRequestException):
+    detail = 'MAX_OBJECTS_COUNT_IN_DB'
