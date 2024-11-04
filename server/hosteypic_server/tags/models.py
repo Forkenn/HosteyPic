@@ -5,8 +5,10 @@ from hosteypic_server.database import Base, async_session_maker
 
 tags_posts = alch.Table(
     'tags_posts', Base.metadata,
-    alch.Column('post_id', alch.Integer, alch.ForeignKey('posts.id', ondelete='CASCADE')),
-    alch.Column('tag_id', alch.Integer, alch.ForeignKey('tags.id', ondelete='CASCADE'))
+    alch.Column('post_id', alch.Integer, alch.ForeignKey('posts.id', ondelete='CASCADE'),
+        primary_key=True),
+    alch.Column('tag_id', alch.Integer, alch.ForeignKey('tags.id', ondelete='CASCADE'),
+        primary_key=True)
 )
 
 class Tag(Base):

@@ -7,11 +7,13 @@ from concurrent.futures import ThreadPoolExecutor
 
 from fastapi import APIRouter, UploadFile, status, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from hosteypic_server.database import get_async_session
 from hosteypic_server.image import ImageManager
 from hosteypic_server.auth.manager import fastapi_users
 from hosteypic_server.users.models import User
+from hosteypic_server.tags.models import Tag
 from hosteypic_server.posts.models import Post
 from hosteypic_server.posts.schemas import SPostRead, SPostsPreviews, SPostPreview, SPostCreate
 from hosteypic_server.posts.tools import get_validate_post
@@ -83,7 +85,11 @@ async def get_post_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_optional_user)
 ) -> SPostRead:
-    query = alch.select(Post).where(Post.id == post_id)
+    query = (
+        alch.select(Post)
+        .where(Post.id == post_id)
+        .options(selectinload(Post.tags))
+    )
     post = (await session.execute(query)).scalar()
 
     if not post:
@@ -93,6 +99,7 @@ async def get_post_by_id(
     response.is_deletable = await post.deletable_flag(user)
     response.is_editable = await post.editable_flag(user)
     response.is_liked = await post.liked_flag(user)
+    response.tags_list = post.tags
 
     return response
 
@@ -117,8 +124,13 @@ async def create_post(
     
     post_dict = post_data.model_dump()
     post_dict.update({'user_id': user.id, 'attachment': filename})
+    query = alch.select(Tag).where(Tag.id.in_(post_dict.pop("tags_list")))
+    tags_list = (await session.execute(query)).scalars().all()
 
     new_post = Post(**post_dict)
+    for tag in tags_list:
+        new_post.tags.append(tag)
+
     session.add(new_post)
     await session.commit()
 
@@ -138,9 +150,12 @@ async def edit_post_by_id(
         if attachment.content_type not in ('image/jpeg', 'image/png'):
             raise FileTypeException()
         
-        ImageManager.delete_attachment(post.attachment)
         current_loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
+            await current_loop.run_in_executor(
+                pool, ImageManager.delete_attachment, post.attachment
+            )
+    
             filename = await current_loop.run_in_executor(
                 pool, ImageManager.upload_attachment, attachment.file
             )

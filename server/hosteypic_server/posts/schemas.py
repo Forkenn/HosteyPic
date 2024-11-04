@@ -1,7 +1,12 @@
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
+from fastapi import Query
 from pydantic import BaseModel, Field
+
+class STagRead(BaseModel):
+    id: int
+    name: str
 
 class SPostPreview(BaseModel):
     id: int
@@ -16,6 +21,7 @@ class SPostRead(SPostPreview):
     title: str
     body: str
     timestamp: datetime
+    tags_list: List[STagRead] = None
 
 class SPostsPreviews(BaseModel):
     count: int
@@ -33,4 +39,13 @@ class SPostCreate(BaseModel):
         min_length=0,
         max_length=500,
         description="Body from 0 to 500 symbols"
+    )
+    tags_list: Optional[List[int]] = Field(
+        Query(
+            default_factory=list,
+            min_items=0,
+            max_items=10,
+            alias='tags',
+            description="Tags ids. Max 10 elements"
+        )
     )
