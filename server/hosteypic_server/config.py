@@ -26,3 +26,5 @@ class Config:
     MAX_IMAGE_RATIO = 2
     AVATAR_SIZES = [52, 128, 200, 256]
     ATTACHMENT_SIZES = [256, 362, 420, 512]
+
+    MAX_TAGS_COUNT = 100

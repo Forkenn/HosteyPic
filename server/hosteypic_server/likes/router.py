@@ -13,6 +13,7 @@ from hosteypic_server.likes.models import Like
 router = APIRouter(prefix='/likes', tags=['Likes'])
 
 current_user = fastapi_users.current_user(active=True, verified=True)
+
 @router.post('/posts/{post_id}')
 async def set_like_by_id(
         post_id: int,
