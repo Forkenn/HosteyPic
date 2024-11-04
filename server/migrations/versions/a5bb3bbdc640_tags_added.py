@@ -1,8 +1,8 @@
 """Tags added
 
-Revision ID: 4dff70d7c610
+Revision ID: a5bb3bbdc640
 Revises: 1048da499a7e
-Create Date: 2024-11-04 18:22:07.408822
+Create Date: 2024-11-04 19:48:09.152401
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '4dff70d7c610'
+revision: str = 'a5bb3bbdc640'
 down_revision: Union[str, None] = '1048da499a7e'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,13 +23,15 @@ def upgrade() -> None:
     op.create_table('tags',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('tags_posts',
-    sa.Column('post_id', sa.Integer(), nullable=True),
-    sa.Column('tag_id', sa.Integer(), nullable=True),
+    sa.Column('post_id', sa.Integer(), nullable=False),
+    sa.Column('tag_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['post_id'], ['posts.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['tag_id'], ['tags.id'], ondelete='CASCADE')
+    sa.ForeignKeyConstraint(['tag_id'], ['tags.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('post_id', 'tag_id')
     )
     # ### end Alembic commands ###
 
