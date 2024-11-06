@@ -194,7 +194,7 @@ async def unban_user_by_id(
 async def user_to_moderator_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_moderator)
+        user: User = Depends(current_superuser)
 ):
     user_resp: User = await get_object_by_id(user_id, session)
     user_resp.is_moderator = True
@@ -206,7 +206,7 @@ async def user_to_moderator_by_id(
 async def moderator_to_user_by_id(
         user_id: int,
         session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_moderator)
+        user: User = Depends(current_superuser)
 ):
     user_resp: User = await get_object_by_id(user_id, session)
     user_resp.is_moderator = False
