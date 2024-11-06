@@ -20,6 +20,7 @@ class SUserReadSingle(SUserRead):
     followers_count: Optional[int] = 0
 
 class SUserReadFull(SUserRead):
+    is_superuser: bool
     email: str
 
 class SMultiUserRead(BaseModel):
