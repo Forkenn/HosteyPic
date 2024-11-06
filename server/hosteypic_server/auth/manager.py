@@ -1,7 +1,9 @@
 from typing import Optional
 
 from fastapi import Depends, Request, status, HTTPException
-from fastapi_users import FastAPIUsers, BaseUserManager, IntegerIDMixin, models
+from fastapi_users import (
+    FastAPIUsers, BaseUserManager, IntegerIDMixin, models, schemas
+)
 from fastapi_users.jwt import generate_jwt
 from fastapi_users.db import SQLAlchemyUserDatabase
 
@@ -15,6 +17,21 @@ from hosteypic_server.users.models import User
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = Config.SECRET_TOKEN
     verification_token_secret = Config.SECRET_TOKEN
+
+    async def create(
+            self,
+            user_create: schemas.UC,
+            safe: bool = True,
+            request: Optional[Request] = None
+    ) -> models.UP:    # Ticket 43
+        existing_user = await self.user_db.get_by_username(user_create.username)
+        if existing_user is not None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="REGISTER_USERNAME_ALREADY_TAKEN",
+            )
+
+        return await super().create(user_create, safe, request)
 
     async def request_change_email(
             self, user: models.UP, new_email: str, request: Optional[Request] = None

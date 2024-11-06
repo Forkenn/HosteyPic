@@ -1,5 +1,10 @@
+from typing import Optional
+
 from fastapi import Depends
+from fastapi_users import models
 from fastapi_users.db import SQLAlchemyUserDatabase
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hosteypic_server.config import Config
@@ -7,8 +12,15 @@ from hosteypic_server.database import get_async_session
 from hosteypic_server.email import send_email
 from hosteypic_server.users.models import User
 
+class HosteypicUserDatabase(SQLAlchemyUserDatabase):    # Ticket 43
+    async def get_by_username(self, username: str) -> Optional[models.UP]:
+        statement = select(self.user_table).where(
+            func.lower(self.user_table.username) == func.lower(username)
+        )
+        return await self._get_user(statement)
+
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(session, User)
+    yield HosteypicUserDatabase(session, User)
 
 async def send_email_change_email(token: str, email: str, new_email: str):
     change_link = Config.CHANGE_EMAIL_URL.format(token=token, new_email=new_email)
