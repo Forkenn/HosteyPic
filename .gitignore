@@ -6,3 +6,4 @@ postgresql
 pgadmin
 uploads
 .python-version
+.env
