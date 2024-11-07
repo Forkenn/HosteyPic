@@ -9,6 +9,7 @@ import EditProfileView from './page/EditProfile.vue'
 import PicturePost from './page/PicturePost.vue'
 import ChangeEmail from './page/ChangeEmail.vue'
 import Verify from './page/Verify.vue'
+import Adminpanel from './page/Adminpanel.vue'
 
 const routes = [
     { path: '/', component: HomeView, name: "homeview" },
@@ -21,6 +22,7 @@ const routes = [
     { path: '/post/:id', component: PicturePost, name: "postview" },
     { path: '/change-email', component: ChangeEmail, name: "changeemailview" },
     { path: '/verify', component: Verify, name: "verifyview" },
+    { path: '/admin', component: Adminpanel, name: "adminpanelview" },
 ]
 
 const router = createRouter({

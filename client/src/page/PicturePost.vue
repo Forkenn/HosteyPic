@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="user_info">
-                        <img @click="goToUser" :src="'../../dist/uploads/attachments/original/' + user.avatar" alt="">
+                        <img @click="goToUser" :src="'../../dist/uploads/avatars/original/' + user.avatar" alt="">
                         <div class="user_text">
                             <p>{{ user.username }}</p>
                             <div class="sub">

@@ -150,10 +150,11 @@ button.sing_in:active {
 
 .nav p {
     font-family: Balsamiq Sans;
-    font-size: 36px;
+    font-size: 24px;
     font-weight: 400;
-    line-height: 43.2px;
+    line-height: 28.8px;
     text-align: left;
+
     color: #FFFFFF;
     cursor: pointer;
     margin-left: 30px;

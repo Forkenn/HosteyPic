@@ -2,11 +2,11 @@
 
 
 
-    <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.email" :edit="true" />
+    <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.user.email" :edit="true" />
     <header class="header">
 
         <div class="wrapper__header">
-            <div v-if="!is_verified" @click="verefi(); ShowAnnouncement()" class="alert">
+            <div v-if="!user.is_verified" @click="verefi(); ShowAnnouncement()" class="alert">
                 <p>Подтвердите почту!</p>
             </div>
             <div v-if="countshow == '11'" class="confirme">
@@ -24,17 +24,19 @@
                 <p>Подписки</p>
             </div>
             <div class="user__icon">
-                <img :src="`../../dist/uploads/avatars/original/${this.avatar}`" @click="show" id="icon" alt="">
+                <img :src="`../../dist/uploads/avatars/original/${this.user.avatar}`" @click="show" id="icon" alt="">
 
                 <div v-show="usershow" class="wrap" id="menu">
                     <div class="user__menu">
                         <div class="user__icon" @click="goToUser">
-                            <img :src="`../../dist/uploads/avatars/original/${this.avatar}`" alt="">
+                            <img :src="`../../dist/uploads/avatars/original/${this.user.avatar}`" alt="">
                         </div>
-                        <p>{{ userName }}</p>
+                        <p>{{ user.username }}</p>
                         <button @click="goToEdit">Редактировать профиль</button>
+                        <button @click="goToUpload">Создать</button>
+                        <button v-show="user.is_moderator" @click="goToAdm">Управление</button>
                         <button>О нас</button>
-                        <button @click="exit()">Выход</button>
+                        <button style="margin-bottom: 20px;" @click="exit()">Выход</button>
                     </div>
                 </div>
             </div>
@@ -49,6 +51,10 @@
 
 <style scoped>
 @import url(../assets/reset.css);
+
+button {
+    cursor: pointer;
+}
 
 .header {
     position: sticky;
@@ -118,7 +124,7 @@
 .wrap {
     position: absolute;
     top: 65px;
-    right: 250px;
+    right: 211px;
 }
 
 .user__menu {
@@ -129,11 +135,11 @@
     /* right: 0px; */
     /* right: 50vh; */
     /* margin-left: 200px; */
-    height: 250px;
-    width: 250px;
+    /* height: 330px; */
+    width: 211px;
     /* top: 80px;
     right: 80px; */
-    border-radius: 20px;
+    border-radius: 0 0 20px 20px;
     background: rgba(239, 237, 217, 1);
 
 }
@@ -159,7 +165,7 @@
 }
 
 .user__menu button {
-    width: 250px;
+    width: 211px;
     height: 40px;
     font-family: Balsamiq Sans;
     font-size: 14px;
@@ -222,7 +228,8 @@ button:active {
     left: 80px;
     gap: 0px;
     border-radius: 0px 0px 16px 16px;
-    background: rgba(36, 211, 50, 1);
+    background: rgba(22, 127, 30, 1);
+
 
 }
 
@@ -235,10 +242,11 @@ button:active {
 
 .nav p {
     font-family: Balsamiq Sans;
-    font-size: 36px;
+    font-size: 24px;
     font-weight: 400;
-    line-height: 43.2px;
+    line-height: 28.8px;
     text-align: left;
+
     color: #FFFFFF;
     cursor: pointer;
     margin-left: 30px;
@@ -261,7 +269,8 @@ export default {
             userId: 1,
             avatar: "",
             is_verified: Boolean,
-            countshow: localStorage.showver
+            countshow: localStorage.showver,
+            user: {},
         }
     },
     props: {
@@ -296,27 +305,25 @@ export default {
         })
             .then(response => {
                 if (response.status == 200) {
-                    this.userName = response.data.username
-                    this.userId = response.data.id
+                    this.user = response.data
 
-                    if (response.data.avatar) {
-                        this.avatar = response.data.avatar
+                    if (this.user.avatar) {
+                        this.user.avatar.avatar = response.data.avatar
                     }
                     else {
-                        this.avatar = "0Z9fPWMyZfPi2VAUi9LvdRiAr9HhDM.jpg"
+                        this.user.avatar = "0Z9fPWMyZfPi2VAUi9LvdRiAr9HhDM.jpg"
                     }
 
-                    this.is_verified = response.data.is_verified
-                    if (this.is_verified & this.$route.name == "homeview" & localStorage.showver.length < 3) {
+                    if (this.user.is_verified & this.$route.name == "homeview" & localStorage.showver.length < 3) {
                         localStorage.showver += 1
                         this.countshow = localStorage.showver
                     }
-                    else if (this.is_verified & localStorage.showver.length == 2) {
+                    else if (this.user.is_verified & localStorage.showver.length == 2) {
                         console.log(123)
                         localStorage.showver += 1
                         this.countshow = localStorage.showver
                     }
-                    this.email = response.data.email
+                    // this.email = response.data.email
 
                 }
 
@@ -343,6 +350,12 @@ export default {
         },
         goToEdit() {
             this.$router.push({ name: 'editprofileview' })
+        },
+        goToUpload() {
+            this.$router.push({ name: 'uploadimgview' })
+        },
+        goToAdm() {
+            this.$router.push({ name: 'adminpanelview' })
         },
         show() {
             this.usershow = !this.usershow

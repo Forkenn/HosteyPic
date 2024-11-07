@@ -8,25 +8,58 @@
                     Имя пользователя:
                 </label>
                 <input v-if="login" maxlength="27" v-model="Username" type="text" required>
-
+                <div style="position: relative;">
+                    <label class="error_inp" v-if="login & error.includes('REGISTER_USERNAME_ALREADY_TAKEN')">
+                        Никнейм уже занят
+                    </label>
+                    <label class="error_inp" v-if="login & error.includes('username')">
+                        Неверный формат ника
+                    </label>
+                </div>
                 <label>
                     Почта:
                 </label>
                 <input v-model="e_mail" type="text" required>
-
+                <div style="position: relative;">
+                    <label class="error_inp" v-if="login & error.includes('REGISTER_USER_ALREADY_EXISTS')">
+                        Почта уже занята
+                    </label>
+                    <label class="error_inp" v-if="login & error.includes('email')">
+                        Неверный формат почты
+                    </label>
+                </div>
 
 
                 <label>
                     Пароль:
                 </label>
                 <input v-model="Password" type="password" required>
+                <div style="position: relative;">
+                    <label class="error_inp" v-if="login & !valid_pas">
+                        Пароль слишком легкий
+                    </label>
+                </div>
+
                 <label v-if="login">
-                    Повторите пароль:
+                    Повторите пароль
                 </label>
-                <input v-if="login" v-model="confirm_password" type="password" required>
+
+                <input id="conf_pas" v-show="login" v-model="confirm_password" type="password" required>
+                <div style="position: relative;">
+                    <label class="error_inp" v-if="login & !conf_err">
+                        Пароли не совпадают
+                    </label>
+                </div>
                 <p class="forgot" v-if="!login">
                     <a href="http://localhost:5173/error?ErrorNum=404">Забыли пароль?</a>
                 </p>
+
+
+                <label class="error_log" v-if="!login & !login_err">
+                    Неверная почта или пароль
+                </label>
+
+
 
                 <div v-if="!login" class="wrap">
                     <button class="login" type="button" @click=fun_login()>
@@ -94,7 +127,7 @@ body {
     padding: 10px 20px;
     transition: transform 0.2s;
     width: 500px;
-    height: 548px;
+    height: 557px;
 
     text-align: center;
     justify-content: center;
@@ -107,13 +140,14 @@ h1 {
 label {
     display: block;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 27px;
 
     font-family: Balsamiq Sans;
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 400;
-    line-height: 38.4px;
+    line-height: 28.8px;
     text-align: left;
+
 
     color: #474319;
     margin-left: 10px;
@@ -161,7 +195,7 @@ button.login {
 
     border-radius: 30px;
     width: 180px;
-    height: 79px;
+    height: 58px;
 }
 
 button:active {
@@ -180,7 +214,7 @@ button.sing_in1 {
 
     margin-top: 39px;
     width: 424px;
-    height: 79px;
+    height: 58px;
     border-radius: 30px;
     border: 4px solid #B1A73F;
     opacity: 0px;
@@ -203,7 +237,7 @@ button.sing_in2 {
 
     margin-top: 0px;
     width: 424px;
-    height: 79px;
+    height: 58px;
     gap: 0px;
     border-radius: 30px;
     border: 4px solid #B1A73F;
@@ -251,10 +285,11 @@ button.sing_in2 {
 
 .forgot {
     font-family: Balsamiq Sans;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 400;
-    line-height: 24px;
+    line-height: 16.8px;
     text-align: right;
+
 
     margin-top: 10px;
 }
@@ -263,6 +298,33 @@ a {
     color: rgba(84, 51, 217, 1);
 
     /* text-decoration: none */
+}
+
+.error_inp {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    margin: 0;
+    margin-left: 10px;
+    font-family: Balsamiq Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+    color: rgba(189, 38, 38, 1);
+
+}
+
+.error_log {
+    font-family: Balsamiq Sans;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+    color: rgba(189, 38, 38, 1);
+    margin: 0;
+    margin-top: 10px;
+
 }
 </style>
 
@@ -273,14 +335,40 @@ export default {
         return {
             Username: "",
             Password: "",
+            valid_pas: true,
             confirm_password: "",
             e_mail: "",
+            conf_err: true,
             login: this.login1,
-            hiedth: "350px"
+            hiedth: "350px",
+            error: [],
+            login_err: true,
         }
+    },
+    mounted() {
+        const conf_pas = document.getElementById('conf_pas')
+        conf_pas.addEventListener('blur', () => {
+            if (this.confirm_password != this.Password)
+                this.conf_err = false
+            else
+                this.conf_err = true
+
+        })
     },
     props: {
         login1: Boolean,
+    },
+    watch: {
+        Password: function (newval) {
+            let reg = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/
+            if (newval.length > 0)
+                this.valid_pas = reg.test(newval)
+        },
+        confirm_password: function (newval) {
+
+            if (newval == this.Password)
+                this.conf_err = true
+        }
     },
     methods: {
         change_show() {
@@ -289,9 +377,6 @@ export default {
 
         },
         sing_in() {
-            this.$emit('show_ch', true)
-            this.$emit('authorised1', true)
-
             axios.post(import.meta.env.VITE_BACKEND_URL + 'auth/register', {
                 username: this.Username,
                 email: this.e_mail,
@@ -305,21 +390,27 @@ export default {
                     // window.location.reload()
                 })
                 .catch(error => {
-                    this.$router.push({
-                        name: 'codeerrorview',
-                        query: {
-                            ErrorNum: error.status
-                        }
-                    })
+                    // this.$router.push({
+                    //     name: 'codeerrorview',
+                    //     query: {
+                    //         ErrorNum: error.status
+                    //     }
+                    // })
+                    this.error = error.response.data.detail
                     console.log(error.status);
+                    if (error.status == 422)
+                        error.response.data.detail.forEach(element => {
+                            this.error.push(element.loc[1])
+                        });
+                    else {
+                        this.error = error.response.data.detail
+                    }
+                    console.log(error.response.data.detail);
                 });
 
         },
         fun_login() {
             // console.log(this.Username, this.Password)
-
-            this.$emit('show_ch', true)
-            this.$emit('authorised1', true)
             axios({
                 timeoute: 1000,
                 method: 'post',
@@ -334,17 +425,23 @@ export default {
                 }
             })
                 .then(response => {
+                    this.$emit('show_ch', true)
+                    this.$emit('authorised1', true)
                     console.log(response);
                     window.location.reload()
                 })
                 .catch(error => {
+                    console.log(error)
                     if (error.status != null) {
-                        this.$router.push({
-                            name: 'codeerrorview',
-                            query: {
-                                ErrorNum: error.status
-                            }
-                        })
+                        if (error.status == 400)
+                            this.login_err = false
+                        console.log(error.body.detail)
+                        // this.$router.push({
+                        //     name: 'codeerrorview',
+                        //     query: {
+                        //         ErrorNum: error.status
+                        //     }
+                        // })
                     }
                     console.log(error.message);
                     console.log(error.toJSON())
