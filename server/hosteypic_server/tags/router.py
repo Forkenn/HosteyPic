@@ -1,7 +1,5 @@
 import sqlalchemy as alch
 
-from typing import List
-
 from fastapi import APIRouter, status, Response, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 

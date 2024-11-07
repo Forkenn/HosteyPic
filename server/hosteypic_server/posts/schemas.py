@@ -1,7 +1,8 @@
+from dataclasses import dataclass
 from typing import List, Optional
 from datetime import datetime
 
-from fastapi import Query
+from fastapi import Form
 from pydantic import BaseModel, Field
 
 class STagRead(BaseModel):
@@ -27,25 +28,25 @@ class SPostsPreviews(BaseModel):
     count: int
     items: List[SPostPreview]
 
-class SPostCreate(BaseModel):
-    title: str = Field(
+@dataclass
+class SPostCreate:
+    title: str = Form(
         default=...,
+        media_type="multipart/form-data",
         min_length=4,
         max_length=100,
         description="Title from 4 to 100 symbols"
     )
-    body: str = Field(
+    body: str = Form(
         default=...,
+        media_type="multipart/form-data",
         min_length=0,
         max_length=500,
         description="Body from 0 to 500 symbols"
     )
-    tags_list: Optional[List[int]] = Field(
-        Query(
+    tag: Optional[List[int]] = Form(
             default_factory=list,
             min_items=0,
             max_items=10,
-            alias='tags',
             description="Tags ids. Max 10 elements"
-        )
     )

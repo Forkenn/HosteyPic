@@ -122,10 +122,14 @@ async def create_post(
     if not filename:
         raise FIleParamsException()
     
-    post_dict = post_data.model_dump()
+    post_dict = post_data.__dict__
+    tags_ids = post_dict.pop("tag")
     post_dict.update({'user_id': user.id, 'attachment': filename})
-    query = alch.select(Tag).where(Tag.id.in_(post_dict.pop("tags_list")))
-    tags_list = (await session.execute(query)).scalars().all()
+
+    tags_list = []
+    if tags_ids:
+        query = alch.select(Tag).where(Tag.id.in_(tags_ids))
+        tags_list = (await session.execute(query)).scalars().all()
 
     new_post = Post(**post_dict)
     for tag in tags_list:
