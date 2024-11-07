@@ -2,7 +2,6 @@ import asyncio
 
 import sqlalchemy as alch
 
-from typing import List
 from concurrent.futures import ThreadPoolExecutor
 
 from fastapi import UploadFile, APIRouter, status, Response, Depends
@@ -13,14 +12,15 @@ from hosteypic_server.auth.manager import fastapi_users, RoleManager
 from hosteypic_server.database import get_async_session
 from hosteypic_server.exceptions import (
     FileTypeException, FIleParamsException, AlreadyExistException, YourselfException,
-    BannedException
+    BannedException, NotFoundException
 )
 from hosteypic_server.image import ImageManager
+from hosteypic_server.auth.schemas import SUsername
 from hosteypic_server.users.tools import get_object_by_id
 from hosteypic_server.users.models import User
 from hosteypic_server.likes.models import Like
 from hosteypic_server.users.schemas import (
-    SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull, SUserUsernameEdit
+    SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull
 )
 from hosteypic_server.posts.models import Post
 from hosteypic_server.posts.schemas import SPostsPreviews, SPostPreview
@@ -133,7 +133,7 @@ async def set_avatar(
 
 @router.patch('/current/username', responses=responses)
 async def change_username(
-        new_username: SUserUsernameEdit,
+        new_username: SUsername,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
@@ -151,7 +151,7 @@ async def change_username(
 @router.patch('/{user_id}/username', responses=responses)
 async def change_username_by_id(
         user_id: int,
-        new_username: SUserUsernameEdit,
+        new_username: SUsername,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):
@@ -161,7 +161,11 @@ async def change_username_by_id(
     if user_check:
         raise AlreadyExistException()
     
-    user_check.username = new_username.username
+    user_resp = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+    
+    user_resp.username = new_username.username
     await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)

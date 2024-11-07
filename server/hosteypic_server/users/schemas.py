@@ -2,6 +2,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field, EmailStr
 
+from hosteypic_server.auth.schemas import SUsername
+
 class SUserRead(BaseModel):
     id: int
     username: str
@@ -34,13 +36,8 @@ class SUserEdit(BaseModel):
     github_link: str | None
     gitlab_link: str | None
 
-class SUserUsernameEdit(BaseModel):
-    username: str = Field(
-        default=...,
-        min_length=5,
-        max_length=30,
-        description="Username from 5 to 30 symbols"
-    )
+class SUserUsernameEdit(SUsername):
+    pass
 
 class SUserEmailEdit(BaseModel):
     email: EmailStr
