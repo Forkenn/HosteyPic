@@ -40,8 +40,24 @@
                     <label>Альбом</label>
                     <textarea :readonly="!droped" placeholder="Выберите альбом"></textarea>
                     <label>Теги</label>
-                    <input :readonly="!droped" maxlength="30" v-model="taginput" placeholder="Введите тег для поиска"
-                        v-on:keyup.enter="addtag(this.taginput)"></input>
+                    <input id="idSearch" :readonly="!droped" maxlength="30" v-model="taginput"
+                        placeholder="Введите тег для поиска"></input>
+                    <div class="maxvalue" style="position: relative;" v-show="ArrayTag.length == 10">
+                        <p
+                            style="position: absolute; top: -15px; left: 20px; color:rgba(189, 38, 38, 1); width: 200px;">
+                            Достигнут
+                            лимит тегов.</p>
+                    </div>
+                    <div class="wrap_tagul" v-show="taginput.length > 0 & ArrayTag.length != 10">
+                        <div id="searchResults" class="tagul">
+                            <ul style="color: black;">
+                                <li class="tagli" v-for="el in tags.items" @click="addtag(el.name, el.id)"
+                                    v-show="!this.ArrayTag.find(function (item) { return item.id === el.id; })">
+                                    {{ el.name }}
+                                    {{ ArrayTag.id }}</li>
+                            </ul>
+                        </div>
+                    </div>
                     <AddTag :ArrayTag="ArrayTag" />
                 </div>
 
@@ -307,6 +323,55 @@ button:active {
     color: rgba(146, 146, 146, 1);
 
 }
+
+.wrap_tagul {
+    position: relative;
+    border-radius: 25px;
+    margin-top: 10px;
+    width: 600px;
+    height: 200px;
+    border: 4px solid rgb(5, 0, 49);
+    overflow: hidden;
+}
+
+.tagul {
+    position: absolute;
+    padding: 5px 5px 5px 20px;
+    width: calc(100% - 5px);
+    max-height: 200px;
+    overflow: scroll;
+    scroll-margin: 20px;
+    /* background-color: black; */
+}
+
+.tagli {
+    margin-top: 5px;
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: left;
+
+}
+
+.tagli:hover {
+    background: rgba(224, 220, 178, 1);
+
+
+}
+
+.maxvalue p {
+    font-family: Balsamiq Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+
+}
+
+.hide {
+    display: none;
+}
 </style>
 
 <script>
@@ -333,6 +398,7 @@ export default {
                 name: "",
                 url: "",
             },
+            tags: "",
             styleobj: {
                 width: "",
                 height: "",
@@ -342,7 +408,58 @@ export default {
 
     },
     mounted() {
+        document.querySelector('#idSearch').oninput = function () {
+            let val = this.value.trim();
 
+            let itemli = document.querySelectorAll('.tagli');
+            if (val != '') {
+                itemli.forEach(function (elem) {
+                    if (elem.innerText.search(val) == -1) {
+                        elem.classList.add('hide');
+                    }
+                    else {
+                        elem.classList.remove('hide');
+                    }
+                });
+            }
+            else {
+                itemli.forEach(function (elem) {
+                    elem.classList.remove('hide');
+                });
+            }
+        }
+
+        // const li = document.querySelectorAll('.tagli');
+
+        // li.addEventListener('click', (e) => {
+        //     console.log(e.target);
+        // });
+
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: (import.meta.env.VITE_BACKEND_URL + `tags`),
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                this.tags = response.data
+                console.log(this.tags)
+
+            })
+            .catch(error => {
+                if (error.status != null) {
+                    this.$router.push({
+                        name: 'codeerrorview',
+                        query: {
+                            ErrorNum: error.status
+                        }
+                    })
+                }
+            });
         axios({
             timeoute: 1000,
             method: 'get',
@@ -373,9 +490,17 @@ export default {
     },
     methods: {
 
-        addtag(tag) {
+        addtag(tag, id) {
             if (this.ArrayTag.length < 10)
-                this.ArrayTag.push({ nametag: tag })
+                this.ArrayTag.push({ nametag: tag, id: id })
+            this.taginput = ""
+
+            let val = 100
+            var foundObject = this.ArrayTag.find(function (item) {
+                return item.id === val;
+            });
+            console.log(foundObject)
+
         },
         onDragOver(event) {
             event.preventDefault();

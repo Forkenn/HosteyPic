@@ -24,7 +24,7 @@
                     </label>
                     <div class="searchbar">
                         <div class="input">
-                            <input v-model="serach_user" id="idSearch" v-on:keyup.enter="get_user()">
+                            <input v-model="serach_user" v-on:keyup.enter="get_user()">
                         </div>
                         <div class="searchbar__icon">
 
@@ -71,11 +71,20 @@
                         <div class="input">
                             <input v-model="serach_tag" id="idSearch">
                         </div>
-                        <div id="searchResults"></div>
+
                         <!-- <div class="searchbar__icon">
 
                             <img src="../assets/img/svg/searchicon.svg" @click="loadImg" alt="">
                         </div> -->
+                    </div>
+                    <div v-show="serach_tag.length > 0" style="position: relative;     border-radius: 25px;     margin-top: 10px;
+    border: 4px solid rgb(5, 0, 49); overflow: hidden;">
+                        <div id="searchResults" class="tagul">
+                            <ul class="tagli" style="color: black;">
+                                <li v-for="el in tags.items">
+                                    {{ el.name }}</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="btn_wrap">
@@ -100,6 +109,8 @@ button {
     cursor: pointer;
 }
 
+
+
 .page {
     display: flex;
     flex-direction: column;
@@ -123,7 +134,6 @@ button {
 
     border-radius: 0px 0px 16px 16px;
     background: rgba(239, 237, 217, 1);
-
     display: flex;
     flex-wrap: wrap;
     align-items: end;
@@ -292,6 +302,22 @@ button {
     color: transparent;
 }
 
+.tagul {
+    /* position: absolute; */
+    padding: 20px;
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    overflow: scroll;
+    scroll-margin: 20px;
+    /* background-color: black; */
+}
+
+
+
+.hide {
+    display: none;
+}
 
 .user_info {
     width: 100%;
@@ -355,6 +381,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            tags: "",
             activeTab: 1,
             serach_user: "",
             serach_tag: "",
@@ -365,6 +392,26 @@ export default {
     },
     components: { HeaderAuth, Bottom },
     mounted() {
+
+        document.querySelector('#idSearch').oninput = function () {
+            let val = this.value.trim();
+            let itemli = document.querySelectorAll('.tagli li');
+            if (val != '') {
+                itemli.forEach(function (elem) {
+                    if (elem.innerText.search(val) == -1) {
+                        elem.classList.add('hide');
+                    }
+                    else {
+                        elem.classList.remove('hide');
+                    }
+                });
+            }
+            else {
+                itemli.forEach(function (elem) {
+                    elem.classList.remove('hide');
+                });
+            }
+        }
 
 
         axios({
@@ -382,6 +429,31 @@ export default {
                         name: 'homeview',
                     })
                 }
+            })
+            .catch(error => {
+                if (error.status != null) {
+                    this.$router.push({
+                        name: 'codeerrorview',
+                        query: {
+                            ErrorNum: error.status
+                        }
+                    })
+                }
+            });
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: (import.meta.env.VITE_BACKEND_URL + `tags`),
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                this.tags = response.data
+                console.log(this.tags)
+
             })
             .catch(error => {
                 if (error.status != null) {
@@ -534,7 +606,7 @@ export default {
                 method: 'post',
                 url: (import.meta.env.VITE_BACKEND_URL + `tags`),
                 data: {
-                    name: this.serach_tag
+                    name: this.serach_tag.toLowerCase()
                 },
                 withCredentials: true,
                 headers: {
