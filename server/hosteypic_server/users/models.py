@@ -22,7 +22,9 @@ class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
     username: orm.Mapped[str] = orm.mapped_column(alch.String(31), index=True, unique=True)
     email: orm.Mapped[str] = orm.mapped_column(alch.String(120), index=True, unique=True)
     about_me: orm.Mapped[str] = orm.mapped_column(alch.String(140), nullable=True)
-    avatar: orm.Mapped[str] = orm.mapped_column(alch.String(256), nullable=True)
+    avatar: orm.Mapped[str] = orm.mapped_column(
+        alch.String(256), nullable=True, server_default=alch.text("'default.jpg'")
+    )
     vk_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
     ok_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
     github_link: orm.Mapped[str] = orm.mapped_column(alch.String(128), nullable=True)
