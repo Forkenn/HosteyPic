@@ -45,8 +45,8 @@ class SPostCreate:
         description="Body from 0 to 500 symbols"
     )
     tag: Optional[List[int]] = Form(
-            default_factory=list,
-            min_items=0,
-            max_items=10,
-            description="Tags ids. Max 10 elements"
+        default_factory=list,
+        min_items=0,
+        max_items=10,
+        description="Tags ids. Max 10 elements"
     )

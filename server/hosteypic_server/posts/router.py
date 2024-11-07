@@ -132,8 +132,8 @@ async def create_post(
         tags_list = (await session.execute(query)).scalars().all()
 
     new_post = Post(**post_dict)
-    for tag in tags_list:
-        new_post.tags.append(tag)
+    if tags_list:
+        new_post.tags = tags_list
 
     session.add(new_post)
     await session.commit()
@@ -169,7 +169,19 @@ async def edit_post_by_id(
         
         post.attachment = filename
 
-    await post.update(**post_data.model_dump())
+    new_post_data = post_data.__dict__
+    new_tags_ids: list[int] = new_post_data.pop("tag")
+    await session.refresh(post, attribute_names=["tags"])
+
+    tags_list = []
+    if new_tags_ids:
+        query = alch.select(Tag).where(Tag.id.in_(new_tags_ids))
+        tags_list = (await session.execute(query)).scalars().all()
+
+    if tags_list:
+        post.tags = tags_list
+
+    await post.update(**new_post_data)
     await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)

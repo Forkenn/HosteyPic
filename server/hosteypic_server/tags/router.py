@@ -3,7 +3,7 @@ import sqlalchemy as alch
 from fastapi import APIRouter, status, Response, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hosteypic_server.auth.manager import fastapi_users, RoleManager
+from hosteypic_server.auth.manager import fastapi_users
 from hosteypic_server.database import get_async_session
 from hosteypic_server.exceptions import (
     MaxObjectsException, AlreadyExistException, NotFoundException
