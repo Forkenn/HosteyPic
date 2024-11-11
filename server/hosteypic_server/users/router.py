@@ -62,12 +62,31 @@ async def get_user_by_id(
     user: User = Depends(current_optional_user)
 ) -> SUserReadSingle:
     user_resp: User = await get_object_by_id(user_id, session)
+    if not user_resp:
+        raise NotFoundException()
+
     response = SUserReadSingle(**user_resp.__dict__)                # TODO: fix stupid code
     response.is_following = None
-
     if user:
         response.is_following = await user.is_following(user_resp)
 
+    response.followers_count = await user_resp.followers_count()
+    return response
+
+@router.get('/search/{username}', responses=responses)
+async def search_user_by_name(
+    username: str,
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_superuser)
+) -> SUserReadSingle:
+    query = alch.select(User).where(User.username == username)
+    user_resp = (await session.execute(query)).scalar()
+
+    if not user_resp:
+        raise NotFoundException()
+
+    response = SUserReadSingle(**user_resp.__dict__)
+    response.is_following = await user.is_following(user_resp)
     response.followers_count = await user_resp.followers_count()
     return response
 
