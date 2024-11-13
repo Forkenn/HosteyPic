@@ -20,8 +20,8 @@
             </div>
 
             <div class="nav">
-                <p @click="goToHome">Главная</p>
-                <p>Подписки</p>
+                <p style="margin-left: 0;" @click="goToHome">Главная</p>
+                <p @click="goToSubs">Подписки</p>
             </div>
             <div class="user__icon">
                 <img :src="`../../dist/uploads/avatars/original/${this.user.avatar}`" @click="show" id="icon" alt="">
@@ -307,7 +307,7 @@ export default {
                 if (response.status == 200) {
                     this.user = response.data
 
-                    if (this.user.avatar) {
+                    if (response.data.avatar) {
                         this.user.avatar.avatar = response.data.avatar
                     }
                     else {
@@ -343,10 +343,13 @@ export default {
     },
     methods: {
         goToUser() {
-            this.$router.push({ name: 'userview', params: { id: this.userId } })
+            this.$router.push({ name: 'userview', params: { id: this.user.id } })
         },
         goToHome() {
             this.$router.push({ name: 'homeview' })
+        },
+        goToSubs() {
+            this.$router.push({ name: 'subscriptionsview' })
         },
         goToEdit() {
             this.$router.push({ name: 'editprofileview' })
@@ -395,7 +398,7 @@ export default {
                 url: (import.meta.env.VITE_BACKEND_URL + `auth/request-verify-token`),
                 withCredentials: true,
                 data: {
-                    email: this.email
+                    email: this.user.email
                 },
                 headers: {
                     'Content-Type': 'application/json'

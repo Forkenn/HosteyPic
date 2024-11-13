@@ -615,7 +615,7 @@ export default {
             })
                 .then(response => {
                     console.log('+тег')
-                    this.user = {}
+                    this.tags.items.push({ name: this.serach_tag.toLowerCase() })
 
                 })
                 .catch(error => {

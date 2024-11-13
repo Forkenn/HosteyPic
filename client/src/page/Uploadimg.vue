@@ -23,7 +23,10 @@
 
                 </div>
                 <div v-else class="dropimg__wrap">
-                    <div class="img__wrap">
+                    <div class="img__wrap" style="position: relative;">
+                        <div class="reset" @click="reset">
+                            <img src="../assets/img/svg/reset.svg" alt="">
+                        </div>
                         <img class="drop_img" :src="image.url" :style="this.styleobj" alt="drop_img">
                     </div>
                     <div style="display: flex; align-items: center; justify-content: center;">
@@ -37,8 +40,8 @@
                     <label>Описание</label>
                     <textarea :readonly="!droped" v-model="body" class="description"
                         placeholder="Подробно опишите"></textarea>
-                    <label>Альбом</label>
-                    <textarea :readonly="!droped" placeholder="Выберите альбом"></textarea>
+                    <!-- <label>Альбом</label>
+                    <textarea :readonly="!droped" placeholder="Выберите альбом"></textarea> -->
                     <label>Теги</label>
                     <input id="idSearch" :readonly="!droped" maxlength="30" v-model="taginput"
                         placeholder="Введите тег для поиска"></input>
@@ -48,7 +51,8 @@
                             Достигнут
                             лимит тегов.</p>
                     </div>
-                    <div class="wrap_tagul" v-show="taginput.length > 0 & ArrayTag.length != 10">
+                    <div class="wrap_tagul" style="position: absolute; top: 510px;"
+                        v-show="taginput.length > 0 & ArrayTag.length != 10">
                         <div id="searchResults" class="tagul">
                             <ul style="color: black;">
                                 <li class="tagli" v-for="el in tags.items" @click="addtag(el.name, el.id)"
@@ -249,6 +253,7 @@ input:focus::placeholder {
     align-self: flex-start;
     margin-left: 80px;
     max-width: 420px;
+
     /* max-height: 600px; */
     /* overflow: hidden; */
 }
@@ -258,6 +263,23 @@ input:focus::placeholder {
     width: 420px;
     height: 600px;
     overflow: hidden;
+    border-radius: 50px;
+}
+
+.reset {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 70px;
+    width: 70px;
+    background: rgba(71, 67, 25, 0.5);
+    border-radius: 0 0 0 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.reset img {
+    width: 40px;
 }
 
 .drop_img {
@@ -326,16 +348,19 @@ button:active {
 
 .wrap_tagul {
     position: relative;
-    border-radius: 25px;
+    border-radius: 20px;
     margin-top: 10px;
-    width: 600px;
+    width: 300px;
     height: 200px;
-    border: 4px solid rgb(5, 0, 49);
+    background: rgba(239, 237, 217, 1);
+    border: 2px solid rgba(177, 167, 63, 1);
     overflow: hidden;
 }
 
 .tagul {
     position: absolute;
+    top: 0;
+    left: 0;
     padding: 5px 5px 5px 20px;
     width: calc(100% - 5px);
     max-height: 200px;
@@ -345,12 +370,16 @@ button:active {
 }
 
 .tagli {
-    margin-top: 5px;
+    margin-top: 10px;
     font-family: Balsamiq Sans;
     font-size: 16px;
     font-weight: 400;
     line-height: 19.2px;
     text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(71, 67, 25, 1);
+
 
 }
 
@@ -384,7 +413,6 @@ export default {
     components: { HeaderAuth, Bottom, AddTag },
     data() {
         return {
-            binary: "",
             title: "",
             body: "",
             input__wrap: 'input__wrap',
@@ -429,12 +457,6 @@ export default {
             }
         }
 
-        // const li = document.querySelectorAll('.tagli');
-
-        // li.addEventListener('click', (e) => {
-        //     console.log(e.target);
-        // });
-
 
         axios({
             timeoute: 1000,
@@ -447,7 +469,6 @@ export default {
         })
             .then(response => {
                 this.tags = response.data
-                console.log(this.tags)
 
             })
             .catch(error => {
@@ -495,12 +516,6 @@ export default {
                 this.ArrayTag.push({ nametag: tag, id: id })
             this.taginput = ""
 
-            let val = 100
-            var foundObject = this.ArrayTag.find(function (item) {
-                return item.id === val;
-            });
-            console.log(foundObject)
-
         },
         onDragOver(event) {
             event.preventDefault();
@@ -537,13 +552,12 @@ export default {
                                 this.styleobj.height = '100%'
                                 this.styleobj.width = 'auto'
                             }
-                            console.log(this.styleobj)
                         }
                     };
                     img.src = target.result;
 
                 };
-                this.binary = reader.readAsArrayBuffer(this.file)
+
                 reader.readAsDataURL(this.file); // Преобразуем файл в формат Base64 
             }
         },
@@ -572,7 +586,6 @@ export default {
                                 this.styleobj.height = '100%'
                                 this.styleobj.width = 'auto'
                             }
-                            console.log(this.styleobj)
                         }
                     };
                     img.src = target.result;
@@ -584,22 +597,21 @@ export default {
             }
         },
         UploadImg() {
-            // console.log(this.file)
-            // const reader = new FileReader();
-
-            // reader.onload = () => {
-            //     console.log(reader.result);
-            // };
-
-            // reader.readAsBinaryString(this.file);
-
-            // console.log(this.binary)
+            // console.log(this.ArrayTag.id)
+            const bodyFormData = new FormData()
+            bodyFormData.append('attachment', this.file)
+            bodyFormData.append('title', this.title)
+            bodyFormData.append('body', this.body)
+            this.ArrayTag.forEach((item) => {
+                bodyFormData.append('tag', item.id)
+            })
             axios({
                 timeoute: 1000,
                 method: 'post',
-                url: import.meta.env.VITE_BACKEND_URL + `posts?title=${this.title}&body=${this.body}`,
+                url: import.meta.env.VITE_BACKEND_URL + `posts`,
                 withCredentials: true,
-                data: { attachment: this.file },
+                data: bodyFormData,
+
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -618,6 +630,11 @@ export default {
                     console.log(error.message);
                 });
         },
+        reset() {
+            this.droped = false
+            const item = document.getElementById('file')
+            item.value = '';
+        }
     }
 }
 </script>

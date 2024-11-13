@@ -6,80 +6,103 @@
             <div class="column1" :style=style(1)>
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column1.length"
-                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column1[(el - 1)].attachment"
+                        v-bind:src="'../../dist/uploads/attachments/362x/' + this.column1[(el - 1)].attachment"
                         :alt="'img ' + this.column1[(el - 1)].id" @click="goToPicturePost(this.column1[(el - 1)].id)">
-                    <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                            style="background: none;"></button>
-                    <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
-                            style="background: none;"></button>
+
+                    <button id="download" class="button__hov">
+                        <a download :download="this.column1[(el - 1)].name"
+                            :href="'../../dist/uploads/attachments/original/' + this.column1[(el - 1)].attachment"
+                            title="ImageName">
+                            <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
+                        </a>
+                    </button>
+
+
+                    <button v-show="user.username" id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg"
+                            alt="" style="background: none;"></button>
+                    <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
+                                style="background: none;"></button> -->
+                    <button v-show="user.is_moderator" id="delete" class="button__hov"><img
+                            src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                 </div>
             </div>
             <div class="column2" :style=style(2) v-if="column2.length > 0 & this.k >= 2">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column2.length"
-                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column2[(el - 1)].attachment"
+                        v-bind:src="'../../dist/uploads/attachments/362x/' + this.column2[(el - 1)].attachment"
                         :alt="'img ' + this.column2[(el - 1)].id" @click="goToPicturePost(this.column2[(el - 1)].id)">
                     <div v-if="el - 1 < this.column2.length">
-                        <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
-                                style="background: none;"></button>
+                        <button id="download" class="button__hov">
+                            <a download :download="this.column2[(el - 1)].name"
+                                :href="'../../dist/uploads/attachments/original/' + this.column2[(el - 1)].attachment"
+                                title="ImageName">
+                                <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
+                            </a>
+                        </button>
+                        <button v-show="user.username" id="add" class="button__hov"><img
+                                src="../assets/img/svg/Plus.svg" alt="" style="background: none;"></button>
+                        <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
+                                style="background: none;"></button> -->
+                        <button v-show="user.is_moderator" id="delete" class="button__hov"><img
+                                src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                     </div>
                 </div>
             </div>
             <div class="column3" :style=style(3) v-if="column3.length > 0 & this.k >= 3">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column3.length"
-                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column3[(el - 1)].attachment"
+                        v-bind:src="'../../dist/uploads/attachments/362x/' + this.column3[(el - 1)].attachment"
                         :alt="'img ' + this.column3[(el - 1)].id" @click="goToPicturePost(this.column3[(el - 1)].id)">
                     <div v-if="el - 1 < this.column3.length">
-                        <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
-                                style="background: none;"></button>
+                        <button id="download" class="button__hov">
+                            <a download :download="this.column3[(el - 1)].name"
+                                :href="'../../dist/uploads/attachments/original/' + this.column3[(el - 1)].attachment"
+                                title="ImageName">
+                                <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
+                            </a>
+                        </button>
+                        <button v-show="user.username" id="add" class="button__hov"><img
+                                src="../assets/img/svg/Plus.svg" alt="" style="background: none;"></button>
+                        <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
+                                style="background: none;"></button> -->
+                        <button v-show="user.is_moderator" id="delete" class="button__hov"><img
+                                src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                     </div>
                 </div>
             </div>
             <div class="column4" :style=style(4) v-if="column4.length > 0 & this.k >= 4">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column4.length"
-                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column4[(el - 1)].attachment"
+                        v-bind:src="'../../dist/uploads/attachments/362x/' + this.column4[(el - 1)].attachment"
                         :alt="'img ' + this.column4[(el - 1)].id" @click="goToPicturePost(this.column4[(el - 1)].id)">
                     <div v-if="el - 1 < this.column4.length">
-                        <button id="download" class="button__hov"><img src="../assets/img/svg/downloadmini.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                                style="background: none;"></button>
-                        <button id="delete" class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
-                                style="background: none;"></button>
+                        <button id="download" class="button__hov">
+                            <a download :download="this.column4[(el - 1)].name"
+                                :href="'../../dist/uploads/attachments/original/' + this.column4[(el - 1)].attachment"
+                                title="ImageName">
+                                <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
+                            </a>
+                        </button>
+                        <button v-show="user.username" id="add" class="button__hov"><img
+                                src="../assets/img/svg/Plus.svg" alt="" style="background: none;"></button>
+                        <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
+                                style="background: none;"></button> -->
+                        <button v-show="user.is_moderator" id="delete" class="button__hov"><img
+                                src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                     </div>
                 </div>
             </div>
             <div class="column5" v-if="column5.length > 0 & this.k == 5">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img v-if="el - 1 < this.column5.length"
-                        v-bind:src="'../../dist/uploads/attachments/original/' + this.column5[(el - 1)].src1"
+                        v-bind:src="'../../dist/uploads/attachments/362x/' + this.column5[(el - 1)].src1"
                         :alt="'img ' + this.countImg * 5">
                 </div>
             </div>
 
         </div>
 
-        <div v-if="verticalScroll > 200" class="go_top" :style="styletop()">
+        <div v-if="verticalScroll >= 200 & res.length > 5" class="go_top" :style="styletop()">
             <button @click="goToUp">
                 <img src="../assets/img/svg/Arrowup.svg" alt="">
             </button>
@@ -103,6 +126,7 @@ export default {
             column4: [],
             column5: [],
             pushin: 0,
+            user: {},
             loadstop: true,
             page: 1,
             countImg: 4,
@@ -148,7 +172,6 @@ export default {
 
 
             // if (this.countImg > 4 & this.loadstop & this.res.length == 20)
-            // console.log(`http://localhost/api/${this.urlstr}?start=${(this.page) * 20}&end=${(this.page + 1) * 20}`)
             if (this.countImg > 4 & this.loadstop & this.res.length == 20)
                 axios({
                     timeoute: 1000,
@@ -177,6 +200,23 @@ export default {
         }
     },
     mounted() {
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: import.meta.env.VITE_BACKEND_URL + `users/current`,
+
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                this.user = response.data
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+
         window.addEventListener('scroll', () => {
             const documentReact = document.documentElement.getBoundingClientRect();
             this.verticalScroll = window.scrollY;
@@ -373,14 +413,22 @@ export default {
                         styleobj.bottom = '-70px'
                     }
                     else {
-                        styleobj.top = this.verticalScroll + 600 + 'px'
+                        styleobj.top = this.verticalScroll + 700 + 'px'
                     }
                 else if (this.urlstr == 'users/' + this.$route.params.id + '/posts') {
                     if (this.verticalScroll > h.clientHeight) {
                         styleobj.bottom = '-70px'
                     }
                     else {
-                        styleobj.top = this.verticalScroll + 'px'
+                        styleobj.top = this.verticalScroll - 50 + 'px'
+                    }
+                }
+                else if (this.urlstr == 'posts/followed') {
+                    if (this.verticalScroll + 700 > h.clientHeight) {
+                        styleobj.bottom = '-70px'
+                    }
+                    else {
+                        styleobj.top = this.verticalScroll + 600 + 'px'
                     }
                 }
             }

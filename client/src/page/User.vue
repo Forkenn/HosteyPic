@@ -20,39 +20,51 @@
             <div class="userinfo__wrap">
                 <div class="userinfo">
                     <div class="userIcon">
-                        <img src="../assets/img/svg/userIconmain.svg" alt="">
+                        <img style="border-radius: 50%;" :src="'../../dist/uploads/avatars/200x/' + userid.avatar"
+                            alt="">
                     </div>
                     <div class="userName">
-                        <p>{{ userName }}</p>
+                        <p>{{ userid.username }}</p>
                     </div>
                     <div class="subscribers">
                         <span class="countsubscribers">
-                            <p>{{ countSubscribers }} подписчики</p>
+                            <p>{{ userid.followers_count }} подписчики</p>
                         </span>
 
                     </div>
                     <div class="socialmedia">
-                        <div v-if="github" class="github">
-                            <a :href=this.github target="_blank">
+                        <div v-if="userid.github_link" class="github">
+                            <a :href=userid.github_link target="_blank">
                                 <img src="../assets/img/svg/GitHub.svg" alt="">
                             </a>
                         </div>
-                        <div v-if="gitlab" class="gitlab">
-                            <a :href=this.gitlab target="_blank">
+                        <div v-if="userid.gitlab_link" class="gitlab">
+                            <a :href=userid.gitlab_link target="_blank">
                                 <img src="../assets/img/svg/GitLab.svg" alt="">
                             </a>
                         </div>
-                        <div v-if="vk" class="vk">
-                            <a :href=this.vk target="_blank">
+                        <div v-if="userid.vk_link" class="vk">
+                            <a :href=userid.vk_link target="_blank">
                                 <img src="../assets/img/svg/VK.svg" alt="">
                             </a>
                         </div>
-                        <div v-if="ok" class="ok">
-                            <a :href=this.ok target="_blank">
+                        <div v-if="userid.ok_link" class="ok">
+                            <a :href=userid.ok_link target="_blank">
                                 <img src="../assets/img/svg/OK.svg" alt="">
                             </a>
                         </div>
                     </div>
+
+                </div>
+                <div v-show="user.id != userid.id & !userid.is_following" class="folow_btn">
+                    <button @click="followed">
+                        Подписаться
+                    </button>
+                </div>
+                <div v-show="user.id != userid.id & userid.is_following" class="folow_btn">
+                    <button @click="unfollowed">
+                        Отписаться
+                    </button>
                 </div>
             </div>
             <div class="tabs__wrap">
@@ -72,20 +84,37 @@
                     </div>
                     <div class="tabs-body">
                         <div class="tabs-body-item" v-show="activeTab === 1">
-                            <p v-if="countImg == 0" style="margin-top: 75px;">Здесь пока ничего нет... Тогда
+                            <p v-if="result.length == 0 & (user.id == userid.id)" style="margin-top: 75px;">Здесь пока
+                                ничего
+                                нет... Тогда
                                 <button class="create" @click="goToUpload">
                                     Создай
                                 </button>
 
                                 что-нибудь!
                             </p>
-                            <button v-else class="create" @click="goToUpload">
+                            <button v-else v-show="(user.id == userid.id)" class="create" @click="goToUpload">
                                 Создать
                             </button>
+                            <p v-show="result.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
+                                В процессе создания...
+                            </p>
                             <Searchimg :res="result" :urlstr="'users/' + this.$route.params.id + '/posts'" />
 
                         </div>
                         <div class="tabs-body-item" v-show="activeTab === 2">
+                            <p v-if="liked.length == 0 & (user.id == userid.id)" style="margin-top: 75px;">Здесь
+                                пусто...
+                                <button class="create" @click="goToUpload">
+                                    Вперед
+                                </button>
+
+                                на поиски вдохновения!
+                            </p>
+
+                            <p v-show="liked.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
+                                Видимо, пока что не нашел...
+                            </p>
                             <Searchimg :res="liked" :urlstr="'users/' + this.$route.params.id + '/posts/liked'" />
                         </div>
                         <!-- <div class="tabs-body-item" v-show="activeTab === 3">
@@ -152,7 +181,7 @@ html {
 .userinfo {
 
     width: 418px;
-    height: 433px;
+    /* height: 433px; */
     margin-top: 60px;
     margin-left: auto;
     margin-right: auto;
@@ -165,6 +194,8 @@ html {
 .userIcon {
     margin-left: auto;
     margin-right: auto;
+    border: 4px solid rgba(177, 167, 63, 1);
+    border-radius: 50%;
 }
 
 .userName {
@@ -243,6 +274,20 @@ html {
     margin-left: 80px;
 }
 
+.folow_btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+
+}
+
+.folow_btn button {
+    width: 275px;
+    height: 58px;
+    border-radius: 30px;
+    border: 4px solid rgba(177, 167, 63, 1)
+}
+
 button {
     font-family: Balsamiq Sans;
     font-size: 32px;
@@ -250,6 +295,7 @@ button {
     line-height: 38.4px;
     text-align: center;
     padding: 0;
+    cursor: pointer;
 }
 
 .tabs-btn {
@@ -358,16 +404,21 @@ export default {
             liked: [],
             countImg: Math.floor(Math.random() * 10),
             user: {},
+            userid: {},
             github: "",
             gitlab: "",
             vk: "",
             ok: "",
-
         }
 
     },
+    watch: {
+        '$route.params.id': function () {
+            window.location.reload()
+        },
+    },
     mounted() {
-
+        console.log(this.$route.params.id)
         axios({
             timeoute: 1000,
             method: 'get',
@@ -446,11 +497,9 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     console.log(response);
-                    this.userName = response.data.username
-                    this.github = response.data.github_link
-                    this.gitlab = response.data.gitlab_link
-                    this.vk = response.data.vk_link
-                    this.ok = response.data.ok_link
+                    this.userid = response.data
+
+
                 }
 
             })
@@ -486,26 +535,45 @@ export default {
         goToUpload() {
             this.$router.push({ name: 'uploadimgview' })
         },
-        loadImg(tagImg) {
-            this.result = []
+        followed() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/follow`,
 
-            if (this.activeTab == 1) {
-                if (tagImg)
-                    this.countImg = tagImg
-                tagImg = this.countImg
-            }
-            else {
-                tagImg = 10
-            }
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    this.userid.followers_count++
+                    this.userid.is_following = true
+                    console.log(response);
+                })
+                .catch(error => {
+                    // console.log(error.message);
+                });
+        },
+        unfollowed() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/unfollow`,
 
-            for (let index = 0; index < tagImg; index++) {
-
-                this.srcimg = data[index % 3],
-                    this.result.push({
-                        src1: this.srcimg,
-                        tag: this.tag
-                    })
-            }
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    this.userid.followers_count--
+                    this.userid.is_following = false
+                    console.log(response);
+                })
+                .catch(error => {
+                    // console.log(error.message);
+                });
         },
     }
 }

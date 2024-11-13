@@ -13,7 +13,6 @@
             </div>
             <div class="nav">
                 <p @click="goToHome">Главная</p>
-                <p>Подписки</p>
             </div>
             <div class="wrap_login">
                 <button class="login" v-on:click="show_login()">

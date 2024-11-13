@@ -17,10 +17,10 @@
                     <div class="actio_wrap">
                         <div style="  max-width: 798px; height: 60px; display: flex; flex-wrap: wrap;">
                             <div class="button_act">
-                                <button v-if="!image.is_liked">
+                                <button v-if="!image.is_liked" @click="liked">
                                     <img src="../assets/img/svg/Heart.svg" alt="Like">
                                 </button>
-                                <button v-else style="background: rgba(177, 167, 63, 1);">
+                                <button v-else @click="unliked" style="background: rgba(177, 167, 63, 1);">
                                     <img src="../assets/img/svg/Heartwhite.svg" alt="Like">
                                 </button>
                                 <span class="text_p">
@@ -35,14 +35,19 @@
                             </div>
                             <div class="button_act">
                                 <button>
-                                    <img src="../assets/img/svg/Download_white.svg" alt="Download">
+                                    <a download :download="image.name"
+                                        :href="'../../dist/uploads/attachments/original/' + image.attachment"
+                                        title="ImageName">
+                                        <img src="../assets/img/svg/Download_white.svg" alt="Download">
+                                    </a>
+
                                 </button>
                             </div>
-                            <div class="button_act">
+                            <!-- <div class="button_act">
                                 <button style="background: rgba(189, 38, 38, 1);">
                                     <img width="30px" src="../assets/img/svg/AlertCircle.svg" alt="Alert">
                                 </button>
-                            </div>
+                            </div> -->
                             <div v-if="user.is_moderator | image.is_deletable" class="button_act">
                                 <button style="background: rgba(189, 38, 38, 1);">
                                     <img width="30px" src="../assets/img/svg/Trash.svg" alt="Trash">
@@ -58,14 +63,20 @@
                     </div>
 
                     <div class="user_info">
-                        <img @click="goToUser" :src="'../../dist/uploads/avatars/original/' + user.avatar" alt="">
+                        <img @click="goToUser" :src="'../../dist/uploads/avatars/original/' + userid.avatar" alt="">
                         <div class="user_text">
-                            <p>{{ user.username }}</p>
+                            <p>{{ userid.username }}</p>
                             <div class="sub">
-                                <p>Подписчики {{ user.followers_count }}</p>
+                                <p>Подписчики {{ userid.followers_count }}</p>
                             </div>
                         </div>
-                        <button>Подписаться</button>
+                        <button v-show="user.id != userid.id & !userid.is_following"
+                            @click="followed">Подписаться</button>
+
+
+                        <button v-show="user.id != userid.id & userid.is_following" @click="unfollowed">
+                            Отписаться
+                        </button>
                     </div>
 
                     <div class="post_info">
@@ -263,6 +274,10 @@
     border: 4px solid rgba(177, 167, 63, 1)
 }
 
+.user_info button:active {
+    transform: scale(0.9);
+}
+
 .post_info {
     margin-top: 40px;
     width: 100%;
@@ -288,6 +303,10 @@
     text-align: left;
 
 }
+
+button {
+    cursor: pointer;
+}
 </style>
 
 <script>
@@ -309,6 +328,8 @@ export default {
             image: {},
             show: false,
             user: {},
+            userid: {},
+            moder: false
         }
     },
     mounted() {
@@ -324,7 +345,7 @@ export default {
         })
             .then(response => {
                 this.image = response.data
-                console.log(this.image)
+                console.log(response.data)
 
                 axios({
                     timeoute: 1000,
@@ -339,9 +360,10 @@ export default {
                     }
                 })
                     .then(response => {
+                        console.log(response.data)
                         if (response.status == 200) {
 
-                            this.user = response.data
+                            this.userid = response.data
                         }
 
                     })
@@ -374,7 +396,9 @@ export default {
         })
             .then(response => {
                 if (response.status == 200) {
+                    this.user = response.data
 
+                    // this.moder = response.data.is_moderator
                     this.authorised = true
                 }
 
@@ -408,7 +432,88 @@ export default {
             this.login = login
         },
         goToUser() {
-            this.$router.push({ name: 'userview', params: { id: this.user.id } })
+            this.$router.push({ name: 'userview', params: { id: this.userid.id } })
+        },
+        liked() {
+            console.log(123)
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `likes/posts/${this.image.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+
+                    this.image.is_liked = true
+                    this.image.likes_count++
+
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        },
+        unliked() {
+            axios({
+                timeoute: 1000,
+                method: 'delete',
+                url: (import.meta.env.VITE_BACKEND_URL + `likes/posts/${this.image.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+
+                    this.image.is_liked = false
+                    this.image.likes_count--
+
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        },
+        followed() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/follow`,
+
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    this.userid.followers_count++
+                    this.userid.is_following = true
+                    console.log(response);
+                })
+                .catch(error => {
+                    // console.log(error.message);
+                });
+        },
+        unfollowed() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/unfollow`,
+
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    this.userid.followers_count--
+                    this.userid.is_following = false
+                    console.log(response);
+                })
+                .catch(error => {
+                    // console.log(error.message);
+                });
         },
     },
 
