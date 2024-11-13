@@ -96,9 +96,11 @@ async def get_post_by_id(
         raise NotFoundException()
     
     response = SPostRead(**post.__dict__)
-    response.is_deletable = await post.deletable_flag(user)
-    response.is_editable = await post.editable_flag(user)
-    response.is_liked = await post.liked_flag(user)
+    if user:
+        response.is_deletable = await post.deletable_flag(user)
+        response.is_editable = await post.editable_flag(user)
+        response.is_liked = await post.liked_flag(user)
+
     response.tags_list = post.tags
 
     return response
