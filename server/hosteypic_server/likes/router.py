@@ -20,7 +20,12 @@ async def set_like_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
-    query = alch.select(Like).where(Like.post_id == post_id)
+    query = (
+        alch.select(Like)
+        .where(
+            alch.and_(Like.post_id == post_id, Like.user_id == user.id)
+        )
+    )
     like_resp = (await session.execute(query)).scalar()
 
     if like_resp:
@@ -38,7 +43,12 @@ async def delete_like_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
-    query = alch.select(Like).where(Like.post_id == post_id)
+    query = (
+        alch.select(Like)
+        .where(
+            alch.and_(Like.post_id == post_id, Like.user_id == user.id)
+        )
+    )
     like_resp = (await session.execute(query)).scalar()
 
     if not like_resp:
