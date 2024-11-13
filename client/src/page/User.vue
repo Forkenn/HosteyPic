@@ -452,7 +452,6 @@ export default {
         })
             .then(response => {
                 this.result = response.data.items
-                // console.log(this.result);
                 // console.log(response.data)
 
             })

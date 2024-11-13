@@ -51,7 +51,7 @@
                     </label>
                 </div>
                 <p class="forgot" v-if="!login">
-                    <a href="http://localhost:5173/error?ErrorNum=404">Забыли пароль?</a>
+                    <a href="http://localhost:5173/reset-password">Забыли пароль?</a>
                 </p>
 
 
@@ -360,7 +360,7 @@ export default {
     },
     watch: {
         Password: function (newval) {
-            let reg = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/
+            let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*#?&]{6,}$/
             if (newval.length > 0)
                 this.valid_pas = reg.test(newval)
         },

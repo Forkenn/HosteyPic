@@ -9,7 +9,7 @@
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column1[(el - 1)].attachment"
                         :alt="'img ' + this.column1[(el - 1)].id" @click="goToPicturePost(this.column1[(el - 1)].id)">
 
-                    <button id="download" class="button__hov">
+                    <button v-show="!this.column1[(el - 1)].is_editable" id="download" class="button__hov">
                         <a download :download="this.column1[(el - 1)].name"
                             :href="'../../dist/uploads/attachments/original/' + this.column1[(el - 1)].attachment"
                             title="ImageName">
@@ -17,11 +17,10 @@
                         </a>
                     </button>
 
-
-                    <button v-show="user.username" id="add" class="button__hov"><img src="../assets/img/svg/Plus.svg"
-                            alt="" style="background: none;"></button>
-                    <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                                style="background: none;"></button> -->
+                    <button v-show="this.column1[(el - 1)].is_editable" id="download" class="button__hov"
+                        @click="goToEdit()">
+                        <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
+                    </button>
                     <button v-show="user.is_moderator" id="delete" class="button__hov"><img
                             src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                 </div>
@@ -32,17 +31,18 @@
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column2[(el - 1)].attachment"
                         :alt="'img ' + this.column2[(el - 1)].id" @click="goToPicturePost(this.column2[(el - 1)].id)">
                     <div v-if="el - 1 < this.column2.length">
-                        <button id="download" class="button__hov">
+                        <button v-show="!this.column2[(el - 1)].is_editable" id="download" class="button__hov">
                             <a download :download="this.column2[(el - 1)].name"
                                 :href="'../../dist/uploads/attachments/original/' + this.column2[(el - 1)].attachment"
                                 title="ImageName">
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-                        <button v-show="user.username" id="add" class="button__hov"><img
-                                src="../assets/img/svg/Plus.svg" alt="" style="background: none;"></button>
-                        <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                                style="background: none;"></button> -->
+
+                        <button v-show="this.column2[(el - 1)].is_editable" id="download" class="button__hov"
+                            @click="goToEdit()">
+                            <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
+                        </button>
                         <button v-show="user.is_moderator" id="delete" class="button__hov"><img
                                 src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                     </div>
@@ -54,17 +54,18 @@
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column3[(el - 1)].attachment"
                         :alt="'img ' + this.column3[(el - 1)].id" @click="goToPicturePost(this.column3[(el - 1)].id)">
                     <div v-if="el - 1 < this.column3.length">
-                        <button id="download" class="button__hov">
+                        <button v-show="!this.column3[(el - 1)].is_editable" id="download" class="button__hov">
                             <a download :download="this.column3[(el - 1)].name"
                                 :href="'../../dist/uploads/attachments/original/' + this.column3[(el - 1)].attachment"
                                 title="ImageName">
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-                        <button v-show="user.username" id="add" class="button__hov"><img
-                                src="../assets/img/svg/Plus.svg" alt="" style="background: none;"></button>
-                        <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                                style="background: none;"></button> -->
+
+                        <button v-show="this.column3[(el - 1)].is_editable" id="download" class="button__hov"
+                            @click="goToEdit()">
+                            <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
+                        </button>
                         <button v-show="user.is_moderator" id="delete" class="button__hov"><img
                                 src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                     </div>
@@ -76,27 +77,21 @@
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column4[(el - 1)].attachment"
                         :alt="'img ' + this.column4[(el - 1)].id" @click="goToPicturePost(this.column4[(el - 1)].id)">
                     <div v-if="el - 1 < this.column4.length">
-                        <button id="download" class="button__hov">
+                        <button v-show="!this.column4[(el - 1)].is_editable" id="download" class="button__hov">
                             <a download :download="this.column4[(el - 1)].name"
                                 :href="'../../dist/uploads/attachments/original/' + this.column4[(el - 1)].attachment"
                                 title="ImageName">
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-                        <button v-show="user.username" id="add" class="button__hov"><img
-                                src="../assets/img/svg/Plus.svg" alt="" style="background: none;"></button>
-                        <!-- <button id="report" class="button__hov"><img src="../assets/img/svg/AlertCircle.svg" alt=""
-                                style="background: none;"></button> -->
+                        <button v-show="this.column4[(el - 1)].is_editable" id="download" class="button__hov"
+                            @click="goToEdit()">
+                            <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
+                        </button>
+
                         <button v-show="user.is_moderator" id="delete" class="button__hov"><img
                                 src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
                     </div>
-                </div>
-            </div>
-            <div class="column5" v-if="column5.length > 0 & this.k == 5">
-                <div v-for="(el, index) in this.countImg" :key="index" className="item">
-                    <img v-if="el - 1 < this.column5.length"
-                        v-bind:src="'../../dist/uploads/attachments/362x/' + this.column5[(el - 1)].src1"
-                        :alt="'img ' + this.countImg * 5">
                 </div>
             </div>
 
@@ -185,7 +180,7 @@ export default {
                 })
                     .then(response => {
                         // this.result = response.data.items
-                        // console.log(this.result);
+
                         this.columnadd(response.data.items)
                         if (response.data.count == 20) {
                             this.page++
@@ -212,6 +207,7 @@ export default {
         })
             .then(response => {
                 this.user = response.data
+                console.log(this.urlstr, ('users/' + this.user.id + '/posts'))
             })
             .catch(error => {
                 console.log(error.message);
@@ -232,6 +228,7 @@ export default {
             }
 
         })
+
         setTimeout(() => {
             this.handleResize()
         }, 100);
@@ -521,6 +518,7 @@ button {
     height: 40px;
     width: 40px;
     border: 0;
+    padding: 10px;
     /* transition: opacity 1s ease; */
 }
 

@@ -11,6 +11,7 @@ import ChangeEmail from './page/ChangeEmail.vue'
 import Verify from './page/Verify.vue'
 import Adminpanel from './page/Adminpanel.vue'
 import Subs from './page/Subs.vue'
+import ResetPasword from './page/ResetPasword.vue'
 
 const routes = [
     { path: '/', component: HomeView, name: "homeview" },
@@ -25,6 +26,7 @@ const routes = [
     { path: '/verify', component: Verify, name: "verifyview" },
     { path: '/admin', component: Adminpanel, name: "adminpanelview" },
     { path: '/subscriptions', component: Subs, name: "subscriptionsview" },
+    { path: '/reset-password', component: ResetPasword, name: "resetpasswordview" },
 ]
 
 const router = createRouter({
