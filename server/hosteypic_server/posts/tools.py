@@ -27,6 +27,4 @@ async def get_post_previews(user: User, posts: list[Post]) -> SPostPreview:
 
         response_list.append(response)
 
-    response_list.reverse()     #TODO: temporary solution
-
     return response_list

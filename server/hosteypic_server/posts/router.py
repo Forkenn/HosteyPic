@@ -35,7 +35,7 @@ async def get_last_posts(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_optional_user)
 ) -> SPostsPreviews:
-    query = alch.select(Post).order_by(Post.timestamp.asc()).slice(start, end)
+    query = alch.select(Post).order_by(Post.timestamp.desc()).slice(start, end)
     posts = (await session.execute(query)).scalars().all()
 
     if not user:
