@@ -8,7 +8,7 @@
     </head>
 
     <body>
-        <div class="page">
+        <div v-show="visable.post & visable.user" class="page">
 
             <HeaderAuth />
 
@@ -77,6 +77,10 @@ export default {
     components: { Searchimg, Login, Bottom, HeaderNoAuth, HeaderAuth },
     data() {
         return {
+            visable: {
+                user: false,
+                post: false,
+            },
             userId: 0,
             authorised: false,
             login: true,
@@ -106,7 +110,16 @@ export default {
 
             })
             .catch(error => {
-                console.log(error.message);
+                this.$router.push({
+                    name: 'codeerrorview',
+                    query: {
+                        ErrorNum: 404
+                    }
+                })
+
+            })
+            .finally(() => {
+                this.visable.user = true
             });
 
 
@@ -128,6 +141,9 @@ export default {
             })
             .catch(error => {
                 console.log(error.message);
+            })
+            .finally(() => {
+                this.visable.post = true
             });
 
     },

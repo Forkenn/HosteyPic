@@ -8,6 +8,7 @@
                 <p>На почту {{ email }}
                     {{ text }}</p>
             </div>
+            <button>OK</button>
         </div>
     </div>
 </template>
@@ -28,7 +29,7 @@
     top: 50%;
     left: 50%;
     width: 500px;
-    max-height: 217px;
+    max-height: 500px;
     border-radius: 50px;
     transform: translate(-50%, -50%);
     background: #EFEDD9;
@@ -55,7 +56,27 @@
     line-height: 28.8px;
     text-align: justify;
     color: rgba(71, 67, 25, 1);
-    margin: 12px 30px 40px 30px;
+    margin: 12px 30px 0px 30px;
+}
+
+button {
+    font-family: Balsamiq Sans;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 38.4px;
+    text-align: center;
+    color: rgba(71, 67, 25, 1);
+    cursor: pointer;
+
+    width: 124px;
+    height: 60px;
+    margin: 34px 188px 34px 188px;
+    border-radius: 30px;
+    border: 4px solid rgba(177, 167, 63, 1)
+}
+
+button:active {
+    transform: scale(0.9);
 }
 </style>
 

@@ -51,7 +51,7 @@
                     </label>
                 </div>
                 <p class="forgot" v-if="!login">
-                    <a href="http://localhost:5173/reset-password">Забыли пароль?</a>
+                    <a href="../reset-password">Забыли пароль?</a>
                 </p>
 
 
@@ -377,36 +377,37 @@ export default {
 
         },
         sing_in() {
-            axios.post(import.meta.env.VITE_BACKEND_URL + 'auth/register', {
-                username: this.Username,
-                email: this.e_mail,
-                password: this.Password
-            })
-                .then(response => {
-                    console.log(response);
-
-                    localStorage.showver = 1
-                    this.fun_login()
-                    // window.location.reload()
+            if (conf_err & valid_pas)
+                axios.post(import.meta.env.VITE_BACKEND_URL + 'auth/register', {
+                    username: this.Username,
+                    email: this.e_mail,
+                    password: this.Password
                 })
-                .catch(error => {
-                    // this.$router.push({
-                    //     name: 'codeerrorview',
-                    //     query: {
-                    //         ErrorNum: error.status
-                    //     }
-                    // })
-                    this.error = error.response.data.detail
-                    console.log(error.status);
-                    if (error.status == 422)
-                        error.response.data.detail.forEach(element => {
-                            this.error.push(element.loc[1])
-                        });
-                    else {
+                    .then(response => {
+                        console.log(response);
+
+                        localStorage.showver = 1
+                        this.fun_login()
+                        // window.location.reload()
+                    })
+                    .catch(error => {
+                        // this.$router.push({
+                        //     name: 'codeerrorview',
+                        //     query: {
+                        //         ErrorNum: error.status
+                        //     }
+                        // })
                         this.error = error.response.data.detail
-                    }
-                    console.log(error.response.data.detail);
-                });
+                        console.log(error.status);
+                        if (error.status == 422)
+                            error.response.data.detail.forEach(element => {
+                                this.error.push(element.loc[1])
+                            });
+                        else {
+                            this.error = error.response.data.detail
+                        }
+                        console.log(error.response.data.detail);
+                    });
 
         },
         fun_login() {

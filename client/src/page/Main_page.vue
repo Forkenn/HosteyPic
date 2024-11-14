@@ -13,7 +13,7 @@
             <div class="gray" @click=show_login(true)></div>
         </div>
 
-        <div class="page">
+        <div v-show="visable.user & visable.post" class="page">
 
 
             <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
@@ -141,6 +141,10 @@ export default {
     components: { Searchimg, Login, Bottom, HeaderNoAuth, HeaderAuth },
     data() {
         return {
+            visable: {
+                user: false,
+                post: false,
+            },
             userId: 0,
             authorised: false,
             login: true,
@@ -167,11 +171,17 @@ export default {
             .then(response => {
                 if (response.status == 200) { this.authorised = true }
                 // console.log(response);
+                this.loading = true
 
             })
             .catch(error => {
+                this.loading = true
                 console.log(error.message);
+            })
+            .finally(() => {
+                this.visable.user = true
             });
+
 
 
         axios({
@@ -192,7 +202,10 @@ export default {
             })
             .catch(error => {
                 console.log(error.message);
-            });
+            })
+            .finally(() => {
+                this.visable.post = true
+            });;
 
         // this.loadImg(30);
     },

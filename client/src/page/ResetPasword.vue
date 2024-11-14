@@ -2,7 +2,7 @@
     <div class="page">
 
         <HeaderNoAuth />
-
+        <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.email" :edit="true" />
         <div class="wrap_pass">
             <p>Восстановление пароля</p>
             <div class="wrap_newpas" v-show="this.$route.query.token">
@@ -30,7 +30,7 @@
                 <input v-model="email" type="text">
 
             </div>
-            <button v-if="!this.$route.query.token" @click="forgot_pas">Запрос на почту</button>
+            <button v-if="!this.$route.query.token" @click="forgot_pas()">Запрос на почту</button>
         </div>
 
 
@@ -151,10 +151,12 @@ button {
 import axios from 'axios';
 import HeaderNoAuth from '@/components/HeaderNoAuth.vue';
 import Bottom from '@/components/Bottom.vue'
+import Announcement from '@/components/Announcement.vue';
 
 export default {
     data() {
         return {
+            showannouncement: false,
             password: "",
             email: "",
             valid_pas: true,
@@ -163,7 +165,7 @@ export default {
         }
 
     },
-    components: { HeaderNoAuth, Bottom },
+    components: { HeaderNoAuth, Bottom, Announcement },
     watch: {
         password: function (newval) {
             let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*#?&]{6,}$/
@@ -211,6 +213,9 @@ export default {
         })
     },
     methods: {
+        ShowAnnouncement() {
+            this.showannouncement = !this.showannouncement
+        },
         forgot_pas() {
             axios({
                 timeoute: 1000,
@@ -225,6 +230,7 @@ export default {
                 }
             })
                 .then(response => {
+                    this.ShowAnnouncement()
                     setTimeout(() => {
                         this.$router.push({
                             name: 'homeview',

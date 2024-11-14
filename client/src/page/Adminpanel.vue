@@ -44,23 +44,27 @@
                     </div>
                 </div>
                 <div class="btn_wrap">
-                    <div style="display: flex; justify-content: space-between; width: calc(100% - 50px);">
+                    <div class="btn_user">
                         <button v-if="!user.is_moderator" @click="mod_user()">
                             Повысить
                         </button>
                         <button v-else @click="unmod_user()">
                             Понизить
                         </button>
+                    </div>
+                    <div class="btn_user">
                         <button @click="delete_user()">
                             Удалить
                         </button>
                     </div>
-                    <button v-if="user.is_active" v-on:click="ban_user()">
-                        Заблокировать
-                    </button>
-                    <button v-else v-on:click="unban_user()">
-                        Разблокировать
-                    </button>
+                    <div class="btn_user">
+                        <button v-if="user.is_active" v-on:click="ban_user()">
+                            Заблокировать
+                        </button>
+                        <button v-else v-on:click="unban_user()">
+                            Разблокировать
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -154,6 +158,7 @@ button {
     margin-bottom: 5px;
     border-radius: 16px;
     border: 0;
+    padding-left: 10px;
     background: rgba(239, 237, 217, 1);
 }
 
@@ -216,7 +221,20 @@ button {
 
 }
 
+.btn_user {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn_user button {
+    width: 263px;
+}
+
 .btn_wrap button {
+    margin-left: auto;
+    margin-right: auto;
+    /* width: 263px; */
     font-family: Balsamiq Sans;
     font-size: 24px;
     font-weight: 400;
@@ -469,33 +487,53 @@ export default {
     methods:
     {
         get_user() {
-            axios({
-                timeoute: 1000,
-                method: 'get',
-                url: (import.meta.env.VITE_BACKEND_URL + `users/${this.serach_user}`),
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.status == 200) {
-
-                        this.user = response.data
-                        console.log(this.user)
+            if (/^[+-]?\d+(\.\d+)?$/.test(this.serach_user))
+                axios({
+                    timeoute: 1000,
+                    method: 'get',
+                    url: (import.meta.env.VITE_BACKEND_URL + `users/${this.serach_user}`),
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-
                 })
-                .catch(error => {
-                    if (error.status != null) {
-                        // this.$router.push({
-                        //     name: 'codeerrorview',
-                        //     query: {
-                        //         ErrorNum: error.status
-                        //     }
-                        // })
+                    .then(response => {
+                        if (response.status == 200) {
+
+                            this.user = response.data
+                            console.log(this.user)
+                        }
+
+                    })
+                    .catch(error => {
+                        if (error.status != null) {
+
+                        }
+                    });
+            else {
+                axios({
+                    timeoute: 1000,
+                    method: 'get',
+                    url: (import.meta.env.VITE_BACKEND_URL + `users/search/${this.serach_user}`),
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                });
+                })
+                    .then(response => {
+                        if (response.status == 200) {
+
+                            this.user = response.data
+                            console.log(this.user)
+                        }
+
+                    })
+                    .catch(error => {
+                        if (error.status != null) {
+
+                        }
+                    });
+            }
         },
         ban_user() {
             axios({
@@ -647,6 +685,9 @@ export default {
                         console.log(error)
                     }
                 });
+        },
+        goToUser() {
+            this.$router.push({ name: 'userview', params: { id: this.user.id } })
         },
     },
 }

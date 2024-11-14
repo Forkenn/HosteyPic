@@ -3,7 +3,7 @@
         <Login :login1="login" @authorised1="authorised1" @show_ch='show_login' />
         <div class="gray" @click=show_login(true)></div>
     </div>
-    <div class="page">
+    <div v-show="visable.post & visable.user & visable.userid" class="page">
         <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
         <HeaderAuth v-if="authorised" />
 
@@ -320,6 +320,11 @@ export default {
     components: { Login, Bottom, HeaderAuth, HeaderNoAuth },
     data() {
         return {
+            visable: {
+                userid: false,
+                user: false,
+                post: false,
+            },
             authorised: false,
             file: Object,
             username: "asd",
@@ -333,7 +338,6 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$route.params.id)
         axios({
             timeoute: 1000,
             method: 'get',
@@ -368,20 +372,19 @@ export default {
 
                     })
                     .catch(error => {
-                        if (error.status != null) {
-                            // this.$router.push({
-                            //     name: 'codeerrorview',
-                            //     query: {
-                            //         ErrorNum: error.status
-                            //     }
-                            // })
-                        }
+                        console.log(error.message);
+                    })
+                    .finally(() => {
+                        this.visable.userid = true
                     });
 
             })
             .catch(error => {
                 console.log(error.message);
-            });
+            })
+            .finally(() => {
+                this.visable.post = true
+            });;
         axios({
             timeoute: 1000,
             method: 'get',
@@ -412,6 +415,9 @@ export default {
                     //     }
                     // })
                 }
+            })
+            .finally(() => {
+                this.visable.user = true
             });
     },
     methods: {

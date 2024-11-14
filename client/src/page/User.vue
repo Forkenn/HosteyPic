@@ -12,7 +12,7 @@
             <Login :login1="login" @authorised1="authorised1" @show_ch='show_login' />
             <div class="gray" @click=show_login(true)></div>
         </div>
-        <div class="page">
+        <div v-show="visable.user" class="page">
             <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
             <HeaderAuth v-if="authorised" />
 
@@ -99,7 +99,7 @@
                             <p v-show="result.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
                                 В процессе создания...
                             </p>
-                            <Searchimg :res="result" :urlstr="'users/' + this.$route.params.id + '/posts'" />
+                            <Searchimg :res="result" :urlstr="'posts/users/' + this.$route.params.id" />
 
                         </div>
                         <div class="tabs-body-item" v-show="activeTab === 2">
@@ -115,7 +115,7 @@
                             <p v-show="liked.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
                                 Видимо, пока что не нашел...
                             </p>
-                            <Searchimg :res="liked" :urlstr="'users/' + this.$route.params.id + '/posts/liked'" />
+                            <Searchimg :res="liked" :urlstr="'posts/users/' + this.$route.params.id + '/liked'" />
                         </div>
                         <!-- <div class="tabs-body-item" v-show="activeTab === 3">
                             <div class="collections">
@@ -192,6 +192,8 @@ html {
 }
 
 .userIcon {
+    height: 208px;
+    width: 208px;
     margin-left: auto;
     margin-right: auto;
     border: 4px solid rgba(177, 167, 63, 1);
@@ -394,6 +396,9 @@ export default {
     components: { Login, Bottom, Searchimg, HeaderAuth, HeaderNoAuth },
     data() {
         return {
+            visable: {
+                user: false,
+            },
             authorised: false,
             login: true,
             show: false,
@@ -438,12 +443,15 @@ export default {
             })
             .catch(error => {
                 // console.log(error.message);
-            });
+            })
+            .finally(() => {
+                this.visable.user = true
+            });;
 
         axios({
             timeoute: 1000,
             method: 'get',
-            url: import.meta.env.VITE_BACKEND_URL + `users/${this.$route.params.id}/posts?start=0&end=20`,
+            url: import.meta.env.VITE_BACKEND_URL + `posts/users/${this.$route.params.id}?start=0&end=20`,
 
             withCredentials: true,
             headers: {
@@ -463,7 +471,7 @@ export default {
         axios({
             timeoute: 1000,
             method: 'get',
-            url: import.meta.env.VITE_BACKEND_URL + `users/${this.$route.params.id}/posts/liked?start=0&end=20`,
+            url: import.meta.env.VITE_BACKEND_URL + `posts/users/${this.$route.params.id}/liked?start=0&end=20`,
 
             withCredentials: true,
             headers: {

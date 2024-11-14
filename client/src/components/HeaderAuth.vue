@@ -5,7 +5,7 @@
     <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.user.email" :edit="true" />
     <header class="header">
 
-        <div class="wrapper__header">
+        <div v-show="loading" class="wrapper__header">
             <div v-if="!user.is_verified" @click="verefi(); ShowAnnouncement()" class="alert">
                 <p>Подтвердите почту!</p>
             </div>
@@ -262,6 +262,7 @@ import Announcement from './Announcement.vue';
 export default {
     data() {
         return {
+            loading: false,
             showannouncement: false,
             userName: "",
             email: "",
@@ -306,25 +307,16 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     this.user = response.data
-
-                    if (response.data.avatar) {
-                        this.user.avatar.avatar = response.data.avatar
-                    }
-                    else {
-                        this.user.avatar = "0Z9fPWMyZfPi2VAUi9LvdRiAr9HhDM.jpg"
-                    }
-
                     if (this.user.is_verified & this.$route.name == "homeview" & localStorage.showver.length < 3) {
                         localStorage.showver += 1
                         this.countshow = localStorage.showver
                     }
                     else if (this.user.is_verified & localStorage.showver.length == 2) {
-                        console.log(123)
                         localStorage.showver += 1
                         this.countshow = localStorage.showver
                     }
                     // this.email = response.data.email
-
+                    this.loading = true
                 }
 
             })
@@ -429,7 +421,6 @@ export default {
 
                 setTimeout(() => {
                     localStorage.showver += 1
-                    console.log(123)
                     this.countshow = localStorage.showver
                 }, 3000);
             }
