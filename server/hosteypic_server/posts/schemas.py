@@ -50,3 +50,22 @@ class SPostCreate:
         max_items=10,
         description="Tags ids. Max 10 elements"
     )
+
+class SPostEdit(BaseModel):
+    title: str = Field(
+        min_length=4,
+        max_length=100,
+        description="Title from 4 to 100 symbols"
+    )
+    body: str = Field(
+        default=...,
+        min_length=0,
+        max_length=500,
+        description="Body from 0 to 500 symbols"
+    )
+    tag: Optional[list[int]] = Field(
+        default=None,
+        min_items=0,
+        max_items=10,
+        description="Tags ids. Max 10 elements"
+    )

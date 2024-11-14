@@ -17,7 +17,9 @@ from hosteypic_server.users.models import User
 from hosteypic_server.tags.models import Tag
 from hosteypic_server.posts.models import Post
 from hosteypic_server.likes.models import Like
-from hosteypic_server.posts.schemas import SPostRead, SPostsPreviews, SPostCreate
+from hosteypic_server.posts.schemas import (
+    SPostRead, SPostsPreviews, SPostCreate, SPostEdit
+)
 from hosteypic_server.posts.tools import get_validate_post, get_post_previews
 from hosteypic_server.exceptions import (
     FileTypeException, FIleParamsException, NotFoundException
@@ -170,32 +172,11 @@ async def create_post(
 @router.patch('/{post_id}')
 async def edit_post_by_id(
         post_id: int,
-        post_data: SPostCreate = Depends(),
-        attachment: UploadFile = None,
+        post_data: SPostEdit,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
     post: Post = await get_validate_post(session, user, post_id)
-
-    if attachment:  # TODO: improve
-        if attachment.content_type not in ('image/jpeg', 'image/png'):
-            raise FileTypeException()
-        
-        current_loop = asyncio.get_running_loop()
-        with ThreadPoolExecutor() as pool:
-            await current_loop.run_in_executor(
-                pool, ImageManager.delete_attachment, post.attachment
-            )
-    
-            filename = await current_loop.run_in_executor(
-                pool, ImageManager.upload_attachment, attachment.file
-            )
-
-        if not filename:
-            raise FIleParamsException()
-        
-        post.attachment = filename
-
     new_post_data = post_data.__dict__
     new_tags_ids: list[int] = new_post_data.pop("tag")
     await session.refresh(post, attribute_names=["tags"])
@@ -205,9 +186,7 @@ async def edit_post_by_id(
         query = alch.select(Tag).where(Tag.id.in_(new_tags_ids))
         tags_list = (await session.execute(query)).scalars().all()
 
-    if tags_list:
-        post.tags = tags_list
-
+    post.tags = tags_list
     await post.update(**new_post_data)
     await session.commit()
 
