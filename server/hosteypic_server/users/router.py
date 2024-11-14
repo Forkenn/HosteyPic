@@ -16,7 +16,6 @@ from hosteypic_server.exceptions import (
 )
 from hosteypic_server.image import ImageManager
 from hosteypic_server.auth.schemas import SUsername
-from hosteypic_server.users.tools import get_object_by_id
 from hosteypic_server.users.models import User
 from hosteypic_server.likes.models import Like
 from hosteypic_server.users.schemas import (
@@ -61,7 +60,7 @@ async def get_user_by_id(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_optional_user)
 ) -> SUserReadSingle:
-    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp: User = await session.get(User, user_id)
     if not user_resp:
         raise NotFoundException()
 
@@ -120,7 +119,9 @@ async def edit_user_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):  
-    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
 
     await user_resp.update(**data.model_dump())
     await session.commit()
@@ -195,7 +196,10 @@ async def ban_user_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):
-    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+
     user_resp.is_active = False
     await session.commit()
 
@@ -207,7 +211,10 @@ async def unban_user_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_moderator)
 ):
-    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+
     user_resp.is_active = True
     await session.commit()
 
@@ -219,7 +226,10 @@ async def user_to_moderator_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_superuser)
 ):
-    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+
     user_resp.is_moderator = True
     await session.commit()
 
@@ -231,7 +241,10 @@ async def moderator_to_user_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_superuser)
 ):
-    user_resp: User = await get_object_by_id(user_id, session)
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+
     user_resp.is_moderator = False
     await session.commit()
 
@@ -246,11 +259,14 @@ async def follow_by_id(
     if user_id == user.id:
         raise YourselfException()
 
-    follow_user: User = await get_object_by_id(user_id, session)
-    if not follow_user.is_active:
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+
+    if not user_resp.is_active:
         raise BannedException()
 
-    await user.follow(follow_user)
+    await user.follow(user_resp)
     await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -264,8 +280,11 @@ async def unfollow_by_id(
     if user_id == user.id:
         raise YourselfException()
 
-    unfollow_user: User = await get_object_by_id(user_id, session)
-    await user.unfollow(unfollow_user)
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+
+    await user.unfollow(user_resp)
     await session.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -278,6 +297,7 @@ async def get_user_liked_posts(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_optional_user)
 ) -> SPostsPreviews:
+    """ВНИМАНИЕ! МЕТОД БУДЕТ УДАЛЕН!"""
     query = alch.select(Like).where(
         Like.user_id == user_id
     ).slice(start, end).options(selectinload(Like.post))
@@ -303,7 +323,11 @@ async def get_user_posts_by_id(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_optional_user)
 ) -> SPostsPreviews:
-    user_resp: User = await get_object_by_id(user_id, session)
+    """ВНИМАНИЕ! МЕТОД БУДЕТ УДАЛЕН!"""
+    user_resp: User = await session.get(User, user_id)
+    if not user_resp:
+        raise NotFoundException()
+
     query = user_resp.posts.select().order_by(
         Post.timestamp.desc()
     ).slice(start, end)

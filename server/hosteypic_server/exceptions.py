@@ -14,6 +14,13 @@ class BadRequestException(HTTPException):
     def __init__(self, headers = None):
         super().__init__(self.status_code, self.detail, headers)
 
+class ForbiddenException(HTTPException):
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = ''
+
+    def __init__(self, headers = None):
+        super().__init__(self.status_code, self.detail, headers)
+
 class NotFoundException(HTTPException):
     status_code = status.HTTP_404_NOT_FOUND
     detail = 'ITEM_NOT_FOUND'
@@ -38,3 +45,6 @@ class BannedException(BadRequestException):
 
 class MaxObjectsException(BadRequestException):
     detail = 'MAX_OBJECTS_COUNT_IN_DB'
+
+class NotAllowedException(ForbiddenException):
+    detail = 'NOT_ALLOWED'
