@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <HeaderAuth />
-        <div class="wrap">
+        <div class="wrap" style="overflow:visible">
             <div class="drag__drop__wrap">
                 <input id="file" type="file" @change="onFileSelected" hidden accept="image/*,.png,.jpeg,.jpg" />
                 <div v-if="!droped" onclick="file.click()" class="drag__drop" @dragover.prevent="onDragOver"
@@ -23,15 +23,29 @@
 
                 </div>
                 <div v-else class="dropimg__wrap">
-                    <div class="img__wrap" style="position: relative;">
-                        <div class="reset" @click="reset">
-                            <img src="../assets/img/svg/reset.svg" alt="">
+                    <!-- {{ (this.ima.width) }} -->
+                    <div class="img__wrap" style="position: relative; overflow:visible;">
+
+                        <div :style="this.styleobj"
+                            style=" max-height:600px; position: relative; overflow: hidden; border-radius: 50px;">
+                            <img class="drop_img" :src="image.url" :style="this.styleobj" alt="drop_img">
+                            <div v-show="!this.$route.query.id" class="reset" @click="reset" :style="'right:' + (1)">
+                                <img src="../assets/img/svg/reset.svg" alt="">
+                            </div>
                         </div>
-                        <img class="drop_img" :src="image.url" :style="this.styleobj" alt="drop_img">
+
+
+                        <div v-show="!this.$route.query.id"
+                            style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                            <button @click="UploadImg">Опубликовать</button>
+                        </div>
+                        <div v-show="this.$route.query.id"
+                            style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                            <button @click="editImg">Сохранить</button>
+                        </div>
                     </div>
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                        <button @click="UploadImg">Опубликовать</button>
-                    </div>
+
+
                 </div>
                 <div :class="[{ input__wrap: droped }, { disable: !droped }]">
                     <label>Название</label>
@@ -44,7 +58,7 @@
                     <textarea :readonly="!droped" placeholder="Выберите альбом"></textarea> -->
                     <label>Теги</label>
                     <input id="idSearch" :readonly="!droped" maxlength="30" v-model="taginput"
-                        placeholder="Введите тег для поиска"></input>
+                        placeholder="Введите тег для поиска" v-on:focusin="hidetag(true)"></input>
                     <div class="maxvalue" style="position: relative;" v-show="ArrayTag.length == 10">
                         <p
                             style="position: absolute; top: -15px; left: 20px; color:rgba(189, 38, 38, 1); width: 200px;">
@@ -52,7 +66,7 @@
                             лимит тегов.</p>
                     </div>
                     <div class="wrap_tagul" style="position: absolute; top: 510px;"
-                        v-show="taginput.length > 0 & ArrayTag.length != 10">
+                        v-show="taginput.length > 0 & ArrayTag.length != 10 & showtag" id="tagul">
                         <div id="searchResults" class="tagul">
                             <ul style="color: black;">
                                 <li class="tagli" v-for="el in tags.items" @click="addtag(el.name, el.id)"
@@ -260,10 +274,14 @@ input:focus::placeholder {
 
 .img__wrap {
     /* min-width: 256px; */
-    width: 420px;
+    width: 100%;
     height: 600px;
-    overflow: hidden;
+    max-height: 600px;
+    /* overflow: hidden; */
     border-radius: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .reset {
@@ -283,6 +301,7 @@ input:focus::placeholder {
 }
 
 .drop_img {
+
     border-radius: 50px;
     border: 4px solid rgba(177, 167, 63, 1)
 }
@@ -413,6 +432,7 @@ export default {
     components: { HeaderAuth, Bottom, AddTag },
     data() {
         return {
+            showtag: false,
             title: "",
             body: "",
             input__wrap: 'input__wrap',
@@ -422,9 +442,12 @@ export default {
             ArrayTag: [],
             droped: false,
             file: Object,
+            imageEdit: {},
             image: {
                 name: "",
                 url: "",
+                width: "",
+                height: "",
             },
             tags: "",
             styleobj: {
@@ -435,27 +458,48 @@ export default {
         }
 
     },
+    watch: {
+        '$route': function () {
+            // this.reset()
+            window.location.reload()
+        },
+    },
     mounted() {
-        document.querySelector('#idSearch').oninput = function () {
-            let val = this.value.trim();
 
+        const menu = document.getElementById('tagul');
+        const inp = document.getElementById('idSearch');
+
+        document.addEventListener('click', (e) => {
+            if (!icon.contains(e.target)) {
+                if (!menu.contains(e.target) & !inp.contains(e.target) & this.showtag) {
+                    console.log(this.showtag)
+                    this.hidetag(false)
+                    // this.showtag = false
+                }
+
+            }
+        });
+        // const self = this
+        document.querySelector('#idSearch').oninput = (event) => {
+            let val = event.target.value.trim();
             let itemli = document.querySelectorAll('.tagli');
             if (val != '') {
-                itemli.forEach(function (elem) {
+                this.hidetag(true);
+
+                itemli.forEach((elem) => {
                     if (elem.innerText.search(val) == -1) {
                         elem.classList.add('hide');
-                    }
-                    else {
+                    } else {
                         elem.classList.remove('hide');
                     }
                 });
-            }
-            else {
-                itemli.forEach(function (elem) {
+            } else {
+                itemli.forEach((elem) => {
                     elem.classList.remove('hide');
                 });
             }
-        }
+        };
+
 
 
         axios({
@@ -508,12 +552,62 @@ export default {
                 console.log(error.message);
             });
 
+        if (this.$route.query.id) {
+            axios({
+                timeoute: 1000,
+                method: 'get',
+                url: (import.meta.env.VITE_BACKEND_URL + `posts/${this.$route.query.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    this.imageEdit = response.data
+                    if (!this.imageEdit.is_editable)
+                        this.$router.push({ name: 'homeview' })
+                    else {
+                        this.image.url = '../../dist/uploads/attachments/original/' + this.imageEdit.attachment
+                        this.droped = true
+
+
+                        var img = new Image();
+                        img.onload = () => {
+                            this.image.height = img.height
+                            this.image.width = img.width
+                            if (img.height / img.width <= 1.5) {
+                                this.styleobj.width = '100%'
+                                this.styleobj.height = 'auto'
+                            } else {
+                                this.styleobj.height = '100%'
+                                this.styleobj.width = 'auto'
+                            }
+
+                        };
+                        img.src = this.image.url;
+
+                        this.body = this.imageEdit.body
+                        this.title = this.imageEdit.title
+                        this.imageEdit.tags_list.forEach((elem) =>
+                            this.ArrayTag.push({ id: elem.id, name: elem.name })
+                        );
+
+                    }
+
+                })
+                .catch(error => {
+                    console.log(error.message);
+                })
+
+        }
     },
     methods: {
-
+        hidetag(val) {
+            this.showtag = val
+        },
         addtag(tag, id) {
             if (this.ArrayTag.length < 10)
-                this.ArrayTag.push({ nametag: tag, id: id })
+                this.ArrayTag.push({ id: id, name: tag })
             this.taginput = ""
 
         },
@@ -545,6 +639,8 @@ export default {
                             this.image.name = this.file.name
                             this.image.url = URL.createObjectURL(this.file)
                             this.droped = true
+                            this.image.height = img.height
+                            this.image.width = img.width
                             if (img.height / img.width <= 1.5) {
                                 this.styleobj.width = '100%'
                                 this.styleobj.height = 'auto'
@@ -579,6 +675,8 @@ export default {
                             this.image.name = this.file.name
                             this.image.url = URL.createObjectURL(this.file)
                             this.droped = true
+                            this.image.height = img.height
+                            this.image.width = img.width
                             if (img.height / img.width <= 1.5) {
                                 this.styleobj.width = '100%'
                                 this.styleobj.height = 'auto'
@@ -597,7 +695,6 @@ export default {
             }
         },
         UploadImg() {
-            // console.log(this.ArrayTag.id)
             const bodyFormData = new FormData()
             bodyFormData.append('attachment', this.file)
             bodyFormData.append('title', this.title)
@@ -619,6 +716,7 @@ export default {
                 .then(response => {
 
                     console.log(response)
+                    window.location.reload()
 
                 })
                 .catch(error => {
@@ -634,7 +732,47 @@ export default {
             this.droped = false
             const item = document.getElementById('file')
             item.value = '';
-        }
+        },
+        editImg() {
+            if (this.imageEdit.title != this.title | this.imageEdit.body != this.body | JSON.stringify(this.imageEdit.tags_list) != JSON.stringify(this.ArrayTag)) {
+                var tag_mas = []
+                this.ArrayTag.forEach((item) => {
+                    tag_mas.push(item.id)
+                })
+
+                axios({
+                    timeoute: 1000,
+                    method: 'patch',
+                    url: import.meta.env.VITE_BACKEND_URL + 'posts/' + this.$route.query.id,
+                    withCredentials: true,
+                    data: {
+                        title: this.title,
+                        body: this.body,
+                        tag: tag_mas
+                    },
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+
+                        console.log(response)
+
+                    })
+                    .catch(error => {
+                        if (error.status != null) {
+                            // this.$router.push({
+                            //     name: 'homeview',
+                            // })
+                        }
+                        console.log(error.message);
+                    });
+            }
+            else {
+                console.log('нет изменений')
+            }
+        },
     }
 }
 </script>

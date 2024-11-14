@@ -1,6 +1,6 @@
 <template>
 
-    <div id="wrapper__picture" class="wrapper__picture" style="position: relative;">
+    <div :id="urlstr" class="wrapper__picture" style="position: relative;">
         <div id="list" v-if="res.length > 0">
 
             <div class="column1" :style=style(1)>
@@ -18,7 +18,7 @@
                     </button>
 
                     <button v-show="this.column1[(el - 1)].is_editable" id="download" class="button__hov"
-                        @click="goToEdit()">
+                        @click="goToEdit(this.column1[(el - 1)].id)">
                         <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                     </button>
                     <button v-show="user.is_moderator" id="delete" class="button__hov"><img
@@ -40,7 +40,7 @@
                         </button>
 
                         <button v-show="this.column2[(el - 1)].is_editable" id="download" class="button__hov"
-                            @click="goToEdit()">
+                            @click="goToEdit(this.column2[(el - 1)].id)">
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                         </button>
                         <button v-show="user.is_moderator" id="delete" class="button__hov"><img
@@ -63,7 +63,7 @@
                         </button>
 
                         <button v-show="this.column3[(el - 1)].is_editable" id="download" class="button__hov"
-                            @click="goToEdit()">
+                            @click="goToEdit(this.column3[(el - 1)].id)">
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                         </button>
                         <button v-show="user.is_moderator" id="delete" class="button__hov"><img
@@ -85,7 +85,7 @@
                             </a>
                         </button>
                         <button v-show="this.column4[(el - 1)].is_editable" id="download" class="button__hov"
-                            @click="goToEdit()">
+                            @click="goToEdit(this.column4[(el - 1)].id)">
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                         </button>
 
@@ -207,7 +207,6 @@ export default {
         })
             .then(response => {
                 this.user = response.data
-                console.log(this.urlstr, ('users/' + this.user.id + '/posts'))
             })
             .catch(error => {
                 console.log(error.message);
@@ -389,6 +388,9 @@ export default {
         goToPicturePost(id) {
             this.$router.push({ name: 'postview', params: { id: id } })
         },
+        goToEdit(id) {
+            this.$router.push({ name: 'uploadimgview', query: { id: id } })
+        },
         style(key) {
 
             let styleobj = {
@@ -402,22 +404,37 @@ export default {
             let styleobj = {
             }
             // var h = 5000
-            var h = document.getElementById('wrapper__picture');
-
+            var h = document.getElementById(this.urlstr);
             if (h) {
+
                 if (this.urlstr == "posts")
                     if (this.verticalScroll + 700 > h.clientHeight) {
                         styleobj.bottom = '-70px'
                     }
                     else {
-                        styleobj.top = this.verticalScroll + 700 + 'px'
+                        styleobj.top = this.verticalScroll + 550 + 'px'
                     }
-                else if (this.urlstr == 'users/' + this.$route.params.id + '/posts') {
+                else if (this.urlstr == 'posts/users/' + this.$route.params.id) {
                     if (this.verticalScroll > h.clientHeight) {
                         styleobj.bottom = '-70px'
                     }
                     else {
-                        styleobj.top = this.verticalScroll - 50 + 'px'
+                        if (this.user.id != this.$route.params.id)
+                            styleobj.top = this.verticalScroll - 50 + 'px'
+                        else
+                            styleobj.top = this.verticalScroll + 50 + 'px'
+
+                    }
+                }
+                else if (this.urlstr == 'posts/users/' + this.$route.params.id + '/liked') {
+                    if (this.verticalScroll > h.clientHeight) {
+                        styleobj.bottom = '-70px'
+                    }
+                    else {
+                        if (this.user.id != this.$route.params.id)
+                            styleobj.top = this.verticalScroll - 50 + 'px'
+                        else
+                            styleobj.top = this.verticalScroll + 50 + 'px'
                     }
                 }
                 else if (this.urlstr == 'posts/followed') {

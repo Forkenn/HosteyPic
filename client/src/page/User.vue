@@ -28,7 +28,7 @@
                     </div>
                     <div class="subscribers">
                         <span class="countsubscribers">
-                            <p>{{ userid.followers_count }} подписчики</p>
+                            <p>Подписчиков: {{ userid.followers_count }} </p>
                         </span>
 
                     </div>
@@ -56,12 +56,13 @@
                     </div>
 
                 </div>
-                <div v-show="user.id != userid.id & !userid.is_following" class="folow_btn">
+                <div v-show="(user.id != userid.id) & !userid.is_following & authorised" class="folow_btn">
+
                     <button @click="followed">
                         Подписаться
                     </button>
                 </div>
-                <div v-show="user.id != userid.id & userid.is_following" class="folow_btn">
+                <div v-show="(user.id != userid.id) & userid.is_following & authorised" class="folow_btn">
                     <button @click="unfollowed">
                         Отписаться
                     </button>
@@ -105,7 +106,7 @@
                         <div class="tabs-body-item" v-show="activeTab === 2">
                             <p v-if="liked.length == 0 & (user.id == userid.id)" style="margin-top: 75px;">Здесь
                                 пусто...
-                                <button class="create" @click="goToUpload">
+                                <button class="create" @click="goToHome">
                                     Вперед
                                 </button>
 
@@ -541,6 +542,9 @@ export default {
         },
         goToUpload() {
             this.$router.push({ name: 'uploadimgview' })
+        },
+        goToHome() {
+            this.$router.push({ name: 'homeview' })
         },
         followed() {
             axios({

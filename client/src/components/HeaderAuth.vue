@@ -237,6 +237,10 @@ button:active {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     /* width: calc(100% - 190px - 80px - 463px); */
 }
 
@@ -316,7 +320,7 @@ export default {
                         this.countshow = localStorage.showver
                     }
                     // this.email = response.data.email
-                    this.loading = true
+
                 }
 
             })
@@ -330,6 +334,9 @@ export default {
                             }
                         })
                 }
+            })
+            .finally(() => {
+                this.loading = true
             });
 
     },

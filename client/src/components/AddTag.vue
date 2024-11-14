@@ -2,7 +2,7 @@
     <div class="wrapper__tag" id="wrap">
 
         <div v-for="(el, index) in ArrayTag" :key="index" className="item">
-            <p>{{ el.nametag }}</p>
+            <p>{{ el.name }}</p>
 
             <img class="del_tag" src="../assets/img/svg/X.svg" @click="del_tag(index)">
 
