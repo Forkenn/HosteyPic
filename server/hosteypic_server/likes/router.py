@@ -1,5 +1,4 @@
 import sqlalchemy as alch
-import sqlalchemy.orm as orm
 
 from fastapi import APIRouter, status, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession

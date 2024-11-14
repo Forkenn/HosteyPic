@@ -7,11 +7,21 @@ from typing import List
 
 from sqlalchemy import ForeignKey, String, DateTime
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import REGCONFIG
 
 from hosteypic_server.database import Base, async_session_maker
 from hosteypic_server.mixins import ModelMixin
 from hosteypic_server.users.models import User
 from hosteypic_server.tags.models import Tag, tags_posts
+
+"""posts_vectors = alch.Table(
+    'posts_vectors', Base.metadata,
+    alch.Column('post_id', alch.Integer, alch.ForeignKey('posts.id', ondelete='CASCADE'),
+        primary_key=True),
+    alch.Column('vector', TSVECTOR)
+)
+
+idx_gin_posts = alch.Index('idx_gin_posts', posts_vectors.c.vector, postgresql_using='gin')"""
 
 class Post(Base, ModelMixin):
     __tablename__ = 'posts'
@@ -25,6 +35,7 @@ class Post(Base, ModelMixin):
     user_id: orm.Mapped[int] = orm.mapped_column(
         ForeignKey(User.id, ondelete='CASCADE'), index=True
     )
+    lang: orm.Mapped[REGCONFIG] = orm.mapped_column(REGCONFIG(), server_default="english")
 
     author: orm.Mapped['User'] = orm.relationship(back_populates='posts')
 
@@ -57,7 +68,7 @@ class Post(Base, ModelMixin):
         return True
         
     async def editable_flag(self, user: User) -> bool:
-        if not (await self.deletable_flag(user)):
+        if self.user_id != user.id:
             return False
 
         delta = datetime.now(timezone.utc) - self.timestamp
