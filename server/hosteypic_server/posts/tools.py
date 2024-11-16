@@ -24,6 +24,7 @@ async def get_post_previews(user: User, posts: list[Post]) -> SPostPreview:
         response = SPostPreview(**post.__dict__)
         response.is_deletable = await post.deletable_flag(user)
         response.is_editable = await post.editable_flag(user)
+        response.is_liked = await post.liked_flag(user)
 
         response_list.append(response)
 

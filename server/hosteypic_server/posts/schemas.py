@@ -15,9 +15,9 @@ class SPostPreview(BaseModel):
     attachment: str
     is_deletable: bool = False
     is_editable: bool = False
+    is_liked: bool = False
 
 class SPostRead(SPostPreview):
-    is_liked: bool = False
     likes_count: int
     title: str
     body: str
