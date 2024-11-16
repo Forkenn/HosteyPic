@@ -38,45 +38,40 @@ class SUserEdit(BaseModel):
     github_link: Optional[str] = Field(default=None, max_length=140)
     gitlab_link: Optional[str] = Field(default=None, max_length=140)
 
+    @classmethod
+    def link_validator(cls, link: str | None, regex: str) -> str | None:
+        if not link:
+            return link
+        
+        pattern: re.Pattern[str] = re.compile(regex)
+        if not pattern.match(link):
+            raise ValueError("Link does not meet the requirements")
+        
+        return link
+
     @field_validator("vk_link")
     @classmethod
-    def validate_vk_link(cls, vk_link: str) -> str:
-        re_for_usrname: re.Pattern[str] = re.compile(
-            r"^(https?://vk\.com/)([a-zA-Z0-9._]{4,30}|id\d{1,28})$"
-        )
-        if not re_for_usrname.match(vk_link):
-            raise ValueError("VK link does not meet the requirements")
-        return vk_link
+    def validate_vk_link(cls, vk_link: str) -> str | None:
+        regex = r"^$|^(https?://vk\.com/)([a-zA-Z0-9._]{4,30}|id\d{1,28})$"
+        return cls.link_validator(vk_link, regex)
     
     @field_validator("ok_link")
     @classmethod
-    def validate_ok_link(cls, ok_link: str) -> str:
-        re_for_usrname: re.Pattern[str] = re.compile(
-            r"^(https?://ok\.ru/profile/)(\d{1,30})$"
-        )
-        if not re_for_usrname.match(ok_link):
-            raise ValueError("OK link does not meet the requirements")
-        return ok_link
+    def validate_ok_link(cls, ok_link: str) -> str | None:
+        regex = r"^$|^(https?://ok\.ru/profile/)(\d{1,30})$"
+        return cls.link_validator(ok_link, regex)
     
     @field_validator("github_link")
     @classmethod
-    def validate_github_link(cls, github_link: str) -> str:
-        re_for_usrname: re.Pattern[str] = re.compile(
-            r"^(https?://github\.com/)([a-zA-Z0-9](?:-?[a-zA-Z0-9]){0,38})$"
-        )
-        if not re_for_usrname.match(github_link):
-            raise ValueError("GitHub link does not meet the requirements")
-        return github_link
+    def validate_github_link(cls, github_link: str) -> str | None:
+        regex = r"^$|^(https?://github\.com/)([a-zA-Z0-9](?:-?[a-zA-Z0-9]){0,38})$"
+        return cls.link_validator(github_link, regex)
     
     @field_validator("gitlab_link")
     @classmethod
-    def validate_gitlab_link(cls, ok_link: str) -> str:
-        re_for_usrname: re.Pattern[str] = re.compile(
-            r"^(https?://gitlab\.com/)([a-zA-Z0-9](?:[._-]?[a-zA-Z0-9]){0,29})$"
-        )
-        if not re_for_usrname.match(ok_link):
-            raise ValueError("GitLab link does not meet the requirements")
-        return ok_link
+    def validate_gitlab_link(cls, gitlab_link: str) -> str | None:
+        regex = r"^$|^(https?://gitlab\.com/)([a-zA-Z0-9](?:[._-]?[a-zA-Z0-9]){0,29})$"
+        return cls.link_validator(gitlab_link, regex)
 
 class SUserUsernameEdit(SUsername):
     pass
