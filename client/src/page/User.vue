@@ -32,7 +32,8 @@
                         </span>
 
                     </div>
-                    <div class="socialmedia">
+                    <div class="socialmedia"
+                        v-if="userid.github_link != null | userid.gitlab_link != null | userid.ok_link != null | userid.vk_link != null">
                         <div v-if="userid.github_link" class="github">
                             <a :href=userid.github_link target="_blank">
                                 <img src="../assets/img/svg/GitHub.svg" alt="">
@@ -54,7 +55,12 @@
                             </a>
                         </div>
                     </div>
-
+                    <div class="text_about" v-if="userid.about_me">
+                        <p v-show="show_about" @click="about_ch(false)">Подробнее...</p>
+                        <span class="about">
+                            <p v-show="!show_about" @click="about_ch(true)">{{ userid.about_me }}</p>
+                        </span>
+                    </div>
                 </div>
                 <div v-show="(user.id != userid.id) & !userid.is_following & authorised" class="folow_btn">
 
@@ -254,6 +260,37 @@ html {
 }
 
 
+.text_about {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+
+p {
+    color: rgba(71, 67, 25, 1);
+}
+
+.text_about p {
+    font-family: Balsamiq Sans;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 38.4px;
+    color: rgba(71, 67, 25, 1);
+    cursor: pointer;
+
+}
+
+.text_about .about {
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: justify;
+
+}
+
 .tabs__wrap {
     position: sticky;
     margin-top: 47px;
@@ -415,6 +452,7 @@ export default {
             gitlab: "",
             vk: "",
             ok: "",
+            show_about: true,
         }
 
     },
@@ -536,6 +574,9 @@ export default {
                 this.show = true
             }
 
+        },
+        about_ch(show_about) {
+            this.show_about = show_about
         },
         login_ch(login) {
             this.login = login

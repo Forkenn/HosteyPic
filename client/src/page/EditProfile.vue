@@ -3,67 +3,120 @@
     <div class="page">
         <HeaderAuth />
         <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.email" :edit="true" />
-        <div class="wrap__edit">
+        <div>
+            <div class="menu">
+                <div class="tabs-header">
 
-            <div class="wrap__item">
-                <label>Фото</label>
-                <div class="icon_btn">
-                    <!-- <input id="file" type="file" @change="onFileSelected" hidden accept="image/*,.png,.jpeg,.jpg" /> -->
-                    <div class="img__wrap">
-                        <img v-if="image.name" :src="image.url" alt="аватарка">
-                        <img v-else :src="`../../dist/uploads/avatars/original/${this.avatar}`" alt="аватарка">
+                    <button class="tabs-btn" style="margin-top: 65px;" @click="activeTab = 1"
+                        :class="{ active: activeTab === 1 }">Профиль
+                    </button>
+                    <button class="tabs-btn" @click="activeTab = 2" :class="{ active: activeTab === 2 }">Контакты
+                    </button>
+                    <button class="tabs-btn" @click="activeTab = 3" :class="{ active: activeTab === 3 }">Безопасность
+                    </button>
 
+                </div>
+            </div>
+        </div>
+        <div class="tabs_body">
+            <div class="wrap__edit" v-show="activeTab === 1">
+
+                <div class="wrap__item">
+                    <label>Фото</label>
+                    <div class="icon_btn">
+                        <!-- <input id="file" type="file" @change="onFileSelected" hidden accept="image/*,.png,.jpeg,.jpg" /> -->
+                        <div class="img__wrap">
+                            <img v-if="image.name" :src="image.url" alt="аватарка">
+                            <img v-else :src="`../../dist/uploads/avatars/original/${this.avatar}`" alt="аватарка">
+
+                        </div>
+                        <button @click="show_edit" class="btn_edit">Изменить</button>
                     </div>
-                    <button @click="show_edit" class="btn_edit">Изменить</button>
+                    <div v-if="show" class="editavatar">
+                        <AvatarUploader :avatar="avatar" />
+                    </div>
                 </div>
-                <div v-if="show" class="editavatar">
-                    <AvatarUploader :avatar="avatar" />
+                <div class="wrap__item">
+                    <label>Псевдоним</label>
+                    <div class="inptbtn">
+                        <input v-model="username" type="text" placeholder="Псевдоним">
+                        <button @click="SetUsername" class="btn_edit">Изменить</button>
+                    </div>
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="busy">
+                            Никнейм уже занят
+                        </label>
+                        <label class="error_inp" v-if="nick_valid">
+                            Неверный формат ника
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <div class="wrap__item">
-                <label>Псевдоним</label>
-                <div class="inptbtn">
-                    <input v-model="username" type="text" placeholder="Псевдоним">
-                    <button @click="SetUsername" class="btn_edit">Изменить</button>
-                </div>
-            </div>
-            <div class="wrap__item">
-                <label>О себе</label>
-                <textarea placeholder="Расскажите о себе"></textarea>
-            </div>
-            <div class="wrap__item">
-                <label>Почта</label>
-                <div class="inptbtn">
-                    <input type="text" v-model=email>
-                    <button class="btn_edit" @click="EditEmail(); ShowAnnouncement()">Изменить</button>
-                </div>
-            </div>
-            <div class="wrap__item">
-                <p>Пароль</p>
-                <label class="lbl_social" style="font-size: 24px;">Введите старый пароль</label>
-                <input v-model="password.first" type="password" placeholder="********">
 
-                <label style="font-size: 24px; margin-top: 10px;">Введите новый пароль</label>
-                <div class="inptbtn"><input v-model="password.second" type="password" placeholder="********">
+            </div>
 
-                    <button @click="EditPassword" class="btn_edit">Изменить</button>
+            <div class="wrap__edit" v-show="activeTab === 2">
+                <div class="wrap__item">
+                    <label>О себе</label>
+                    <textarea v-model="social.about_me" placeholder="Расскажите о себе"></textarea>
+                </div>
+
+                <div class="wrap__item">
+                    <p>Ссылки</p>
+
+                    <label class="lbl_social">GitLab</label>
+                    <input v-model="social.gitlab_link" class="inpt_social" type="text"
+                        placeholder="https://gitlab.com/username">
+                    <label class="lbl_social">GitHub</label>
+                    <input v-model="social.github_link" class="inpt_social" type="text"
+                        placeholder="https://github.com/username">
+                    <label class="lbl_social">VK</label>
+                    <input v-model="social.vk_link" class="inpt_social" type="text"
+                        placeholder="https://vk.com/username">
+                    <label class="lbl_social">OK</label>
+                    <input v-model="social.ok_link" class="inpt_social" type="text"
+                        placeholder="https://ok.com/username">
+                </div>
+                <div class="button__save">
+                    <button @click="EditAbout()">
+                        Сохранить
+                    </button>
                 </div>
             </div>
-            <div class="wrap__item">
-                <p>Ссылки</p>
 
-                <label class="lbl_social">GitLab</label>
-                <input class="inpt_social" type="text" placeholder="https://gitlab.com/username">
-                <label class="lbl_social">GitHub</label>
-                <input class="inpt_social" type="text" placeholder="https://github.com/username">
-                <label class="lbl_social">VK</label>
-                <input class="inpt_social" type="text" placeholder="https://vk.com/username">
-                <label class="lbl_social">OK</label>
-                <input class="inpt_social" type="text" placeholder="https://ok.com/username">
-            </div>
-            <div class="button__save">
-                <button style="width: 237px;">Сохранить</button>
-                <button style="width: 194px;">Отмена</button>
+            <div class="wrap__edit" v-show="activeTab === 3">
+                <div class="wrap__item">
+                    <label>Почта</label>
+                    <div class="inptbtn">
+                        <input type="text" v-model=email>
+                        <button class="btn_edit" @click="EditEmail(); ShowAnnouncement()">Изменить</button>
+                    </div>
+                </div>
+                <div class="wrap__item">
+                    <p>Пароль</p>
+                    <label class="lbl_social" style="font-size: 24px;">Введите старый пароль</label>
+                    <input v-model="password.first" type="password" placeholder="********">
+
+                    <label style="font-size: 24px; margin-top: 10px;">Введите новый пароль</label>
+                    <input v-model="password.second" type="password" placeholder="********">
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="valid_pas">
+                            Пароль слишком легкий
+                        </label>
+                    </div>
+                    <label class="lbl_social" style="font-size: 24px;">Подтвердите пароль</label>
+                    <div class="inptbtn"><input id="conf_pas" v-model="password.third" type="password"
+                            placeholder="********">
+
+
+
+                        <button @click="EditPassword" class="btn_edit">Изменить</button>
+                    </div>
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="conf_err">
+                            Пароли не совпадают
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -79,6 +132,95 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+}
+
+
+.menu {
+    position: relative;
+    max-width: 1440px;
+    margin-left: 80px;
+    margin-right: auto;
+}
+
+.tabs-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 190px;
+    height: 197px;
+
+    border-radius: 0px 0px 16px 16px;
+    background: rgba(239, 237, 217, 1);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: center;
+
+}
+
+.tabs-btn {
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: left;
+    color: rgba(71, 67, 25, 1);
+
+    width: 180px;
+    height: 39px;
+    margin-bottom: 5px;
+    border-radius: 16px;
+    border: 0;
+    padding-left: 10px;
+    background: rgba(239, 237, 217, 1);
+}
+
+.tabs-btn.active {
+
+    background: rgba(224, 220, 178, 1);
+
+}
+
+.error_inp {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    margin: 0;
+    margin-left: 10px;
+    font-family: Balsamiq Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+    color: rgba(189, 38, 38, 1);
+
+}
+
+.tabs_body {
+    max-width: 583px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.tabs-body-item {
+    background: rgba(239, 237, 217, 1);
+
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    /* flex-direction: column; */
+    /* align-items: center; */
+    justify-content: center;
+    font-family: Balsamiq Sans;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 28.8px;
+    text-align: left;
+
+    border-radius: 50px;
+    width: 100%;
 }
 
 .wrap__edit {
@@ -253,17 +395,19 @@ p {
     margin-top: 50px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .button__save button {
     font-family: Balsamiq Sans;
-    font-size: 32px;
+    font-size: 16px;
     font-weight: 400;
-    line-height: 38.4px;
+    line-height: 19.2px;
     text-align: center;
-    color: rgba(71, 67, 25, 1);
 
+
+    color: rgba(71, 67, 25, 1);
+    width: 153px;
     height: 50px;
     border-radius: 30px;
     border: 4px solid rgba(177, 167, 63, 1)
@@ -293,7 +437,12 @@ export default {
     data() {
         return {
             showannouncement: false,
+            busy: false,
+            nick_valid: false,
+            conf_err: false,
+            valid_pas: false,
             file: Object,
+            activeTab: 1,
             username: "",
             avatar: "",
             email: "",
@@ -304,12 +453,43 @@ export default {
             password: {
                 first: "",
                 second: "",
+                third: "",
+            },
+            social: {
+                vk_link: "",
+                ok_link: "",
+                github_link: "",
+                gitlab_link: "",
+                about_me: "",
             },
             show: false,
         }
 
     },
+    watch: {
+        'password.second': function (newval) {
+
+            let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*#?&]{6,}$/
+            if (newval.length > 0)
+                this.valid_pas = !reg.test(newval)
+        },
+        'password.third': function (newval) {
+
+            if (newval == this.password.second)
+                this.conf_err = false
+        }
+    },
     mounted() {
+        const conf_pas = document.getElementById('conf_pas')
+        conf_pas.addEventListener('blur', () => {
+            console.log(this.password.second)
+            if (this.password.second != this.password.third)
+                this.conf_err = true
+            else
+                this.conf_err = false
+
+        })
+
         axios({
             timeoute: 1000,
             method: 'get',
@@ -327,10 +507,12 @@ export default {
                     if (response.data.avatar) {
                         this.avatar = response.data.avatar
                     }
-                    else {
-                        this.avatar = "0Z9fPWMyZfPi2VAUi9LvdRiAr9HhDM.jpg"
-                    }
                     this.email = response.data.email
+                    this.social.about_me = response.data.about_me
+                    this.social.vk_link = response.data.vk_link
+                    this.social.ok_link = response.data.ok_link
+                    this.social.github_link = response.data.github_link
+                    this.social.gitlab_link = response.data.gitlab_link
                 }
 
             })
@@ -379,7 +561,8 @@ export default {
             }
         },
         SetUsername() {
-            console.log(this.file)
+            this.busy = false
+            this.nick_valid = false
             axios({
                 timeoute: 1000,
                 method: 'patch',
@@ -395,14 +578,13 @@ export default {
                     window.location.reload()
                 })
                 .catch(error => {
-                    if (error.status != null) {
-                        // this.$router.push({
-                        //     name: 'codeerrorview',
-                        //     query: {
-                        //         ErrorNum: error.status
-                        //     }
-                        // })
+                    if (error.status == 400) {
+                        this.busy = true
                     }
+                    if (error.status == 422) {
+                        this.nick_valid = true
+                    }
+
                     console.log(error.message);
                     // console.log(error.toJSON())
                 });
@@ -434,6 +616,34 @@ export default {
                     console.log(error.message);
                 });
         },
+        EditAbout() {
+            axios({
+                timeoute: 1000,
+                method: 'patch',
+                url: import.meta.env.VITE_BACKEND_URL + 'users/current',
+                data: {
+                    about_me: this.social.about_me,
+                    vk_link: this.social.vk_link,
+                    ok_link: this.social.ok_link,
+                    github_link: this.social.github_link,
+                    gitlab_link: this.social.gitlab_link,
+                },
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    // window.location.reload()
+                })
+                .catch(error => {
+                    if (error.status != null) {
+
+                    }
+                    console.log(error.message);
+                });
+        },
         EditPassword() {
             axios({
                 timeoute: 1000,
@@ -454,12 +664,7 @@ export default {
                 })
                 .catch(error => {
                     if (error.status != null) {
-                        // this.$router.push({
-                        //     name: 'codeerrorview',
-                        //     query: {
-                        //         ErrorNum: error.status
-                        //     }
-                        // })
+
                     }
                     console.log(error.message);
                 });

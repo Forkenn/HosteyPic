@@ -9,6 +9,18 @@
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column1[(el - 1)].attachment"
                         :alt="'img ' + this.column1[(el - 1)].id" @click="goToPicturePost(this.column1[(el - 1)].id)">
 
+
+                    <button v-show="!this.column1[(el - 1)].is_liked & user.is_verified" id="add" class="button__hov"
+                        @click="liked(this.column1[(el - 1)])">
+                        <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
+                    </button>
+
+                    <button v-show="this.column1[(el - 1)].is_liked & user.is_verified" style="background: rgba(177, 167, 63, 1);
+border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="unliked(this.column1[(el - 1)])">
+                        <img src="../assets/img/svg/Heartwhite.svg" alt="" style="background: none;">
+                    </button>
+
+
                     <button v-show="!this.column1[(el - 1)].is_editable" id="download" class="button__hov">
                         <a download :download="this.column1[(el - 1)].name"
                             :href="'../../dist/uploads/attachments/original/' + this.column1[(el - 1)].attachment"
@@ -38,7 +50,15 @@
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
+                        <button v-show="!this.column2[(el - 1)].is_liked & user.is_verified" id="add"
+                            class="button__hov" @click="liked(this.column2[(el - 1)])">
+                            <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
+                        </button>
 
+                        <button v-show="this.column2[(el - 1)].is_liked & user.is_verified" style="background: rgba(177, 167, 63, 1);
+border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="unliked(this.column2[(el - 1)])">
+                            <img src="../assets/img/svg/Heartwhite.svg" alt="" style="background: none;">
+                        </button>
                         <button v-show="this.column2[(el - 1)].is_editable" id="download" class="button__hov"
                             @click="goToEdit(this.column2[(el - 1)].id)">
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
@@ -62,6 +82,16 @@
                             </a>
                         </button>
 
+
+                        <button v-show="!this.column3[(el - 1)].is_liked & user.is_verified" id="add"
+                            class="button__hov" @click="liked(this.column3[(el - 1)])">
+                            <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
+                        </button>
+
+                        <button v-show="this.column3[(el - 1)].is_liked & user.is_verified" style="background: rgba(177, 167, 63, 1);
+border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="unliked(this.column3[(el - 1)])">
+                            <img src="../assets/img/svg/Heartwhite.svg" alt="" style="background: none;">
+                        </button>
                         <button v-show="this.column3[(el - 1)].is_editable" id="download" class="button__hov"
                             @click="goToEdit(this.column3[(el - 1)].id)">
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
@@ -83,6 +113,16 @@
                                 title="ImageName">
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
+                        </button>
+
+                        <button v-show="!this.column4[(el - 1)].is_liked & user.is_verified" id="add"
+                            class="button__hov" @click="liked(this.column4[(el - 1)])">
+                            <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
+                        </button>
+
+                        <button v-show="this.column4[(el - 1)].is_liked & user.is_verified" style="background: rgba(177, 167, 63, 1);
+border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="unliked(this.column4[(el - 1)])">
+                            <img src="../assets/img/svg/Heartwhite.svg" alt="" style="background: none;">
                         </button>
                         <button v-show="this.column4[(el - 1)].is_editable" id="download" class="button__hov"
                             @click="goToEdit(this.column4[(el - 1)].id)">
@@ -406,47 +446,12 @@ export default {
             // var h = 5000
             var h = document.getElementById(this.urlstr);
             if (h) {
-
-                if (this.urlstr == "posts")
-                    if (this.verticalScroll + 700 > h.clientHeight) {
-                        styleobj.bottom = '-70px'
-                    }
-                    else {
-                        styleobj.top = this.verticalScroll + 550 + 'px'
-                    }
-                else if (this.urlstr == 'posts/users/' + this.$route.params.id) {
-                    if (this.verticalScroll > h.clientHeight) {
-                        styleobj.bottom = '-70px'
-                    }
-                    else {
-                        if (this.user.id != this.$route.params.id)
-                            styleobj.top = this.verticalScroll - 50 + 'px'
-                        else
-                            styleobj.top = this.verticalScroll + 50 + 'px'
-
-                    }
-                }
-                else if (this.urlstr == 'posts/users/' + this.$route.params.id + '/liked') {
-                    if (this.verticalScroll > h.clientHeight) {
-                        styleobj.bottom = '-70px'
-                    }
-                    else {
-                        if (this.user.id != this.$route.params.id)
-                            styleobj.top = this.verticalScroll - 50 + 'px'
-                        else
-                            styleobj.top = this.verticalScroll + 50 + 'px'
-                    }
-                }
-                else if (this.urlstr == 'posts/followed') {
-                    if (this.verticalScroll + 700 > h.clientHeight) {
-                        styleobj.bottom = '-70px'
-                    }
-                    else {
-                        styleobj.top = this.verticalScroll + 600 + 'px'
-                    }
+                if (this.window.height - 200 - h.getBoundingClientRect().top > h.clientHeight)
+                    styleobj.bottom = '-80px'
+                else {
+                    styleobj.top = this.window.height - 200 - h.getBoundingClientRect().top + 'px'
                 }
             }
-
             return styleobj
         },
         goToUp() {
@@ -455,7 +460,45 @@ export default {
                 behavior: "smooth"
             });
         },
+        liked(column) {
+            console.log(column)
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `likes/posts/${column.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
 
+                    column.is_liked = true
+
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        },
+        unliked(column) {
+            axios({
+                timeoute: 1000,
+                method: 'delete',
+                url: (import.meta.env.VITE_BACKEND_URL + `likes/posts/${column.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+
+                    column.is_liked = false
+
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        },
 
     }
 
@@ -565,7 +608,7 @@ button {
 
 #delete {
     position: absolute;
-    top: 10px;
+    bottom: 10px;
     left: 10px;
     background: rgba(189, 38, 38, 1);
 
