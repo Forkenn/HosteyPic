@@ -462,7 +462,6 @@ export default {
         },
     },
     mounted() {
-        console.log(this.$route.params.id)
         axios({
             timeoute: 1000,
             method: 'get',
@@ -478,10 +477,9 @@ export default {
                     this.user = response.data
                     this.authorised = true
                 }
-                // console.log(response);
             })
             .catch(error => {
-                // console.log(error.message);
+                console.log(error.message);
             })
             .finally(() => {
                 this.visable.user = true
@@ -499,7 +497,6 @@ export default {
         })
             .then(response => {
                 this.result = response.data.items
-                // console.log(response.data)
 
             })
             .catch(error => {
@@ -519,8 +516,6 @@ export default {
         })
             .then(response => {
                 this.liked = response.data.items
-                // console.log(this.result);
-                // console.log(response.data)
 
             })
             .catch(error => {
@@ -542,7 +537,6 @@ export default {
         })
             .then(response => {
                 if (response.status == 200) {
-                    console.log(response);
                     this.userid = response.data
 
 
@@ -566,7 +560,6 @@ export default {
             this.authorised = authorised
         },
         show_login(show) {
-            // console.log(show, this.login)
             if (show) {
                 this.show = false
             }
@@ -601,10 +594,9 @@ export default {
                 .then(response => {
                     this.userid.followers_count++
                     this.userid.is_following = true
-                    console.log(response);
                 })
                 .catch(error => {
-                    // console.log(error.message);
+                    console.log(error.message);
                 });
         },
         unfollowed() {
@@ -621,10 +613,9 @@ export default {
                 .then(response => {
                     this.userid.followers_count--
                     this.userid.is_following = false
-                    console.log(response);
                 })
                 .catch(error => {
-                    // console.log(error.message);
+                    console.log(error.message);
                 });
         },
     }

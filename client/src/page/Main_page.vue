@@ -24,19 +24,19 @@
             <div class="wrapper__searchbar">
                 <div class="searchbar">
                     <div class="input">
-                        <input v-model="serach" v-on:keyup.enter="loadImg" placeholder="Напишите здесь для поиска..."
-                            id="idSearch">
+                        <input v-model="serach" v-on:keyup.enter="loadImg(this.serach)"
+                            placeholder="Напишите здесь для поиска..." id="idSearch">
                     </div>
                     <div class="searchbar__icon">
 
-                        <img src="../assets/img/svg/searchicon.svg" @click="loadImg" alt="">
+                        <img src="../assets/img/svg/searchicon.svg" @click="loadImg(this.serach)" alt="">
                     </div>
                 </div>
             </div>
 
 
 
-            <Searchimg :res="result" :urlstr="'posts'" />
+            <Searchimg :res="result" :urlstr="urlstr" />
 
             <Bottom />
 
@@ -153,7 +153,8 @@ export default {
             result: [],
             data,
             tag: "123",
-            srcimg: ""
+            srcimg: "",
+            urlstr: "",
         };
     },
     mounted() {
@@ -196,6 +197,7 @@ export default {
         })
             .then(response => {
                 this.result = response.data.items
+                this.urlstr = 'posts'
                 // console.log(this.result);
                 // console.log(response.data)
 
@@ -206,8 +208,6 @@ export default {
             .finally(() => {
                 this.visable.post = true
             });;
-
-        // this.loadImg(30);
     },
     methods: {
         show_login(show) {
@@ -223,17 +223,28 @@ export default {
         login_ch(login) {
             this.login = login
         },
-        loadImg(tagImg) {
+        loadImg(q) {
             if (this.serach.length > 0)
-                tagImg = this.serach
-            this.result = []
-            for (let index = 0; index < tagImg; index++) {
-                this.srcimg = data[index % 4],
-                    this.result.push({
-                        src1: this.srcimg,
-                        tag: this.tag
+                axios({
+                    timeoute: 1000,
+                    method: 'get',
+                    url: import.meta.env.VITE_BACKEND_URL + `posts/search?q=${q}&start=0&end=20`,
+
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        this.result = response.data.items
+                        this.urlstr = `posts/search?q=${q}&start=0&end=20`
+                        // console.log(this.result);
+                        // console.log(response.data)
+
                     })
-            }
+                    .catch(error => {
+                        console.log(error.message);
+                    })
         },
         authorised1(authorised) {
             this.authorised = authorised

@@ -16,8 +16,31 @@
                 <p> <span class="color__white">Hostey</span>
                     <span class="color__black">PIC</span>
                 </p>
-
+                <img v-show="this.$route.name == 'userview' & user.is_moderator" style="margin-left: 40px;"
+                    @click="show_moder()" src="../assets/img/svg/Settings.svg" alt="">
+                <div v-show="showmoder" class="moder_menu">
+                    <div class="moder_head">
+                        <div class="moder-btn" style="margin-top: 26px;"></div>
+                        <button v-show="user.is_superuser" class="moder-btn" v-if="!userid.is_moderator"
+                            @click="mod_user()">
+                            Повысить
+                        </button>
+                        <button v-show="user.is_superuser" class="moder-btn" v-else @click="unmod_user()">
+                            Понизить
+                        </button>
+                        <button class="moder-btn" v-if="userid.is_active" v-on:click="ban_user()">
+                            Заблокировать
+                        </button>
+                        <button class="moder-btn" v-else v-on:click="unban_user()">
+                            Разблокировать
+                        </button>
+                        <button v-show="user.is_superuser" class="moder-btn" @click="delete_user()">
+                            Удалить
+                        </button>
+                    </div>
+                </div>
             </div>
+
 
             <div class="nav">
                 <p style="margin-left: 0;" @click="goToHome">Главная</p>
@@ -35,7 +58,7 @@
                         <button @click="goToEdit">Редактировать профиль</button>
                         <button @click="goToUpload">Создать</button>
                         <button v-show="user.is_moderator" @click="goToAdm">Управление</button>
-                        <button>О нас</button>
+                        <button @click="goToAbout">О нас</button>
                         <button style="margin-bottom: 20px;" @click="exit()">Выход</button>
                     </div>
                 </div>
@@ -77,7 +100,44 @@ button {
     position: relative;
 }
 
+.moder_menu {
+    position: relative;
+    max-width: 1440px;
+    margin-left: 80px;
+    margin-right: auto;
+}
 
+.moder_head {
+    position: absolute;
+    top: 40px;
+    left: -350px;
+    width: 190px;
+    height: auto;
+
+    border-radius: 0px 0px 16px 16px;
+    background: rgba(239, 237, 217, 1);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: center;
+}
+
+.moder-btn {
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: left;
+    color: rgba(71, 67, 25, 1);
+
+    width: 180px;
+    height: 39px;
+    margin-bottom: 5px;
+    border-radius: 16px;
+    border: 0;
+    padding-left: 10px;
+    background: rgba(239, 237, 217, 1);
+}
 
 .header__logo {
 
@@ -270,8 +330,10 @@ export default {
             showannouncement: false,
             userName: "",
             email: "",
+            showmoder: false,
             usershow: false,
             userId: 1,
+            userid: {},
             avatar: "",
             is_verified: Boolean,
             countshow: localStorage.showver,
@@ -294,8 +356,36 @@ export default {
 
             }
         });
+        if (this.$route.name == 'userview')
+            axios({
+                timeoute: 1000,
+                method: 'get',
+                url: (import.meta.env.VITE_BACKEND_URL + `users/${this.$route.params.id}`),
+                // params: {
+                //     user_id: this.$route.params.id
+                // },
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.status == 200) {
+                        this.userid = response.data
 
+                    }
 
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        this.$router.push({
+                            name: 'codeerrorview',
+                            query: {
+                                ErrorNum: error.status
+                            }
+                        })
+                    }
+                });
         axios({
             timeoute: 1000,
             method: 'get',
@@ -356,6 +446,9 @@ export default {
         goToUpload() {
             this.$router.push({ name: 'uploadimgview' })
         },
+        goToAbout() {
+            this.$router.push({ name: 'aboutview' })
+        },
         goToAdm() {
             this.$router.push({ name: 'adminpanelview' })
         },
@@ -364,6 +457,9 @@ export default {
         },
         hide() {
             this.usershow = false
+        },
+        show_moder() {
+            this.showmoder = !this.showmoder
         },
         exit() {
             axios({
@@ -419,6 +515,109 @@ export default {
         },
         ShowAnnouncement() {
             this.showannouncement = !this.showannouncement
+        },
+        ban_user() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/ban`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log('Забанен')
+                    this.userid.is_active = !this.userid.is_active
+
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        console.log(error)
+                    }
+                });
+        },
+        unban_user() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/unban`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log('Разбанен')
+                    this.userid.is_active = !this.userid.is_active
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        console.log(error)
+                    }
+                });
+        },
+        mod_user() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/moder`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log('moder')
+                    this.userid.is_moderator = !this.userid.is_moderator
+
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        console.log(error)
+                    }
+                });
+        },
+        unmod_user() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}/unmoder`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log('unmoder')
+                    this.userid.is_moderator = !this.userid.is_moderator
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        console.log(error)
+                    }
+                });
+        },
+        delete_user() {
+            axios({
+                timeoute: 1000,
+                method: 'DELETE',
+                url: (import.meta.env.VITE_BACKEND_URL + `users/${this.userid.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log('delete')
+                    this.userid = {}
+
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        console.log(error)
+                    }
+                });
         },
     },
 

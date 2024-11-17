@@ -28,11 +28,11 @@
                                 </span>
 
                             </div>
-                            <div class="button_act">
+                            <!-- <div class="button_act">
                                 <button>
                                     <img src="../assets/img/svg/Plus.svg" alt="add">
                                 </button>
-                            </div>
+                            </div> -->
                             <div class="button_act">
                                 <button>
                                     <a download :download="image.name"
@@ -56,7 +56,7 @@
                         </div>
                         <div>
                             <div class="button_go">
-                                <button style="background: rgba(177, 167, 63, 1);">
+                                <button @click="goBack()" style="background: rgba(177, 167, 63, 1);">
                                     <img width="30px" src="../assets/img/svg/go_back.svg" alt="go back"></button>
                             </div>
                         </div>
@@ -439,6 +439,9 @@ export default {
         },
         goToUser() {
             this.$router.push({ name: 'userview', params: { id: this.userid.id } })
+        },
+        goBack() {
+            this.$router.go(-1)
         },
         liked() {
             console.log(123)
