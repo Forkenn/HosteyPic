@@ -7,3 +7,5 @@ pgadmin
 uploads
 .python-version
 .env
+certs
+postfix

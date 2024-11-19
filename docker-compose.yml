@@ -1,0 +1,113 @@
+services:
+  hosteypic_ngnix:
+    command: nginx -g "daemon off;"
+    container_name: hosteypic_nginx
+    image: nginx:1.27.2
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./client/dist/uploads/:/client/dist/uploads
+      - ./certs:/etc/nginx/ssl
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - hosteypic
+
+  hosteypic_server:
+    tty: true
+    container_name: hosteypic_server
+    image: hosteypic_server
+    build:
+      context: ./server/
+    volumes:
+      - ./server/:/src/app
+      - ./client/dist/uploads:/src/app/uploads
+    command: sh -c "sleep 15 && alembic upgrade head && uvicorn hosteypic_server.main:app --host 0.0.0.0 --reload"
+    links:
+      - hosteypic_postgres
+    depends_on:
+      - hosteypic_postgres
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      FRONTEND_URL: ${FRONTEND_URL}
+    restart: always
+    networks:
+      - hosteypic
+
+  hosteypic_client:
+    tty: true
+    container_name: hosteypic_client
+    image: hosteypic_client
+    build:
+      context: ./client/
+    environment:
+      VITE_BACKEND_URL: ${VITE_BACKEND_URL}
+    restart: on-failure
+    networks:
+      - hosteypic
+
+  hosteypic_postgres:
+    image: postgres:17.0
+    container_name: hosteypic_postgres
+    environment:
+      TZ: 'GMT-3'
+      PGTZ: 'GMT-3'
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata/
+    volumes:
+      - ./backup:/backup
+      - pgdata:/var/lib/postgresql/data/pgdata/
+    restart: always
+    tty: true
+    stdin_open: true
+    #    healthcheck:
+    #      test: ["CMD-SHELL", "pg_isready -U admin -d db_hosteypic"]
+    #      interval: 10s
+    #      timeout: 5s
+    #      retries: 5
+    #      start_period: 10s
+    networks:
+      - hosteypic
+
+  hosteypic_pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: hosteypic_pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./pgadmin/data:/var/lib/pgadmin/data
+    networks:
+      - hosteypic
+
+  hosteypic_postfix:
+    build:
+      context: ./mail
+    container_name: hosteypic_postfix
+    environment:
+      MY_DOMAIN: ${MY_DOMAIN}
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    command: sh -c "chmod 600 /etc/postfix/dkim/mail.private && chown -R opendkim /etc/postfix/dkim/ && postfix start-fg"
+    ports:
+      - "25:25"
+      - "587:587"
+    networks:
+      - hosteypic
+
+volumes:
+  pgdata:
+
+networks:
+  hosteypic:
+    external: false
