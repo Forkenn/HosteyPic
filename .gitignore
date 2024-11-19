@@ -9,3 +9,5 @@ uploads
 .env
 certs
 postfix
+opendkim
+nginx.conf

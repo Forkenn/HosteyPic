@@ -12,9 +12,8 @@ RUN cp /etc/host.conf /var/spool/postfix/etc/ \
     && cp /etc/resolv.conf /var/spool/postfix/etc/ \
     && cp /etc/services /var/spool/postfix/etc/
 
-#RUN mkdir -p /var/spool/postfix/opendkim \
-#    && chown postfix:opendkim /var/spool/postfix/opendkim \
-#    && chmod 750 /var/spool/postfix/opendkim
+RUN mkdir -p /var/spool/postfix/var/run/opendkim \
+    && chown opendkim:opendkim /var/spool/postfix/var/run/opendkim
 
 RUN adduser postfix opendkim
 
@@ -22,8 +21,9 @@ COPY ./certs/fullchain.pem /etc/ssl/certs
 COPY ./certs/privkey.pem /etc/ssl/private
 COPY ./postfix/main.cf /etc/postfix
 COPY ./postfix/master.cf /etc/postfix
+COPY ./opendkim/mail.private /etc/postfix
 COPY ./opendkim/opendkim.conf /etc
-COPY ./opendkim /etc/default
+COPY ./opendkim/opendkim /etc/default
 COPY ./opendkim/keytable /etc/postfix/dkim
 COPY ./opendkim/signingtable /etc/postfix/dkim
 
