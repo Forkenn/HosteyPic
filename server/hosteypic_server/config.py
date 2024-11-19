@@ -16,9 +16,10 @@ class Config:
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     COOKIE_NAME = "hosteypic_token"
 
-    VERIFY_URL = os.environ.get('VERIFY_PATH') or 'http://localhost/verify?token={token}'
-    CHANGE_EMAIL_URL = os.environ.get('CHANGE_EMAIL_URL') or 'http://localhost/change-email?token={token}&new_email={new_email}'
-    RESET_URL = os.environ.get('RESET_URL') or 'http://localhost/reset-password?token={token}'
+    FRONTEND_URL = os.environ.get('FRONTEND_URL') or 'http://localhost/'
+    VERIFY_URL = FRONTEND_URL + 'verify?token={token}'
+    CHANGE_EMAIL_URL = FRONTEND_URL + 'change-email?token={token}&new_email={new_email}'
+    RESET_URL = FRONTEND_URL + 'reset-password?token={token}'
 
     MIN_IMAGE_SIZE = (256, 256)
     MAX_IMAGE_SIZE = (4000, 4000)
