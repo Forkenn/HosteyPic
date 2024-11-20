@@ -91,14 +91,13 @@ services:
 
   hosteypic_postfix:
     build:
-      context: ./mail
+      context: ./mail/
     container_name: hosteypic_postfix
     environment:
       MY_DOMAIN: ${MY_DOMAIN}
     dns:
       - 1.1.1.1
       - 8.8.8.8
-    command: sh -c "chmod 600 /etc/postfix/dkim/mail.private && chown -R opendkim /etc/postfix/dkim/ && postfix start-fg"
     ports:
       - "25:25"
       - "587:587"
