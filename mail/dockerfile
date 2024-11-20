@@ -1,32 +1,36 @@
-FROM debian:bookworm
+FROM alpine:3.20.3
 
-RUN apt-get update && apt-get install -y \
-    postfix \
-    ca-certificates \
-    && apt-get clean
+RUN apk update
+RUN apk add --no-cache bash
+RUN apk add --no-cache postfix
+RUN apk add --no-cache opendkim opendkim-utils ca-certificates
 
-RUN apt-get install -y opendkim opendkim-tools \
-    && apt-get clean
+COPY ./postfix/main.cf /etc/postfix/main-override.cf
+COPY ./postfix/master.cf /etc/postfix/master.cf
 
-RUN cp /etc/host.conf /var/spool/postfix/etc/ \
-    && cp /etc/resolv.conf /var/spool/postfix/etc/ \
-    && cp /etc/services /var/spool/postfix/etc/
+RUN chown root:root /etc/postfix/master.cf \
+    && chmod 644 /etc/postfix/master.cf
 
-RUN mkdir -p /var/spool/postfix/var/run/opendkim \
-    && chown opendkim:opendkim /var/spool/postfix/var/run/opendkim
+RUN cd /etc/postfix \
+	&& cat main.cf main-override.cf > main-sum.cf \
+	&& mv main-sum.cf main.cf \
+	&& rm main-override.cf
 
-RUN adduser postfix opendkim
+RUN mkdir -p /run/opendkim \
+    && chown -R opendkim:opendkim /run/opendkim
+
+RUN mkdir /etc/opendkim/keys
+COPY ./opendkim/ /etc/opendkim/
 
 COPY ./certs/fullchain.pem /etc/ssl/certs
 COPY ./certs/privkey.pem /etc/ssl/private
-COPY ./postfix/main.cf /etc/postfix
-COPY ./postfix/master.cf /etc/postfix
-COPY ./opendkim/mail.private /etc/postfix
-COPY ./opendkim/opendkim.conf /etc
-COPY ./opendkim/opendkim /etc/default
-COPY ./opendkim/keytable /etc/postfix/dkim
-COPY ./opendkim/signingtable /etc/postfix/dkim
+
+RUN chown -R opendkim:opendkim /etc/opendkim \
+    && chmod -R 0700 /etc/opendkim/keys
+
+COPY ./start.sh /start.sh
+RUN chmod +x /start.sh
+
+CMD ["./start.sh"]
 
 EXPOSE 25 587
-
-CMD ["postfix", "start-fg"]
