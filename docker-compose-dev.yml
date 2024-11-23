@@ -39,6 +39,7 @@ services:
       MAIL_PORT: 25
       MAIL_USE_TLS: False
       MAIL_USE_SSL: False
+      MAIL_DOMAIN: "example.com"
       MAIL_DEFAULT_SENDER: "noreply@example.com"
       DEBUG: True
     restart: always

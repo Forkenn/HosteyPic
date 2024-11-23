@@ -11,6 +11,7 @@ class EmailManager:
         MAIL_USE_TLS = Config.MAIL_USE_TLS
         MAIL_USE_SSL = Config.MAIL_USE_SSL
         MAIL_DEFAULT_SENDER = Config.MAIL_DEFAULT_SENDER
+        MAIL_DOMAIN = Config.MAIL_DOMAIN
 
     @classmethod
     async def send_email(cls, subject: str, recipient: str, text_body: str):
@@ -22,6 +23,10 @@ class EmailManager:
         msg['From'] = cls.MAIL_DEFAULT_SENDER
         msg['To'] = recipient
         msg['Subject'] = subject
+        msg.add_header(
+            'List-Unsubscribe',
+            f'<mailto:unsubscribe@{cls.MAIL_DOMAIN}?subject=unsubscribe>, <{Config.FRONTEND_URL}unsubscribe>'
+        )
         msg.attach(MIMEText(text_body, 'plain'))
 
         with smtplib.SMTP(cls.MAIL_HOST, cls.MAIL_PORT) as server:
