@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    DEBUG = os.environ.get('DEBUG') or False
+    DEBUG = os.environ.get('DEBUG') or True
 
     DB_USER = os.environ.get('DB_USER') or 'admin'
     DB_PASS = os.environ.get('DB_PASS') or 'my_super_password'
@@ -28,6 +28,7 @@ class Config:
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') or False
     MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL') or False
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@example.com'
+    MAIL_DOMAIN = os.environ.get('MAIL_DOMAIN') or 'example.com'
 
     MIN_IMAGE_SIZE = (256, 256)
     MAX_IMAGE_SIZE = (4000, 4000)
