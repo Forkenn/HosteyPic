@@ -20,13 +20,13 @@ class EmailManager:
             return
 
         msg = MIMEMultipart()
-        msg['From'] = cls.MAIL_DEFAULT_SENDER
-        msg['To'] = recipient
-        msg['Subject'] = subject
         msg.add_header(
             'List-Unsubscribe',
             f'<mailto:unsubscribe@{cls.MAIL_DOMAIN}?subject=unsubscribe>, <{Config.FRONTEND_URL}unsubscribe>'
         )
+        msg['Subject'] = subject
+        msg['From'] = cls.MAIL_DEFAULT_SENDER
+        msg['To'] = recipient
         msg.attach(MIMEText(text_body, 'plain'))
 
         with smtplib.SMTP(cls.MAIL_HOST, cls.MAIL_PORT) as server:
