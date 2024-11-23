@@ -6,11 +6,11 @@ from hosteypic_server.config import Config
 
 class EmailManager:
     if not Config.DEBUG:
-        MAIL_HOST = Config.ALGORITHM
-        MAIL_PORT = Config.ALGORITHM
-        MAIL_USE_TLS = Config.ALGORITHM
-        MAIL_USE_SSL = Config.ALGORITHM
-        MAIL_DEFAULT_SENDER = Config.ALGORITHM
+        MAIL_HOST = Config.MAIL_HOST
+        MAIL_PORT = Config.MAIL_PORT
+        MAIL_USE_TLS = Config.MAIL_USE_TLS
+        MAIL_USE_SSL = Config.MAIL_USE_SSL
+        MAIL_DEFAULT_SENDER = Config.MAIL_DEFAULT_SENDER
 
     @classmethod
     async def send_email(cls, subject: str, recipient: str, text_body: str):
