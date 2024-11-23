@@ -8,7 +8,6 @@ services:
     volumes:
       - ./nginx-dev.conf:/etc/nginx/nginx.conf
       - ./client/dist/uploads/:/client/dist/uploads
-#     - ./client/src/assets/:/client/src/assets       # Не трогать
     ports:
       - "80:80"
     networks:
@@ -37,11 +36,11 @@ services:
       FRONTEND_URL: "http://localhost/"
       MAIL_HOST: "localhost"
       MAIL_PORT: 25
-      MAIL_USE_TLS: False
-      MAIL_USE_SSL: False
+      MAIL_USE_TLS: 0
+      MAIL_USE_SSL: 0
       MAIL_DOMAIN: "example.com"
       MAIL_DEFAULT_SENDER: "noreply@example.com"
-      DEBUG: True
+      DEBUG: 1
     restart: always
     networks:
       - hosteypic
