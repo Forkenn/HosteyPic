@@ -16,6 +16,12 @@ followers = alch.Table(
         primary_key=True)
 )
 
+email_allowlist = alch.Table(
+    'email_allowlist', Base.metadata,
+    alch.Column('id', alch.Integer, primary_key=True),
+    alch.Column('email', alch.String(120), index=True, unique=True)
+)
+
 class User(SQLAlchemyBaseUserTable[int], ModelMixin, Base):
     __tablename__ = 'users'
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
