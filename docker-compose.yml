@@ -29,7 +29,7 @@ services:
     depends_on:
       - hosteypic_postgres
     environment:
-      SECRET_TOKEN: ${APP_TOKEN}
+      SECRET_TOKEN: ${SECRET_TOKEN}
       FRONTEND_URL: ${FRONTEND_URL}
       DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
@@ -43,6 +43,7 @@ services:
       MAIL_DOMAIN: ${MAIL_DOMAIN}
       MAIL_DEFAULT_SENDER: ${MAIL_DEFAULT_SENDER}
       DEBUG: 0
+      STRICT_MODE: ${STRICT_MODE}
     restart: always
     networks:
       - hosteypic
