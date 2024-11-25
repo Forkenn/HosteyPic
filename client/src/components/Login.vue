@@ -377,7 +377,7 @@ export default {
 
         },
         sing_in() {
-            if (conf_err & valid_pas)
+            if (this.conf_err & this.valid_pas)
                 axios.post(import.meta.env.VITE_BACKEND_URL + 'auth/register', {
                     username: this.Username,
                     email: this.e_mail,

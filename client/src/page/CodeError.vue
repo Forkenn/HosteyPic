@@ -9,13 +9,24 @@
                 </div>
             </div>
         </header>
-        <div class="text">
+        <div v-if="this.Error == 50" class="text_ban">
 
-            <p v-if="!this.Error">У-у-упс вы были забанены</p>
-            <p v-if="!this.Error">
+            <p>У-у-упс вы были забанены</p>
+            <p>
                 <span class="lower">(не без причины)</span>
             </p>
-            <p v-if="this.Error">{{ this.Error }}</p>
+        </div>
+
+        <div v-if="this.Error == 404" class="text_404">
+            <p>404</p>
+            <img style="margin-left: 34px;" src="../assets/img/svg/404svg.svg" alt="">
+            <p style="display: flex;"><span class="lower_text">Страница не найдена</span></p>
+        </div>
+        <div v-if="this.Error == 500" class="text_404">
+            <p>500</p>
+            <img style="margin-left: 34px;" src="../assets/img/svg/500.svg" alt="">
+            <p style="display: flex;"><span class="lower_text">Внутренняя ошибка сервера... <br> Администраторы
+                    уведомлены!</span></p>
         </div>
         <Bottom />
     </div>
@@ -77,7 +88,7 @@
     color: #474319;
 }
 
-.text {
+.text_ban {
     height: 100%;
     font-family: Balsamiq Sans;
     font-size: 96px;
@@ -89,6 +100,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    align-items: center;
 }
 
 .lower {
@@ -101,6 +113,29 @@
     right: 0;
     top: 95px;
 
+}
+
+.text_404 {
+    font-family: Balsamiq Sans;
+    font-size: 256px;
+    font-weight: 400;
+    line-height: 307.2px;
+    text-align: center;
+    color: rgba(71, 67, 25, 1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto;
+
+
+}
+
+.lower_text {
+    font-family: Balsamiq Sans;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 76.8px;
+    text-align: center;
 }
 </style>
 

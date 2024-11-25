@@ -629,7 +629,7 @@ export default {
             })
                 .then(response => {
                     console.log('delete')
-                    this.user = {}
+                    window.location.reload();
 
                 })
                 .catch(error => {

@@ -33,8 +33,9 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                         @click="goToEdit(this.column1[(el - 1)].id)">
                         <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                     </button>
-                    <button v-show="user.is_moderator" id="delete" class="button__hov"><img
-                            src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
+                    <button v-show="user.is_moderator" @click="deletePost((this.column1[(el - 1)]))" id="delete"
+                        class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
+                            style="background: none;"></button>
                 </div>
             </div>
             <div class="column2" :style=style(2) v-if="column2.length > 0 & this.k >= 2">
@@ -63,8 +64,9 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                             @click="goToEdit(this.column2[(el - 1)].id)">
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                         </button>
-                        <button v-show="user.is_moderator" id="delete" class="button__hov"><img
-                                src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
+                        <button v-show="user.is_moderator" @click="deletePost((this.column2[(el - 1)]))" id="delete"
+                            class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
+                                style="background: none;"></button>
                     </div>
                 </div>
             </div>
@@ -96,8 +98,9 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                             @click="goToEdit(this.column3[(el - 1)].id)">
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                         </button>
-                        <button v-show="user.is_moderator" id="delete" class="button__hov"><img
-                                src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
+                        <button v-show="user.is_moderator" @click="deletePost((this.column3[(el - 1)]))" id="delete"
+                            class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
+                                style="background: none;"></button>
                     </div>
                 </div>
             </div>
@@ -129,8 +132,9 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                             <img src="../assets/img/svg/Edit.svg" alt="" style="background: none;">
                         </button>
 
-                        <button v-show="user.is_moderator" id="delete" class="button__hov"><img
-                                src="../assets/img/svg/Trash.svg" alt="" style="background: none;"></button>
+                        <button v-show="user.is_moderator" id="delete" @click="deletePost((this.column4[(el - 1)]))"
+                            class="button__hov"><img src="../assets/img/svg/Trash.svg" alt=""
+                                style="background: none;"></button>
                     </div>
                 </div>
             </div>
@@ -252,9 +256,11 @@ export default {
                 console.log(error.message);
             });
 
+
         window.addEventListener('scroll', () => {
             const documentReact = document.documentElement.getBoundingClientRect();
             this.verticalScroll = window.scrollY;
+
             // this.style()
             if (documentReact.bottom < document.documentElement.clientHeight + 300) {
 
@@ -426,7 +432,10 @@ export default {
             }
         },
         goToPicturePost(id) {
-            this.$router.push({ name: 'postview', params: { id: id } })
+            // let route = this.$router.push({ name: 'postview', params: { id: id } });
+            window.open(`/post/${id}`, '_blank');
+
+
         },
         goToEdit(id) {
             this.$router.push({ name: 'uploadimgview', query: { id: id } })
@@ -499,7 +508,24 @@ export default {
                     console.log(error)
                 });
         },
+        deletePost(column) {
+            axios({
+                timeoute: 1000,
+                method: 'delete',
+                url: (import.meta.env.VITE_BACKEND_URL + `/posts/${column.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    window.location.reload();
 
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        },
     }
 
 }

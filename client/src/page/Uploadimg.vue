@@ -49,11 +49,21 @@
                 </div>
                 <div :class="[{ input__wrap: droped }, { disable: !droped }]">
                     <label>Название</label>
-                    <textarea class="name" v-model="title" placeholder="Придумайте название"
+                    <textarea id="title" class="name" v-model="title" placeholder="Придумайте название"
                         :readonly="!droped"></textarea>
+                    <div style="position: relative; width: 100%;">
+                        <label class="error_inp" v-if="valid_title">
+                            Минимальная длина 4 символа
+                        </label>
+                    </div>
                     <label>Описание</label>
-                    <textarea :readonly="!droped" v-model="body" class="description"
-                        placeholder="Подробно опишите"></textarea>
+                    <div style="width: 100%; position: relative;">
+                        <textarea :readonly="!droped" v-model="body" maxlength="500" class="description"
+                            placeholder="Подробно опишите"></textarea>
+                        <div class="count">
+                            {{ body.length }} / 500
+                        </div>
+                    </div>
                     <!-- <label>Альбом</label>
                     <textarea :readonly="!droped" placeholder="Выберите альбом"></textarea> -->
                     <label>Теги</label>
@@ -365,6 +375,21 @@ button:active {
 
 }
 
+.error_inp {
+    position: absolute;
+    top: -15px;
+    left: 0;
+    margin: 0;
+    margin-left: 10px;
+    font-family: Balsamiq Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+    color: rgba(189, 38, 38, 1);
+
+}
+
 .wrap_tagul {
     position: relative;
     border-radius: 20px;
@@ -420,6 +445,19 @@ button:active {
 .hide {
     display: none;
 }
+
+.count {
+    position: absolute;
+    right: 12px;
+    bottom: 22px;
+    font-family: Balsamiq Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+    color: rgba(71, 67, 25, 1);
+
+}
 </style>
 
 <script>
@@ -443,12 +481,14 @@ export default {
             droped: false,
             file: Object,
             imageEdit: {},
+            user: {},
             image: {
                 name: "",
                 url: "",
                 width: "",
                 height: "",
             },
+            valid_title: false,
             tags: "",
             styleobj: {
                 width: "",
@@ -470,16 +510,12 @@ export default {
         const inp = document.getElementById('idSearch');
 
         document.addEventListener('click', (e) => {
-            if (!icon.contains(e.target)) {
-                if (!menu.contains(e.target) & !inp.contains(e.target) & this.showtag) {
-                    console.log(this.showtag)
-                    this.hidetag(false)
-                    // this.showtag = false
-                }
-
+            if (!menu.contains(e.target) & !inp.contains(e.target) & this.showtag) {
+                this.hidetag(false)
             }
+
+
         });
-        // const self = this
         document.querySelector('#idSearch').oninput = (event) => {
             let val = event.target.value.trim();
             let itemli = document.querySelectorAll('.tagli');
@@ -500,6 +536,14 @@ export default {
             }
         };
 
+        const conf_title = document.getElementById('title')
+        conf_title.addEventListener('blur', () => {
+            if (this.title.length < 4)
+                this.valid_title = true
+            else
+                this.valid_title = false
+
+        })
 
 
         axios({
@@ -537,6 +581,7 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     this.authorised = true
+                    this.user = response.data
                 }
                 else {
                     this.$router.push({ name: 'homeview' })
@@ -716,7 +761,7 @@ export default {
                 .then(response => {
 
                     console.log(response)
-                    window.location.reload()
+                    this.$router.push({ name: 'userview', params: { id: this.user.id } })
 
                 })
                 .catch(error => {

@@ -10,7 +10,8 @@
         <div>
             <div class="wrap">
                 <div class="picture_wrap">
-                    <img :src="'../../dist/uploads/attachments/original/' + image.attachment" alt="">
+                    <img :style="this.styleobj" :src="'../../dist/uploads/attachments/original/' + image.attachment"
+                        alt="">
                 </div>
 
                 <div class="info_wrap">
@@ -49,7 +50,7 @@
                                 </button>
                             </div> -->
                             <div v-if="user.is_moderator | image.is_deletable" class="button_act">
-                                <button style="background: rgba(189, 38, 38, 1);">
+                                <button @click="deletePost" style="background: rgba(189, 38, 38, 1);">
                                     <img width="30px" src="../assets/img/svg/Trash.svg" alt="Trash">
                                 </button>
                             </div>
@@ -138,6 +139,7 @@
 
 .picture_wrap img {
     width: 100%;
+    height: 100%;
     border-radius: 50px;
     border: 4px solid rgba(177, 167, 63, 1)
         /* height: 100%; */
@@ -334,7 +336,8 @@ export default {
             show: false,
             user: {},
             userid: {},
-            moder: false
+            moder: false,
+            styleobj: {}
         }
     },
     mounted() {
@@ -350,6 +353,22 @@ export default {
             .then(response => {
                 this.image = response.data
                 console.log(response.data)
+
+                var img = new Image();
+                img.onload = () => {
+                    this.image.height = img.height
+                    this.image.width = img.width
+                    if (img.height / img.width <= 1.5) {
+                        this.styleobj.width = '100%'
+                        this.styleobj.height = 'auto'
+                    } else {
+                        this.styleobj.height = '100%'
+                        this.styleobj.width = 'auto'
+                    }
+
+                };
+                img.src = '../../dist/uploads/attachments/original/' + this.image.attachment;
+
 
                 axios({
                     timeoute: 1000,
@@ -369,6 +388,7 @@ export default {
 
                             this.userid = response.data
                         }
+
 
                     })
                     .catch(error => {
@@ -478,6 +498,25 @@ export default {
 
                     this.image.is_liked = false
                     this.image.likes_count--
+
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        },
+        deletePost() {
+            axios({
+                timeoute: 1000,
+                method: 'delete',
+                url: (import.meta.env.VITE_BACKEND_URL + `/posts/${this.image.id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+
+                    this.$router.push({ name: 'homeview' })
 
                 })
                 .catch(error => {

@@ -16,8 +16,8 @@
                 <p> <span class="color__white">Hostey</span>
                     <span class="color__black">PIC</span>
                 </p>
-                <img v-show="this.$route.name == 'userview' & user.is_moderator" style="margin-left: 40px;"
-                    @click="show_moder()" src="../assets/img/svg/Settings.svg" alt="">
+                <img v-show="this.$route.name == 'userview' & user.is_moderator & user.id != this.$route.params.id"
+                    style="margin-left: 40px;" @click="show_moder()" src="../assets/img/svg/Settings.svg" alt="">
                 <div v-show="showmoder" class="moder_menu">
                     <div class="moder_head">
                         <div class="moder-btn" style="margin-top: 26px;"></div>
@@ -57,7 +57,7 @@
                         <p>{{ user.username }}</p>
                         <button @click="goToEdit">Редактировать профиль</button>
                         <button @click="goToUpload">Создать</button>
-                        <button v-show="user.is_moderator" @click="goToAdm">Управление</button>
+                        <button v-show="user.is_superuser" @click="goToAdm">Управление</button>
                         <button @click="goToAbout">О нас</button>
                         <button style="margin-bottom: 20px;" @click="exit()">Выход</button>
                     </div>
@@ -610,7 +610,7 @@ export default {
             })
                 .then(response => {
                     console.log('delete')
-                    this.userid = {}
+                    this.goToHome()
 
                 })
                 .catch(error => {

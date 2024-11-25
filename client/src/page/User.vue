@@ -24,7 +24,9 @@
                             alt="">
                     </div>
                     <div class="userName">
-                        <p>{{ userid.username }}</p>
+                        <p>{{ userid.username }}
+                            <span v-if="!userid.is_verified"> ⚠</span>
+                        </p>
                     </div>
                     <div class="subscribers">
                         <span class="countsubscribers">

@@ -55,9 +55,12 @@
             </div>
 
             <div class="wrap__edit" v-show="activeTab === 2">
-                <div class="wrap__item">
+                <div class="wrap__item" style="position: relative;">
                     <label>О себе</label>
-                    <textarea v-model="social.about_me" placeholder="Расскажите о себе"></textarea>
+                    <textarea v-model="social.about_me" placeholder="Расскажите о себе" maxlength="140"></textarea>
+                    <div class="count">
+                        {{ social.about_me.length }} / 140
+                    </div>
                 </div>
 
                 <div class="wrap__item">
@@ -66,15 +69,35 @@
                     <label class="lbl_social">GitLab</label>
                     <input v-model="social.gitlab_link" class="inpt_social" type="text"
                         placeholder="https://gitlab.com/username">
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="valid.gitlab">
+                            Неверный формат ссылки
+                        </label>
+                    </div>
                     <label class="lbl_social">GitHub</label>
                     <input v-model="social.github_link" class="inpt_social" type="text"
                         placeholder="https://github.com/username">
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="valid.github">
+                            Неверный формат ссылки
+                        </label>
+                    </div>
                     <label class="lbl_social">VK</label>
                     <input v-model="social.vk_link" class="inpt_social" type="text"
                         placeholder="https://vk.com/username">
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="valid.vk">
+                            Неверный формат ссылки
+                        </label>
+                    </div>
                     <label class="lbl_social">OK</label>
                     <input v-model="social.ok_link" class="inpt_social" type="text"
                         placeholder="https://ok.com/username">
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="valid.ok">
+                            Неверный формат ссылки
+                        </label>
+                    </div>
                 </div>
                 <div class="button__save">
                     <button @click="EditAbout()">
@@ -319,7 +342,7 @@ textarea {
     line-height: 19.2px;
     text-align: left;
 
-    width: 473px;
+    width: 100%;
     height: 96px;
 
     border-radius: 16px;
@@ -335,6 +358,19 @@ textarea {
 
 textarea::placeholder {
     color: rgba(71, 67, 25, 0.7);
+}
+
+.count {
+    position: absolute;
+    right: 12px;
+    bottom: 1px;
+    font-family: Balsamiq Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+    color: rgba(71, 67, 25, 1);
+
 }
 
 input {
@@ -363,7 +399,7 @@ textarea:focus::placeholder {
 }
 
 .inpt_social {
-    width: 473px;
+    width: 100%;
     height: 40px;
 
     border-radius: 16px;
@@ -463,6 +499,12 @@ export default {
                 about_me: "",
             },
             show: false,
+            valid: {
+                gitlab: false,
+                github: false,
+                vk: false,
+                ok: false,
+            }
         }
 
     },
@@ -477,12 +519,11 @@ export default {
 
             if (newval == this.password.second)
                 this.conf_err = false
-        }
+        },
     },
     mounted() {
         const conf_pas = document.getElementById('conf_pas')
         conf_pas.addEventListener('blur', () => {
-            console.log(this.password.second)
             if (this.password.second != this.password.third)
                 this.conf_err = true
             else
@@ -635,13 +676,25 @@ export default {
             })
                 .then(response => {
                     console.log(response);
-                    // window.location.reload()
+                    this.valid.vk = false
+                    this.valid.ok = false
+                    this.valid.gitlab = false
+                    this.valid.github = false
                 })
                 .catch(error => {
                     if (error.status != null) {
 
                     }
-                    console.log(error.message);
+                    error.response.data.detail.forEach(element => {
+                        if (element.loc[1] == 'vk_link')
+                            this.valid.vk = true
+                        if (element.loc[1] == 'gitlab_link')
+                            this.valid.gitlab = true
+                        if (element.loc[1] == 'github_link')
+                            this.valid.github = true
+                        if (element.loc[1] == 'ok_link')
+                            this.valid.ok = true
+                    });
                 });
         },
         EditPassword() {
