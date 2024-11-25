@@ -9,6 +9,7 @@ from .users.router import router as router_users
 from .posts.router import router as router_posts
 from .likes.router import router as router_likes
 from .tags.router import router as router_tags
+from .dataset.router import router as router_dataset
 
 app = FastAPI(title='HosteyPic', root_path='/api')
 
@@ -59,3 +60,4 @@ app.include_router(router_users)
 app.include_router(router_posts)
 app.include_router(router_likes)
 app.include_router(router_tags)
+app.include_router(router_dataset)

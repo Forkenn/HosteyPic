@@ -40,7 +40,9 @@ services:
       MAIL_USE_SSL: 0
       MAIL_DOMAIN: "example.com"
       MAIL_DEFAULT_SENDER: "noreply@example.com"
+      SECRET_TOKEN: "dev_secret_key"
       DEBUG: 1
+      STRICT_MODE: 1
     restart: always
     networks:
       - hosteypic

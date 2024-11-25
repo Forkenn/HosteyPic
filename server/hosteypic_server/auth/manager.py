@@ -7,12 +7,16 @@ from fastapi_users import (
 from fastapi_users.jwt import generate_jwt
 from fastapi_users.db import SQLAlchemyUserDatabase
 
+import sqlalchemy as alch
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from hosteypic_server.database import async_session_maker
 from hosteypic_server.config import Config
 from hosteypic_server.auth.tools import (
     get_user_db, send_email_change_email, send_verify_email, send_reset_password_email
 )
 from hosteypic_server.auth.config import auth_backend
-from hosteypic_server.users.models import User
+from hosteypic_server.users.models import User, email_allowlist
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = Config.SECRET_TOKEN
@@ -60,8 +64,25 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         await send_reset_password_email(token, user.email)
 
     async def on_after_request_verify(
-        self, user: User, token: str, request: Optional[Request] = None
+        self,
+        user: User,
+        token: str,
+        request: Optional[Request] = None
     ):
+        if Config.STRICT_MODE:
+            query = (
+                alch.select(email_allowlist.c.email)
+                .where(email_allowlist.c.email==user.email)
+            )
+            async with async_session_maker() as session:
+                row = (await session.execute(query)).first()
+            if not row:
+                print(
+                    f"Verification requested for user {user.id}, but strict mode enabled. "
+                    "User not in allowlist, aborting..."
+                )
+                return
+
         print(f"Verification requested for user {user.id}. Verification token: {token}")
         await send_verify_email(token, user.email)
 
