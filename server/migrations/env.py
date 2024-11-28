@@ -10,6 +10,7 @@ from alembic import context
 
 from hosteypic_server.database import Base
 from hosteypic_server.users.models import *
+from hosteypic_server.reports.models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
