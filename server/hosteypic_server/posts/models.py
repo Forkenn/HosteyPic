@@ -46,7 +46,7 @@ class Post(Base, ModelMixin):
 
     # association between Post -> Like -> User
     user_associations: orm.Mapped[List["Like"]] = orm.relationship(
-        back_populates="post"
+        back_populates="post", cascade="all, delete-orphan"
     )
 
     tags: orm.Mapped[List["Tag"]] = orm.relationship(secondary=tags_posts)
