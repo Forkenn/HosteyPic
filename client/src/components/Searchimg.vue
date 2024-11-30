@@ -1,6 +1,7 @@
 <template>
-
+    <Report v-show="showreport" :showreport="showreport" :reportid="reportid" @showreport=showReport() />
     <div :id="urlstr" class="wrapper__picture" style="position: relative;">
+
         <div id="list" v-if="res.length > 0">
 
             <div class="column1" :style=style(1)>
@@ -14,6 +15,8 @@
                         @click="liked(this.column1[(el - 1)])">
                         <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
                     </button>
+                    <button id="report" class="button__hov" @click="showReport(this.column1[(el - 1)].id)"><img
+                            src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
 
                     <button v-show="this.column1[(el - 1)].is_liked & user.is_verified" style="background: rgba(177, 167, 63, 1);
 border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="unliked(this.column1[(el - 1)])">
@@ -51,6 +54,8 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
+                        <button id="report" class="button__hov" @click="showReport(this.column2[(el - 1)].id)"><img
+                                src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
                         <button v-show="!this.column2[(el - 1)].is_liked & user.is_verified" id="add"
                             class="button__hov" @click="liked(this.column2[(el - 1)])">
                             <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
@@ -83,7 +88,8 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-
+                        <button id="report" class="button__hov" @click="showReport(this.column3[(el - 1)].id)"><img
+                                src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
 
                         <button v-show="!this.column3[(el - 1)].is_liked & user.is_verified" id="add"
                             class="button__hov" @click="liked(this.column3[(el - 1)])">
@@ -117,7 +123,8 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-
+                        <button id="report" class="button__hov" @click="showReport(this.column4[(el - 1)].id)"><img
+                                src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
                         <button v-show="!this.column4[(el - 1)].is_liked & user.is_verified" id="add"
                             class="button__hov" @click="liked(this.column4[(el - 1)])">
                             <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
@@ -152,13 +159,16 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
 <script>
 
 import axios from 'axios';
-
+import Report from './Report.vue';
 
 // const config = dotenv.config()
 export default {
+    components: { Report },
     data() {
         return {
+            reportid: 1,
             verticalScroll: 0,
+            showreport: false,
             column1: [],
             column2: [],
             column3: [],
@@ -512,7 +522,7 @@ export default {
             axios({
                 timeoute: 1000,
                 method: 'delete',
-                url: (import.meta.env.VITE_BACKEND_URL + `/posts/${column.id}`),
+                url: (import.meta.env.VITE_BACKEND_URL + `posts/${column.id}`),
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
@@ -526,6 +536,10 @@ export default {
                     console.log(error)
                 });
         },
+        showReport(id) {
+            this.showreport = !this.showreport
+            this.reportid = id
+        }
     }
 
 }
@@ -626,7 +640,7 @@ button {
 
 #report {
     position: absolute;
-    bottom: 10px;
+    top: 10px;
     left: 10px;
     background: rgba(189, 38, 38, 1);
 

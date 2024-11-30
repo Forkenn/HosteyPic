@@ -94,7 +94,7 @@ export default {
         // this.hideNotification()
         if (this.edit) {
             this.title = 'Смена почты'
-            this.text = 'была отправлен ссылка для подтверждения смены почты.'
+            this.text = 'была отправлена ссылка для подтверждения смены почты.'
 
         }
         else {

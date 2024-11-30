@@ -2,7 +2,8 @@
 
     <div class="page">
         <HeaderAuth />
-        <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.email" :edit="true" />
+        <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.oldemail"
+            :edit="true" />
         <div>
             <div class="menu">
                 <div class="tabs-header">
@@ -482,6 +483,7 @@ export default {
             username: "",
             avatar: "",
             email: "",
+            oldemail: "",
             image: {
                 name: "",
                 url: "",
@@ -548,6 +550,7 @@ export default {
                     if (response.data.avatar) {
                         this.avatar = response.data.avatar
                     }
+                    this.oldemail = response.data.email
                     this.email = response.data.email
                     this.social.about_me = response.data.about_me
                     this.social.vk_link = response.data.vk_link

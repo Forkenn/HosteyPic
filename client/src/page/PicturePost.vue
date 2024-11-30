@@ -6,7 +6,7 @@
     <div v-show="visable.post & visable.user & visable.userid" class="page">
         <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
         <HeaderAuth v-if="authorised" />
-
+        <Report v-show="showreport" :showreport="showreport" :reportid="this.image.id" @showreport=showReport />
         <div>
             <div class="wrap">
                 <div class="picture_wrap">
@@ -16,24 +16,37 @@
 
                 <div class="info_wrap">
                     <div class="actio_wrap">
-                        <div style="  max-width: 798px; height: 60px; display: flex; flex-wrap: wrap;">
-                            <div class="button_act">
-                                <button v-if="!image.is_liked" @click="liked">
-                                    <img src="../assets/img/svg/Heart.svg" alt="Like">
-                                </button>
-                                <button v-else @click="unliked" style="background: rgba(177, 167, 63, 1);">
-                                    <img src="../assets/img/svg/Heartwhite.svg" alt="Like">
-                                </button>
-                                <span class="text_p">
-                                    <p>{{ image.likes_count }}</p>
-                                </span>
 
-                            </div>
-                            <!-- <div class="button_act">
+                        <div class="button_act">
+                            <button v-if="!image.is_liked" @click="liked">
+                                <img src="../assets/img/svg/Heart.svg" alt="Like">
+                            </button>
+                            <button v-else @click="unliked" style="background: rgba(177, 167, 63, 1);">
+                                <img src="../assets/img/svg/Heartwhite.svg" alt="Like">
+                            </button>
+                            <span class="text_p">
+                                <p>{{ image.likes_count }}</p>
+                            </span>
+
+                        </div>
+                        <!-- <div class="button_act">
                                 <button>
                                     <img src="../assets/img/svg/Plus.svg" alt="add">
                                 </button>
                             </div> -->
+                        <div style="  max-width: 798px; height: 60px; display: flex; flex-wrap: wrap;">
+
+
+                            <div v-if="user.is_moderator | image.is_deletable" class="button_act">
+                                <button @click="deletePost" style="background: rgba(189, 38, 38, 1);">
+                                    <img width="30px" src="../assets/img/svg/Trash.svg" alt="Trash">
+                                </button>
+                            </div>
+                            <div class="button_act">
+                                <button @click="showReport" style=" background: rgba(189, 38, 38, 1);">
+                                    <img width="30px" src="../assets/img/svg/AlertCircle.svg" alt="Alert">
+                                </button>
+                            </div>
                             <div class="button_act">
                                 <button>
                                     <a download :download="image.name"
@@ -44,23 +57,14 @@
 
                                 </button>
                             </div>
-                            <!-- <div class="button_act">
-                                <button style="background: rgba(189, 38, 38, 1);">
-                                    <img width="30px" src="../assets/img/svg/AlertCircle.svg" alt="Alert">
-                                </button>
-                            </div> -->
-                            <div v-if="user.is_moderator | image.is_deletable" class="button_act">
-                                <button @click="deletePost" style="background: rgba(189, 38, 38, 1);">
-                                    <img width="30px" src="../assets/img/svg/Trash.svg" alt="Trash">
-                                </button>
-                            </div>
                         </div>
-                        <div>
+
+                        <!-- <div>
                             <div class="button_go">
                                 <button @click="goBack()" style="background: rgba(177, 167, 63, 1);">
                                     <img width="30px" src="../assets/img/svg/go_back.svg" alt="go back"></button>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="user_info">
@@ -212,7 +216,7 @@
     height: 100px;
     display: flex;
     flex-wrap: wrap;
-    /* justify-content: space-between; */
+    justify-content: space-between;
     align-items: center;
     /* width: 100px; */
 }
@@ -224,7 +228,8 @@
 }
 
 .user_text {
-    max-width: calc(100% - 100px - 226px - 60px);
+    flex: 1;
+    /* max-width: calc(100% - 100px - 226px - 60px); */
     margin-left: 30px;
     display: flex;
     flex-wrap: wrap;
@@ -316,10 +321,11 @@ import HeaderAuth from '@/components/HeaderAuth.vue';
 import HeaderNoAuth from "@/components/HeaderNoAuth.vue";
 import Login from "@/components/Login.vue";
 import Bottom from '@/components/Bottom.vue';
+import Report from '@/components/Report.vue';
 import axios from 'axios';
 
 export default {
-    components: { Login, Bottom, HeaderAuth, HeaderNoAuth },
+    components: { Login, Bottom, HeaderAuth, HeaderNoAuth, Report },
     data() {
         return {
             visable: {
@@ -327,6 +333,7 @@ export default {
                 user: false,
                 post: false,
             },
+            showreport: false,
             authorised: false,
             file: Object,
             username: "asd",
@@ -508,7 +515,7 @@ export default {
             axios({
                 timeoute: 1000,
                 method: 'delete',
-                url: (import.meta.env.VITE_BACKEND_URL + `/posts/${this.image.id}`),
+                url: (import.meta.env.VITE_BACKEND_URL + `posts/${this.image.id}`),
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
@@ -563,6 +570,10 @@ export default {
                     // console.log(error.message);
                 });
         },
+        showReport() {
+            this.showreport = !this.showreport
+
+        }
     },
 
 }

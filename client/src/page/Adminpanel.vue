@@ -6,10 +6,13 @@
             <div class="menu">
                 <div class="tabs-header">
 
-                    <button class="tabs-btn" style="margin-top: 65px;" @click="activeTab = 1"
-                        :class="{ active: activeTab === 1 }">Пользователи
+                    <button v-show="user_cur.is_superuser" class="tabs-btn" style="margin-top: 65px;"
+                        @click="activeTab = 1" :class="{ active: activeTab === 1 }">Пользователи
                     </button>
-                    <button class="tabs-btn" @click="activeTab = 2" :class="{ active: activeTab === 2 }">Теги
+                    <button v-show="user_cur.is_superuser" class="tabs-btn" @click="activeTab = 2"
+                        :class="{ active: activeTab === 2 }">Теги
+                    </button>
+                    <button class="tabs-btn" @click="activeTab = 3" :class="{ active: activeTab === 3 }">Жалобы
                     </button>
 
                 </div>
@@ -102,6 +105,38 @@
                     </div>
                 </div>
             </div>
+
+            <div class="tabs-body-item" style="background-color: white; max-width: 713px;" v-show="activeTab === 3">
+                <div class="completed" v-show="report.completed">
+                    Жалоб нет! Все просто умнички!
+                </div>
+
+                <div v-show="!report.completed" v-for="(item, index ) in reports" :key="item.id">
+                    <div className="report_item" v-for="value in item.items" :key="value.id">
+                        <div class="close">
+                            <img @click="delete_report(index, value.id)" src="../assets/img/svg/X_dark.svg" alt="">
+                        </div>
+                        <div class="report_info">
+                            {{ value.id }}
+                            <p>
+                                <a target="_blank" :href='"../" + "user/" + value.user_id'>
+                                    {{ value.report_author.username }}
+                                </a>
+                                <br>
+                                Пост:
+                                <a target="_blank" :href='"../" + "post/" + value.post_id'>
+                                    {{ link + "post/" + value.post_id }}
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="report_body">
+                            <p>{{ value.body }}</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
         <Bottom />
     </div>
@@ -114,6 +149,11 @@ button {
 }
 
 
+a {
+    /* text-decoration: none; */
+    color: rgba(71, 67, 25, 1);
+
+}
 
 .page {
     display: flex;
@@ -130,11 +170,11 @@ button {
 }
 
 .tabs-header {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
+    top: 80px;
+    left: 80px;
     width: 190px;
-    height: 153px;
+    height: 197px;
 
     border-radius: 0px 0px 16px 16px;
     background: rgba(239, 237, 217, 1);
@@ -169,30 +209,25 @@ button {
 }
 
 .tabs_body {
-    max-width: 583px;
+
     margin-left: auto;
     margin-right: auto;
-    display: flex;
-    justify-content: center;
+
 }
 
 .tabs-body-item {
     background: rgba(239, 237, 217, 1);
-
+    max-width: 583px;
     margin-top: 40px;
     display: flex;
     flex-wrap: wrap;
-    /* flex-direction: column; */
-    /* align-items: center; */
-    justify-content: center;
     font-family: Balsamiq Sans;
     font-size: 24px;
     font-weight: 400;
     line-height: 28.8px;
     text-align: left;
-
+    justify-content: center;
     border-radius: 50px;
-    width: 100%;
 }
 
 .serach_wrap {
@@ -387,6 +422,73 @@ button {
 
     width: 100%;
 }
+
+.report_wrap {
+
+    overflow-y: scroll;
+    display: flex;
+}
+
+.report_item {
+    position: relative;
+    max-width: 574px;
+    flex-grow: 1;
+    height: 400px;
+    border-radius: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    background: rgba(239, 237, 217, 1);
+    margin-bottom: 30px;
+    justify-content: flex-start;
+    color: rgba(71, 67, 25, 1);
+}
+
+.report_info {
+
+    margin-top: 40px;
+    margin-left: 30px;
+    max-height: 128px;
+
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.report_info p {
+    max-width: 100%;
+}
+
+.report_body {
+
+    margin: 20px 30px 20px 30px;
+    width: 100%;
+    height: calc(100% - 140px);
+    font-family: Balsamiq Sans;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 28.8px;
+    text-align: left;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+}
+
+.completed {
+    width: 713px;
+    height: 58px;
+
+
+    font-family: Balsamiq Sans;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 57.6px;
+    text-align: left;
+    color: rgba(71, 67, 25, 1);
+
+
+}
 </style>
 
 <script>
@@ -400,16 +502,30 @@ export default {
     data() {
         return {
             tags: "",
+            link: import.meta.env.VITE_FRONTEND_URL,
+            reports: [],
             activeTab: 1,
             serach_user: "",
             serach_tag: "",
+            report: {
+                page: 1,
+                loadstop: true,
+                completed: false,
+            },
             user: {
             },
+            user_cur: {},
         }
 
     },
     components: { HeaderAuth, Bottom },
     mounted() {
+        window.addEventListener('scroll', () => {
+            const documentReact = document.documentElement.getBoundingClientRect();
+            if (documentReact.bottom < document.documentElement.clientHeight + 300)
+                this.loadreport()
+        });
+
 
         document.querySelector('#idSearch').oninput = function () {
             let val = this.value.trim();
@@ -447,6 +563,12 @@ export default {
                         name: 'homeview',
                     })
                 }
+                else {
+                    this.user_cur = response.data
+                    if (!this.user_cur.is_superuser) {
+                        this.activeTab = 3
+                    }
+                }
             })
             .catch(error => {
                 if (error.status != null) {
@@ -470,7 +592,33 @@ export default {
         })
             .then(response => {
                 this.tags = response.data
-                console.log(this.tags)
+
+            })
+            .catch(error => {
+                if (error.status != null) {
+                    this.$router.push({
+                        name: 'codeerrorview',
+                        query: {
+                            ErrorNum: error.status
+                        }
+                    })
+                }
+            });
+
+        axios({
+            timeoute: 1000,
+            method: 'get',
+            url: (import.meta.env.VITE_BACKEND_URL + `reports?start=0&end=5`),
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                this.reports.push(response.data)
+                if (response.data.count == 0) {
+                    this.report.completed = true
+                }
 
             })
             .catch(error => {
@@ -501,7 +649,6 @@ export default {
                         if (response.status == 200) {
 
                             this.user = response.data
-                            console.log(this.user)
                         }
 
                     })
@@ -524,7 +671,6 @@ export default {
                         if (response.status == 200) {
 
                             this.user = response.data
-                            console.log(this.user)
                         }
 
                     })
@@ -546,7 +692,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('Забанен')
                     this.user.is_active = !this.user.is_active
 
                 })
@@ -567,7 +712,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('Разбанен')
                     this.user.is_active = !this.user.is_active
                 })
                 .catch(error => {
@@ -587,7 +731,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('moder')
                     this.user.is_moderator = !this.user.is_moderator
 
                 })
@@ -608,7 +751,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('unmoder')
                     this.user.is_moderator = !this.user.is_moderator
                 })
                 .catch(error => {
@@ -628,7 +770,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('delete')
                     window.location.reload();
 
                 })
@@ -652,7 +793,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('+тег')
                     this.tags.items.push({ name: this.serach_tag.toLowerCase() })
 
                 })
@@ -676,7 +816,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('delete')
                     this.user = {}
 
                 })
@@ -685,6 +824,78 @@ export default {
                         console.log(error)
                     }
                 });
+        },
+        loadreport() {
+
+            if (this.report.loadstop)
+
+                axios({
+                    timeoute: 1000,
+                    method: 'get',
+                    url: (import.meta.env.VITE_BACKEND_URL + `reports?start=${this.report.page * 5}&end=${(this.report.page + 1) * 5}`),
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+
+                        this.reports.push(response.data)
+                        this.report.page += 1
+                        if (response.data.count != 5)
+                            this.report.loadstop = false
+
+
+                    })
+                    .catch(error => {
+                        if (error.status != null) {
+                            this.$router.push({
+                                name: 'codeerrorview',
+                                query: {
+                                    ErrorNum: error.status
+                                }
+                            })
+                        }
+                    });
+        },
+        delete_report(item, id) {
+            let count = 0
+            this.reports[item].items.forEach(elem => {
+
+                if (elem.id == id) {
+                    this.reports[item].items.splice(count, 1)
+                }
+
+                count++
+            });
+
+            axios({
+                timeoute: 1000,
+                method: 'delete',
+                url: (import.meta.env.VITE_BACKEND_URL + `reports?report_id=${id}`),
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+
+
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        this.$router.push({
+                            name: 'codeerrorview',
+                            query: {
+                                ErrorNum: error.status
+                            }
+                        })
+                    }
+                });
+            if (this.reports[item].items.length == 0) {
+
+                this.loadreport()
+            }
         },
         goToUser() {
             this.$router.push({ name: 'userview', params: { id: this.user.id } })
