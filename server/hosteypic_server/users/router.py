@@ -5,7 +5,6 @@ import sqlalchemy as alch
 from concurrent.futures import ThreadPoolExecutor
 
 from fastapi import UploadFile, APIRouter, status, Response, Depends
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hosteypic_server.auth.manager import fastapi_users, RoleManager
@@ -17,12 +16,9 @@ from hosteypic_server.exceptions import (
 from hosteypic_server.image import ImageManager
 from hosteypic_server.auth.schemas import SUsername
 from hosteypic_server.users.models import User
-from hosteypic_server.likes.models import Like
 from hosteypic_server.users.schemas import (
     SUserReadSingle, SMultiUserRead, SUserEdit, SUserReadFull
 )
-from hosteypic_server.posts.models import Post
-from hosteypic_server.posts.schemas import SPostsPreviews, SPostPreview
 
 router = APIRouter(prefix='/users', tags=['Users'])
 
