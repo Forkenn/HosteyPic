@@ -55,6 +55,7 @@ services:
       context: client/
     environment:
       VITE_BACKEND_URL: "http://localhost/api/"
+      VITE_FRONTEND_URL: "http://localhost/"
       DEBUG: "True"
     restart: on-failure
     networks:
