@@ -37,7 +37,17 @@ async def get_last_posts(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_optional_user)
 ) -> SPostsPreviews:
-    query = alch.select(Post).order_by(Post.timestamp.desc()).slice(start, end)
+    Author = orm.aliased(User)
+    query = (
+        alch.select(Post)
+        .join(Post.author.of_type(Author))
+        .where(
+            Author.is_active == True
+        )
+        .group_by(Post)
+        .order_by(Post.timestamp.desc())
+        .slice(start, end)
+    )
     posts = (await session.execute(query)).scalars().all()
 
     if not user:
@@ -56,11 +66,15 @@ async def get_followed_posts(
     Author = orm.aliased(User)
     Follower = orm.aliased(User)
 
-    query = alch.select(Post).join(Post.author.of_type(Author)).join(
-        Author.followers.of_type(Follower), isouter=True
-    ).where(alch.or_(
-        Follower.id == user.id, Author.id == user.id
-    )).group_by(Post).order_by(Post.timestamp.desc()).slice(start, end)
+    query = (
+        alch.select(Post)
+        .join(Post.author.of_type(Author))
+        .join(Author.followers.of_type(Follower), isouter=True)
+        .where(alch.and_(Follower.id == user.id, Author.id != user.id))
+        .group_by(Post)
+        .order_by(Post.timestamp.desc())
+        .slice(start, end)
+    )
 
     posts = (await session.execute(query)).scalars().all()
     response_list = []
