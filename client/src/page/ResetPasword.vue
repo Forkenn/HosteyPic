@@ -209,7 +209,6 @@ export default {
                 this.conf_err = false
             else
                 this.conf_err = true
-            console.log(this.conf_err)
         })
     },
     methods: {
@@ -258,7 +257,6 @@ export default {
                     }
                 })
                     .then(response => {
-                        console.log('пароль изменен')
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'homeview',

@@ -7,7 +7,7 @@
         <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
         <HeaderAuth v-if="authorised" />
         <Report v-show="showreport" :showreport="showreport" :reportid="this.image.id" @showreport=showReport />
-        <div>
+        <div style="margin-bottom: auto;">
             <div class="wrap">
                 <div class="picture_wrap">
                     <img :style="this.styleobj" :src="'../../dist/uploads/attachments/original/' + image.attachment"
@@ -36,7 +36,11 @@
                             </div> -->
                         <div style="  max-width: 798px; height: 60px; display: flex; flex-wrap: wrap;">
 
-
+                            <div v-if="image.is_editable" class="button_act">
+                                <button @click="goToEdit">
+                                    <img width="30px" src="../assets/img/svg/Edit.svg" alt="Edit">
+                                </button>
+                            </div>
                             <div v-if="user.is_moderator | image.is_deletable" class="button_act">
                                 <button @click="deletePost" style="background: rgba(189, 38, 38, 1);">
                                     <img width="30px" src="../assets/img/svg/Trash.svg" alt="Trash">
@@ -47,6 +51,7 @@
                                     <img width="30px" src="../assets/img/svg/AlertCircle.svg" alt="Alert">
                                 </button>
                             </div>
+
                             <div class="button_act">
                                 <button>
                                     <a download :download="image.name"
@@ -127,9 +132,11 @@
 .wrap {
 
     max-width: 1440px;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     justify-content: space-between;
+    margin-bottom: auto;
 }
 
 .picture_wrap {
@@ -224,7 +231,8 @@
 .user_info img {
     width: 100px;
     border-radius: 50%;
-    border: 4px solid rgba(177, 167, 63, 1)
+    border: 4px solid rgba(177, 167, 63, 1);
+    cursor: pointer;
 }
 
 .user_text {
@@ -312,6 +320,7 @@
 }
 
 button {
+    background-color: white;
     cursor: pointer;
 }
 </style>
@@ -359,7 +368,6 @@ export default {
         })
             .then(response => {
                 this.image = response.data
-                console.log(response.data)
 
                 var img = new Image();
                 img.onload = () => {
@@ -390,7 +398,6 @@ export default {
                     }
                 })
                     .then(response => {
-                        console.log(response.data)
                         if (response.status == 200) {
 
                             this.userid = response.data
@@ -452,7 +459,6 @@ export default {
             this.authorised = authorised
         },
         show_login(show) {
-            // console.log(show, this.login)
             if (show) {
                 this.show = false
             }
@@ -471,7 +477,6 @@ export default {
             this.$router.go(-1)
         },
         liked() {
-            console.log(123)
             axios({
                 timeoute: 1000,
                 method: 'post',
@@ -544,7 +549,6 @@ export default {
                 .then(response => {
                     this.userid.followers_count++
                     this.userid.is_following = true
-                    console.log(response);
                 })
                 .catch(error => {
                     // console.log(error.message);
@@ -564,7 +568,6 @@ export default {
                 .then(response => {
                     this.userid.followers_count--
                     this.userid.is_following = false
-                    console.log(response);
                 })
                 .catch(error => {
                     // console.log(error.message);
@@ -573,7 +576,10 @@ export default {
         showReport() {
             this.showreport = !this.showreport
 
-        }
+        },
+        goToEdit() {
+            this.$router.push({ name: 'uploadimgview', query: { id: this.$route.params.id } })
+        },
     },
 
 }

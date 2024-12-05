@@ -79,7 +79,7 @@
 .count {
     position: absolute;
     right: 12px;
-    bottom: 5px;
+    bottom: -15px;
     font-family: Balsamiq Sans;
     font-size: 14px;
     font-weight: 400;

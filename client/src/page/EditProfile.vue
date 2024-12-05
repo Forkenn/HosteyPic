@@ -59,7 +59,7 @@
                 <div class="wrap__item" style="position: relative;">
                     <label>О себе</label>
                     <textarea v-model="social.about_me" placeholder="Расскажите о себе" maxlength="140"></textarea>
-                    <div class="count">
+                    <div v-if="social.about_me" class="count">
                         {{ social.about_me.length }} / 140
                     </div>
                 </div>
@@ -112,8 +112,17 @@
                     <label>Почта</label>
                     <div class="inptbtn">
                         <input type="text" v-model=email>
-                        <button class="btn_edit" @click="EditEmail(); ShowAnnouncement()">Изменить</button>
+                        <button class="btn_edit" @click="EditEmail()">Изменить</button>
                     </div>
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="email_busy">
+                            Почта уже занята
+                        </label>
+                        <label class="error_inp" v-if="email_valid">
+                            Неверный формат почты
+                        </label>
+                    </div>
+                    <button v-show="veref" class="conf_email" @click="verefi()">Подтвердить почту</button>
                 </div>
                 <div class="wrap__item">
                     <p>Пароль</p>
@@ -454,6 +463,27 @@ button:active {
     transform: scale(0.9);
 }
 
+button {
+    background-color: white;
+    cursor: pointer;
+}
+
+.conf_email {
+
+    margin-top: 27px;
+    height: 39px;
+    border-radius: 30px;
+    border: 3px solid rgba(177, 167, 63, 1);
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: center;
+    color: rgba(71, 67, 25, 1);
+
+
+}
+
 .editavatar {
     height: 350px;
     margin-top: 10px;
@@ -478,6 +508,8 @@ export default {
             nick_valid: false,
             conf_err: false,
             valid_pas: false,
+            email_busy: false,
+            email_valid: false,
             file: Object,
             activeTab: 1,
             username: "",
@@ -506,7 +538,8 @@ export default {
                 github: false,
                 vk: false,
                 ok: false,
-            }
+            },
+            veref: false,
         }
 
     },
@@ -544,7 +577,6 @@ export default {
         })
             .then(response => {
                 if (response.status == 200) {
-                    console.log(response);
                     this.username = response.data.username
                     this.userId = response.data.id
                     if (response.data.avatar) {
@@ -557,6 +589,7 @@ export default {
                     this.social.ok_link = response.data.ok_link
                     this.social.github_link = response.data.github_link
                     this.social.gitlab_link = response.data.gitlab_link
+                    this.veref = !response.data.is_verified
                 }
 
             })
@@ -591,7 +624,7 @@ export default {
                         // img.width
                         // alert(`Размер: ${this.file.size} байт, Ширина: ${img.width}px, Высота: ${img.height}px`); // И вот что у нас получилось! 
                         if (img.width < 256) {
-                            console.log("ошибка")
+                            alert('неверный формат')
                         }
                         else {
                             this.image.name = this.file.name
@@ -618,7 +651,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log(response);
                     window.location.reload()
                 })
                 .catch(error => {
@@ -630,35 +662,42 @@ export default {
                     }
 
                     console.log(error.message);
-                    // console.log(error.toJSON())
                 });
         },
         EditEmail() {
-            axios({
-                timeoute: 1000,
-                method: 'post',
-                url: import.meta.env.VITE_BACKEND_URL + 'auth/request-change-email',
-                data: { new_email: this.email },
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    console.log(response);
-                    // window.location.reload()
-                })
-                .catch(error => {
-                    if (error.status != null) {
-                        // this.$router.push({
-                        //     name: 'codeerrorview',
-                        //     query: {
-                        //         ErrorNum: error.status
-                        //     }
-                        // })
+            this.email_busy = false,
+                this.email_valid = false,
+                axios({
+                    timeoute: 1000,
+                    method: 'post',
+                    url: import.meta.env.VITE_BACKEND_URL + 'auth/request-change-email',
+                    data: { new_email: this.email },
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                    console.log(error.message);
-                });
+                })
+                    .then(response => {
+                        this.ShowAnnouncement()
+                        // window.location.reload()
+                    })
+                    .catch(error => {
+                        if (error.status != null) {
+                            // this.$router.push({
+                            //     name: 'codeerrorview',
+                            //     query: {
+                            //         ErrorNum: error.status
+                            //     }
+                            // })
+                        }
+                        if (error.status == 400) {
+                            this.email_busy = true
+                        }
+                        if (error.status == 422) {
+                            this.email_valid = true
+                        }
+                        console.log(error.message);
+                    });
         },
         EditAbout() {
             axios({
@@ -678,7 +717,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log(response);
                     this.valid.vk = false
                     this.valid.ok = false
                     this.valid.gitlab = false
@@ -700,6 +738,32 @@ export default {
                     });
                 });
         },
+        verefi() {
+            axios({
+                timeoute: 1000,
+                method: 'post',
+                url: (import.meta.env.VITE_BACKEND_URL + `auth/request-verify-token`),
+                withCredentials: true,
+                data: {
+                    email: this.oldemail
+                },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                })
+                .catch(error => {
+                    if (error.status != null) {
+                        this.$router.push({
+                            name: 'codeerrorview',
+                            query: {
+                                ErrorNum: error.status
+                            }
+                        })
+                    }
+                });
+        },
         EditPassword() {
             axios({
                 timeoute: 1000,
@@ -715,7 +779,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log(response);
                     // window.location.reload()
                 })
                 .catch(error => {

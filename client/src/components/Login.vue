@@ -33,7 +33,7 @@
                 <label>
                     Пароль:
                 </label>
-                <input v-model="Password" type="password" required>
+                <input v-model="Password" v-on:keyup.enter="fun_login()" type="password" required>
                 <div style="position: relative;">
                     <label class="error_inp" v-if="login & !valid_pas">
                         Пароль слишком легкий
@@ -44,7 +44,8 @@
                     Повторите пароль
                 </label>
 
-                <input id="conf_pas" v-show="login" v-model="confirm_password" type="password" required>
+                <input id="conf_pas" v-show="login" v-on:keyup.enter="sing_in()" v-model="confirm_password"
+                    type="password" required>
                 <div style="position: relative;">
                     <label class="error_inp" v-if="login & !conf_err">
                         Пароли не совпадают
@@ -196,6 +197,11 @@ button.login {
     border-radius: 30px;
     width: 180px;
     height: 58px;
+}
+
+button {
+    background-color: white;
+    cursor: pointer;
 }
 
 button:active {
@@ -384,7 +390,6 @@ export default {
                     password: this.Password
                 })
                     .then(response => {
-                        console.log(response);
 
                         localStorage.showver = 1
                         this.fun_login()
@@ -398,7 +403,7 @@ export default {
                         //     }
                         // })
                         this.error = error.response.data.detail
-                        console.log(error.status);
+                        console.log(error.message);
                         if (error.status == 422)
                             error.response.data.detail.forEach(element => {
                                 this.error.push(element.loc[1])
@@ -406,12 +411,10 @@ export default {
                         else {
                             this.error = error.response.data.detail
                         }
-                        console.log(error.response.data.detail);
                     });
 
         },
         fun_login() {
-            // console.log(this.Username, this.Password)
             axios({
                 timeoute: 1000,
                 method: 'post',
@@ -428,7 +431,6 @@ export default {
                 .then(response => {
                     this.$emit('show_ch', true)
                     this.$emit('authorised1', true)
-                    console.log(response);
                     window.location.reload()
                 })
                 .catch(error => {
@@ -436,7 +438,6 @@ export default {
                     if (error.status != null) {
                         if (error.status == 400)
                             this.login_err = false
-                        console.log(error.body.detail)
                         // this.$router.push({
                         //     name: 'codeerrorview',
                         //     query: {
@@ -444,8 +445,6 @@ export default {
                         //     }
                         // })
                     }
-                    console.log(error.message);
-                    console.log(error.toJSON())
                 });
         }
     },

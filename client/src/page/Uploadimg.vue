@@ -49,8 +49,13 @@
                 </div>
                 <div :class="[{ input__wrap: droped }, { disable: !droped }]">
                     <label>Название</label>
-                    <textarea id="title" class="name" v-model="title" placeholder="Придумайте название"
-                        :readonly="!droped"></textarea>
+                    <div style="width: 100%; position: relative;">
+                        <input id="title" class="name" v-model="title" maxlength="100" placeholder="Придумайте название"
+                            :readonly="!droped"></input>
+                        <div class="count">
+                            {{ title.length }} / 100
+                        </div>
+                    </div>
                     <div style="position: relative; width: 100%;">
                         <label class="error_inp" v-if="valid_title">
                             Минимальная длина 4 символа
@@ -219,6 +224,8 @@ input {
     height: 40px;
     color: rgba(71, 67, 25, 1);
     caret-color: rgba(71, 67, 25, 1);
+    padding-top: 11px;
+    padding-bottom: 10px;
 }
 
 input ::placeholder {
@@ -329,7 +336,10 @@ button {
     width: 290px;
     height: 50px;
     border-radius: 30px;
-    border: 4px solid rgba(177, 167, 63, 1)
+    border: 4px solid rgba(177, 167, 63, 1);
+    background-color: white;
+    display: flex;
+    align-items: center;
 }
 
 button:active {
@@ -408,7 +418,7 @@ button:active {
     padding: 5px 5px 5px 20px;
     width: calc(100% - 5px);
     max-height: 200px;
-    overflow: scroll;
+    overflow: auto;
     scroll-margin: 20px;
     /* background-color: black; */
 }
@@ -449,7 +459,7 @@ button:active {
 .count {
     position: absolute;
     right: 12px;
-    bottom: 22px;
+    bottom: 0px;
     font-family: Balsamiq Sans;
     font-size: 14px;
     font-weight: 400;
@@ -678,7 +688,7 @@ export default {
                         // img.width
                         // alert(`Размер: ${this.file.size} байт, Ширина: ${img.width}px, Высота: ${img.height}px`); // И вот что у нас получилось! 
                         if (img.width < 256) {
-                            console.log("ошиька")
+                            alert('неверный формат')
                         }
                         else {
                             this.image.name = this.file.name
@@ -714,7 +724,7 @@ export default {
                         // img.width
                         // alert(`Размер: ${this.file.size} байт, Ширина: ${img.width}px, Высота: ${img.height}px`); // И вот что у нас получилось! 
                         if (img.width < 256) {
-                            console.log("ошиька")
+                            alert('неверный формат')
                         }
                         else {
                             this.image.name = this.file.name
@@ -760,7 +770,6 @@ export default {
             })
                 .then(response => {
 
-                    console.log(response)
                     this.$router.push({ name: 'userview', params: { id: this.user.id } })
 
                 })
@@ -802,8 +811,6 @@ export default {
                 })
                     .then(response => {
 
-                        console.log(response)
-
                     })
                     .catch(error => {
                         if (error.status != null) {
@@ -815,7 +822,7 @@ export default {
                     });
             }
             else {
-                console.log('нет изменений')
+                alert('нет изменений')
             }
         },
     }

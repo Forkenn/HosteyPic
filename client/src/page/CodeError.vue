@@ -126,7 +126,7 @@
     flex-wrap: wrap;
     justify-content: center;
     margin: auto;
-
+    max-width: 877px;
 
 }
 

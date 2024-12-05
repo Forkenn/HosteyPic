@@ -79,7 +79,8 @@ p {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    margin-top: 189px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .wrap_p {
@@ -122,7 +123,6 @@ export default {
         })
             .then(response => {
                 if (response.status == 200) { this.authorised = true }
-                // console.log(response);
                 this.loading = true
 
             })

@@ -31,7 +31,7 @@
                         </div>
                         <div class="searchbar__icon">
 
-                            <img src="../assets/img/svg/searchicon.svg" alt="">
+                            <img src="../assets/img/svg/searchicon.svg" @click="get_user()" alt="">
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,6 @@
                             <img @click="delete_report(index, value.id)" src="../assets/img/svg/X_dark.svg" alt="">
                         </div>
                         <div class="report_info">
-                            {{ value.id }}
                             <p>
                                 <a target="_blank" :href='"../" + "user/" + value.user_id'>
                                     {{ value.report_author.username }}
@@ -209,10 +208,8 @@ a {
 }
 
 .tabs_body {
-
-    margin-left: auto;
-    margin-right: auto;
-
+    margin: auto;
+    height: 100%;
 }
 
 .tabs-body-item {
@@ -279,6 +276,10 @@ a {
     border: 4px solid rgba(177, 167, 63, 1);
     padding: 10px 40px 10px 40px;
     margin-top: 30px;
+}
+
+button {
+    background-color: white;
 }
 
 .searchbar {
@@ -477,9 +478,10 @@ a {
 
 .completed {
     width: 713px;
-    height: 58px;
-
-
+    /* height: 58px; */
+    height: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
     font-family: Balsamiq Sans;
     font-size: 48px;
     font-weight: 400;
@@ -635,50 +637,55 @@ export default {
     methods:
     {
         get_user() {
-            if (/^[+-]?\d+(\.\d+)?$/.test(this.serach_user))
-                axios({
-                    timeoute: 1000,
-                    method: 'get',
-                    url: (import.meta.env.VITE_BACKEND_URL + `users/${this.serach_user}`),
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => {
-                        if (response.status == 200) {
 
-                            this.user = response.data
+
+            if (/^[+-]?\d+(\.\d+)?$/.test(this.serach_user)) {
+                if (this.serach_user != this.user_cur.id)
+                    axios({
+                        timeoute: 1000,
+                        method: 'get',
+                        url: (import.meta.env.VITE_BACKEND_URL + `users/${this.serach_user}`),
+                        withCredentials: true,
+                        headers: {
+                            'Content-Type': 'application/json'
                         }
-
                     })
-                    .catch(error => {
-                        if (error.status != null) {
+                        .then(response => {
+                            if (response.status == 200) {
 
-                        }
-                    });
+                                this.user = response.data
+                            }
+
+                        })
+                        .catch(error => {
+                            if (error.status != null) {
+
+                            }
+                        });
+            }
             else {
-                axios({
-                    timeoute: 1000,
-                    method: 'get',
-                    url: (import.meta.env.VITE_BACKEND_URL + `users/search/${this.serach_user}`),
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => {
-                        if (response.status == 200) {
-
-                            this.user = response.data
+                if (this.serach_user != this.user_cur.username)
+                    axios({
+                        timeoute: 1000,
+                        method: 'get',
+                        url: (import.meta.env.VITE_BACKEND_URL + `users/search/${this.serach_user}`),
+                        withCredentials: true,
+                        headers: {
+                            'Content-Type': 'application/json'
                         }
-
                     })
-                    .catch(error => {
-                        if (error.status != null) {
+                        .then(response => {
+                            if (response.status == 200) {
 
-                        }
-                    });
+                                this.user = response.data
+                            }
+
+                        })
+                        .catch(error => {
+                            if (error.status != null) {
+
+                            }
+                        });
             }
         },
         ban_user() {

@@ -4,7 +4,7 @@
 
         <div id="list" v-if="res.length > 0">
 
-            <div class="column1" :style=style(1)>
+            <div class="column1" v-if="column1.length > 0" :style=style(1)>
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column1.length"
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column1[(el - 1)].attachment"
@@ -480,7 +480,6 @@ export default {
             });
         },
         liked(column) {
-            console.log(column)
             axios({
                 timeoute: 1000,
                 method: 'post',

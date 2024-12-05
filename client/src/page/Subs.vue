@@ -12,13 +12,13 @@
 
             <HeaderAuth />
 
-            <Searchimg :res="result" :urlstr="'posts/followed'" />
+
             <div v-show="result.length == 0" class="text">
                 <p>
                     Подпишитесь на кого-нибудь! <br> Здесь будут отображаться их творения! :)
                 </p>
             </div>
-
+            <Searchimg :res="result" :urlstr="'posts/followed'" />
             <Bottom />
         </div>
 
@@ -47,7 +47,8 @@
     display: flex;
     justify-content: center;
     margin: auto;
-    margin-top: 79px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 p {

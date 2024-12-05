@@ -79,7 +79,6 @@ export default {
             // Создаем файл из блоба
             let file = new File([ia], 'avatar', { type: mimeString });
 
-            console.log(file)
             axios({
                 timeoute: 1000,
                 method: 'post',
@@ -91,7 +90,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log(response);
                     window.location.reload()
                 })
                 .catch(error => {
@@ -104,7 +102,6 @@ export default {
                         // })
                     }
                     console.log(error.message);
-                    // console.log(error.toJSON())
                 });
         },
     },

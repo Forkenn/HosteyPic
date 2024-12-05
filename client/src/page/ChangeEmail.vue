@@ -34,7 +34,7 @@ export default {
                     this.$router.push({
                         name: 'homeview',
                     })
-
+                    localStorage.showver = 1
                 })
                 .catch(error => {
                     if (error.status != null) {

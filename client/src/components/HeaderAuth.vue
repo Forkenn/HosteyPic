@@ -171,12 +171,14 @@ button {
     height: 50px;
     margin-right: 80px;
     position: relative;
+
 }
 
 .user__icon img {
     border-radius: 50%;
     max-width: 100%;
     max-height: 100%;
+    cursor: pointer;
 }
 
 /* style="position: fixed; top:80px; overflow: hidden;  display:block;" */
@@ -257,7 +259,9 @@ button:active {
     text-align: center;
     color: rgba(255, 255, 255, 1);
 
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     z-index: 2000;
     width: 211px;
@@ -435,7 +439,10 @@ export default {
             this.$router.push({ name: 'userview', params: { id: this.user.id } })
         },
         goToHome() {
-            this.$router.push({ name: 'homeview' })
+            if (this.$route.name != 'homeview')
+                this.$router.push({ name: 'homeview' })
+            else
+                window.location.reload()
         },
         goToSubs() {
             this.$router.push({ name: 'subscriptionsview' })
@@ -500,7 +507,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log(response)
                 })
                 .catch(error => {
                     if (error.status != null) {
@@ -527,7 +533,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('Забанен')
                     this.userid.is_active = !this.userid.is_active
 
                 })
@@ -548,7 +553,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('Разбанен')
                     this.userid.is_active = !this.userid.is_active
                 })
                 .catch(error => {
@@ -568,7 +572,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('moder')
                     this.userid.is_moderator = !this.userid.is_moderator
 
                 })
@@ -589,7 +592,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('unmoder')
                     this.userid.is_moderator = !this.userid.is_moderator
                 })
                 .catch(error => {
@@ -609,7 +611,6 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('delete')
                     this.goToHome()
 
                 })

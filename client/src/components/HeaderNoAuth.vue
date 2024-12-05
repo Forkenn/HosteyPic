@@ -120,6 +120,11 @@ button.sing_in:active {
     transform: scale(0.90);
 }
 
+button {
+    background-color: white;
+    cursor: pointer;
+}
+
 .sing_in {
     width: 222px;
     height: 46px;
@@ -180,7 +185,10 @@ export default {
             this.$emit('login', true)
         },
         goToHome() {
-            this.$router.push({ name: 'homeview' })
+            if (this.$route.name != 'homeview')
+                this.$router.push({ name: 'homeview' })
+            else
+                window.location.reload()
         },
     }
 }
