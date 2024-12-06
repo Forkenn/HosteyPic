@@ -364,6 +364,7 @@ textarea {
     caret-color: rgba(71, 67, 25, 1);
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 10px;
 }
 
 textarea::placeholder {
