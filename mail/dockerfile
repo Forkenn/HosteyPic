@@ -1,0 +1,33 @@
+FROM alpine:3.20.3
+
+RUN apk update
+RUN apk add --no-cache rsyslog bash
+RUN apk add --no-cache postfix
+RUN apk add --no-cache opendkim opendkim-utils ca-certificates
+
+COPY ./postfix/main.cf /etc/postfix/main-override.cf
+COPY ./postfix/master.cf /etc/postfix/master.cf
+
+RUN chown root:root /etc/postfix/master.cf \
+    && chmod 644 /etc/postfix/master.cf
+
+RUN cd /etc/postfix \
+	&& cat main.cf main-override.cf > main-sum.cf \
+	&& mv main-sum.cf main.cf \
+	&& rm main-override.cf
+
+RUN mkdir /etc/opendkim/keys
+COPY ./opendkim/ /etc/opendkim/
+
+COPY ./certs/fullchain.pem /etc/ssl/certs
+COPY ./certs/privkey.pem /etc/ssl/private
+
+RUN chown -R opendkim:opendkim /etc/opendkim \
+    && chmod -R 0700 /etc/opendkim/keys
+
+COPY ./start.sh /start.sh
+RUN chmod +x /start.sh
+
+CMD ["./start.sh"]
+
+EXPOSE 25 587
