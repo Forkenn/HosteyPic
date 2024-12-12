@@ -184,12 +184,8 @@ html {
     min-height: 100vh;
 }
 
-
-
-
 .userinfo {
-
-    width: 418px;
+    width: 800px;
     /* height: 433px; */
     margin-top: 60px;
     margin-left: auto;
@@ -225,8 +221,6 @@ html {
     font-weight: 400;
     line-height: 38.4px;
     text-align: left;
-
-
     margin-left: auto;
     margin-right: auto;
     margin-top: 9px;
@@ -269,7 +263,6 @@ html {
     margin-top: 40px;
 }
 
-
 p {
     color: rgba(71, 67, 25, 1);
 }
@@ -296,12 +289,10 @@ p {
 .tabs__wrap {
     position: sticky;
     margin-top: 47px;
-
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
 }
-
 
 .tabs {
 
@@ -342,8 +333,6 @@ button {
 }
 
 .tabs-btn {
-
-
     height: 50px;
     width: 280px;
     background-color: inherit;
@@ -362,10 +351,7 @@ button {
     z-index: 100;
 } */
 
-
 .tabs-btn.active {
-
-
     color: rgba(53, 50, 50, 1);
     border: 4px solid rgba(177, 167, 63, 1);
     border-bottom-color: rgb(255, 255, 255);
@@ -380,7 +366,6 @@ button {
     border: 2px solid rgba(177, 167, 63, 1)
 }
 
-
 .tabs-body-item {
     margin-top: 34px;
     display: flex;
@@ -394,14 +379,11 @@ button {
     font-weight: 400;
     line-height: 38.4px;
     text-align: left;
-
-
 }
 
 .create {
     width: 150px;
     height: 50px;
-
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
