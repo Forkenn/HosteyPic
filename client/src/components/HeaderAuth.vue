@@ -56,16 +56,13 @@
                         </div>
                         <p>{{ user.username }}</p>
                         <button @click="goToEdit">Редактировать профиль</button>
-                        <button @click="goToUpload">Создать</button>
+                        <button v-show="user.is_verified" @click="goToUpload">Создать</button>
                         <button v-show="user.is_superuser | user.is_moderator" @click="goToAdm">Управление</button>
                         <button @click="goToAbout">О нас</button>
                         <button style="margin-bottom: 20px;" @click="exit()">Выход</button>
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     </header>
 
