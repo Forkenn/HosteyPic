@@ -73,14 +73,13 @@ p {
 .text {
     max-width: 1440px;
     height: auto;
-    margin-left: auto;
-    margin-right: auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .wrap_p {

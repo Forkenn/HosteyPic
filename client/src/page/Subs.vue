@@ -9,10 +9,7 @@
 
     <body>
         <div v-show="visable.post & visable.user" class="page">
-
             <HeaderAuth />
-
-
             <div v-show="result.length == 0" class="text">
                 <p>
                     Подпишитесь на кого-нибудь! <br> Здесь будут отображаться их творения! :)
@@ -41,14 +38,13 @@
     /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-
 .text {
     max-width: 1228px;
     display: flex;
     justify-content: center;
-    margin: auto;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 p {

@@ -93,7 +93,7 @@
                     </div>
                     <div class="tabs-body">
                         <div class="tabs-body-item" v-show="activeTab === 1">
-                            <p v-if="result.length == 0 & (user.id == userid.id)" style="margin-top: 75px;">Здесь пока
+                            <p v-if="result.length == 0 & (user.id == userid.id)" style="margin-top: 75px; margin-bottom: 200px;">Здесь пока
                                 ничего
                                 нет... Тогда
                                 <button class="create" @click="goToUpload">
@@ -105,14 +105,14 @@
                             <button v-else v-show="(user.id == userid.id)" class="create" @click="goToUpload">
                                 Создать
                             </button>
-                            <p v-show="result.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
+                            <p v-show="result.length == 0 & (user.id != userid.id)" style="margin-top: 75px; margin-bottom: 200px;">
                                 В процессе создания...
                             </p>
                             <Searchimg :res="result" :urlstr="'posts/users/' + this.$route.params.id" />
 
                         </div>
                         <div class="tabs-body-item" v-show="activeTab === 2">
-                            <p v-if="liked.length == 0 & (user.id == userid.id)" style="margin-top: 75px;">Здесь
+                            <p v-if="liked.length == 0 & (user.id == userid.id)" style="margin-top: 75px; margin-bottom: 200px;">Здесь
                                 пусто...
                                 <button class="create" @click="goToHome">
                                     Вперед
@@ -121,7 +121,7 @@
                                 на поиски вдохновения!
                             </p>
 
-                            <p v-show="liked.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
+                            <p v-show="liked.length == 0 & (user.id != userid.id)" style="margin-top: 75px; margin-bottom: 200px;">
                                 Видимо, пока что не нашел...
                             </p>
                             <Searchimg :res="liked" :urlstr="'posts/users/' + this.$route.params.id + '/liked'" />
@@ -130,7 +130,6 @@
                             <div class="collections">
                                 <img src="../assets/img/svg/Newcollection.svg" alt="">
                             </div>
-
                         </div> -->
                     </div>
                 </div>
