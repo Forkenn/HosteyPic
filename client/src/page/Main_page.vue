@@ -14,13 +14,8 @@
         </div>
 
         <div v-show="visable.user & visable.post" class="page">
-
-
             <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
             <HeaderAuth v-if="authorised" />
-
-
-
             <div class="wrapper__searchbar">
                 <div class="searchbar">
                     <div class="input">
@@ -33,19 +28,12 @@
                     </div>
                 </div>
             </div>
-
-
-
+            <div v-show="result.length == 0" class="text">
+                <p>К сожалению, ничего не найдено</p>
+            </div>
             <Searchimg :res="result" :urlstr="urlstr" />
-
             <Bottom />
-
-
-
-
         </div>
-
-
     </body>
 </template>
 
@@ -64,7 +52,25 @@
     /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
+.text {
+    max-width: 1228px;
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
 
+p {
+    font-family: Balsamiq Sans;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 76.8px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(71, 67, 25, 1);
+}
 
 .wrap_login {
     height: 80px;
@@ -122,8 +128,6 @@ button.sing_in:active {
     font-weight: 400;
     line-height: 38.4px;
     text-align: center;
-
-
 }
 </style>
 <script>

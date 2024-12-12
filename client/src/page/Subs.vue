@@ -56,7 +56,6 @@ p {
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
     color: rgba(71, 67, 25, 1);
-
 }
 </style>
 <script>
