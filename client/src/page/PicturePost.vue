@@ -80,7 +80,7 @@
                                 <p>Подписчики {{ userid.followers_count }}</p>
                             </div>
                         </div>
-                        <button v-show="user.id != userid.id & !userid.is_following"
+                        <button v-show="user.id != userid.id & !userid.is_following & user.is_verified"
                             @click="followed">Подписаться</button>
 
 
