@@ -11,12 +11,18 @@ class ImageManager():
     MAX_IMAGE_SIZE = Config.MAX_IMAGE_SIZE
     MIN_IMAGE_RATIO = Config.MIN_IMAGE_RATIO
     MAX_IMAGE_RATIO = Config.MAX_IMAGE_RATIO
+    AVATAR_RATIO = Config.AVATAR_RATIO
     AVATAR_SIZES = Config.AVATAR_SIZES
     ATTACHMENT_SIZES = Config.ATTACHMENT_SIZES
 
+    ORIG_AVATAR_PATH = Config.ORIG_AVATAR_PATH
+    AVATAR_PATH = Config.AVATAR_PATH
+    ORIG_ATTACHMENT_PATH = Config.ORIG_ATTACHMENT_PATH
+    ATTACHMENT_PATH = Config.ATTACHMENT_PATH
+
     @classmethod
     def _validate_image(cls, image: Image.Image, strict_ratio: float = None) -> bool:
-        aspect_ratio = image.width/image.height
+        aspect_ratio = image.width / image.height
 
         if not (
             cls.MIN_IMAGE_SIZE[0] <= image.width <= cls.MAX_IMAGE_SIZE[0] 
@@ -43,75 +49,77 @@ class ImageManager():
             images.append(resized)
 
         return images
+
+    @classmethod
+    def _save_image(cls, image_file: SpooledTemporaryFile, avatar: bool = False) -> str | None:
+        image: Image.Image = Image.open(image_file).convert('RGB')
+        original_path = cls.ORIG_ATTACHMENT_PATH
+        resize_path = cls.ATTACHMENT_PATH
+        sizes = cls.ATTACHMENT_SIZES
+
+        if avatar:
+            original_path = cls.ORIG_AVATAR_PATH
+            resize_path = cls.AVATAR_PATH
+            sizes = cls.AVATAR_SIZES
+
+        if not cls._validate_image(image, cls.AVATAR_RATIO if avatar else None):
+            return None
+
+        filename: str = None
+        with SpooledTemporaryFile() as image_file:
+            image.save(image_file, format="JPEG")
+            image_file.seek(0)
+            filename = StorageManager.save_file(
+                image_file, Path(original_path), strict_filetype='jpg'
+            )
+
+        if not filename:
+            return None
+
+        resized_images: list[Image.Image] = cls._images_resize(sizes, image)
+        for resized_image in resized_images:
+            with SpooledTemporaryFile() as image_file:
+                resized_image.save(image_file, format="JPEG")
+                image_file.seek(0)
+                StorageManager.save_file(
+                    image_file,
+                    Path(resize_path.format(img_size=resized_image.size[0])),
+                    strict_filename=filename
+                )
+
+        return filename
+    
+    @classmethod
+    def _delete_image(cls, filename: str, avatar: bool = False) -> None:
+        original_path = cls.ORIG_ATTACHMENT_PATH
+        resize_path = cls.ATTACHMENT_PATH
+        sizes = cls.ATTACHMENT_SIZES
+
+        if avatar:
+            original_path = cls.ORIG_AVATAR_PATH
+            resize_path = cls.AVATAR_PATH
+            sizes = cls.AVATAR_SIZES
+
+        for size in sizes:
+            StorageManager.delete_file(
+                filename,
+                Path(resize_path.format(img_size=size))
+            )
+
+        StorageManager.delete_file(filename, Path(original_path))
     
     @classmethod
     def upload_avatar(cls, image_file: SpooledTemporaryFile) -> str | None:
-        image: Image.Image = Image.open(image_file).convert('RGB')
-
-        if not cls._validate_image(image, 1.0):
-            return None
-
-        filename: str = None
-        with SpooledTemporaryFile() as image_file:
-            image.save(image_file, format="JPEG")
-            image_file.seek(0)
-            filename = StorageManager.save_file(
-                image_file, Path('avatars/original'), strict_filetype='jpg'
-            )
-
-        if not filename:
-            return None
-
-        resized_images: List[Image.Image] = cls._images_resize(cls.AVATAR_SIZES, image)
-        for resized_image in resized_images:
-            with SpooledTemporaryFile() as image_file:              # TODO: EDIT TYPE
-                resized_image.save(image_file, format="JPEG")
-                image_file.seek(0)
-                StorageManager.save_file(
-                    image_file, Path(f'avatars/{resized_image.size[0]}x'), strict_filename=filename
-                )
-
-        return filename
+        return cls._save_image(image_file, True)
     
     @classmethod
     def delete_avatar(cls, filename) -> None:
-        for size in cls.AVATAR_SIZES:
-            StorageManager.delete_file(filename, Path(f'avatars/{size}x'))
-
-        StorageManager.delete_file(filename, Path(f'avatars/original'))
+        cls._delete_image(filename, True)
 
     @classmethod
-    def upload_attachment(cls, image_file: SpooledTemporaryFile):
-        image: Image.Image = Image.open(image_file).convert('RGB')
-
-        if not cls._validate_image(image):
-            return None
-
-        filename: str = None
-        with SpooledTemporaryFile() as image_file:
-            image.save(image_file, format="JPEG")
-            image_file.seek(0)
-            filename = StorageManager.save_file(
-                image_file, Path('attachments/original'), strict_filetype='jpg'
-            )
-
-        if not filename:
-            return None
-
-        resized_images: List[Image.Image] = cls._images_resize(cls.ATTACHMENT_SIZES, image)
-        for resized_image in resized_images:
-            with SpooledTemporaryFile() as image_file:              # TODO: EDIT TYPE
-                resized_image.save(image_file, format="JPEG")
-                image_file.seek(0)
-                StorageManager.save_file(
-                    image_file, Path(f'attachments/{resized_image.size[0]}x'), strict_filename=filename
-                )
-
-        return filename
+    def upload_attachment(cls, image_file: SpooledTemporaryFile) -> str | None:
+        return cls._save_image(image_file)
 
     @classmethod
     def delete_attachment(cls, filename):
-        for size in cls.ATTACHMENT_SIZES:
-            StorageManager.delete_file(filename, Path(f'attachments/{size}x'))
-
-        StorageManager.delete_file(filename, Path(f'attachments/original'))
+        cls._delete_image(filename)
