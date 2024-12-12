@@ -64,8 +64,7 @@
                         </span>
                     </div>
                 </div>
-                <div v-show="(user.id != userid.id) & !userid.is_following & authorised" class="folow_btn">
-
+                <div v-show="(user.id != userid.id) & !userid.is_following & authorised & userid.is_verified & userid.is_active & user.is_verified" class="folow_btn">
                     <button @click="followed">
                         Подписаться
                     </button>
