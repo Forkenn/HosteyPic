@@ -13,7 +13,7 @@ class SUsername(BaseModel):
     @classmethod
     def validate_username(cls, username: str) -> str:
         re_for_usrname: re.Pattern[str] = re.compile(
-            r"^(?=(?:.*[A-Za-z]){1,})[A-Za-z\d]{5,30}$"
+            r"^(?=(?:.*[A-Za-z]){1,})[A-Za-z\d]{5,25}$"
         )
         if not re_for_usrname.match(username):
             raise ValueError("Username does not meet the requirements")

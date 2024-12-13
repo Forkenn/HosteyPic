@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
@@ -35,7 +36,13 @@ class Config:
     MAX_IMAGE_SIZE = (4000, 4000)
     MIN_IMAGE_RATIO = 0.45
     MAX_IMAGE_RATIO = 2
+    AVATAR_RATIO = 1.0
     AVATAR_SIZES = [52, 128, 200, 256]
     ATTACHMENT_SIZES = [256, 362, 420, 512]
+
+    ORIG_AVATAR_PATH = 'avatars/original'
+    AVATAR_PATH = 'avatars/{img_size}x'
+    ORIG_ATTACHMENT_PATH = 'attachments/original'
+    ATTACHMENT_PATH = 'attachments/{img_size}x'
 
     MAX_TAGS_COUNT = 100

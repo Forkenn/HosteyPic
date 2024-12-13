@@ -64,8 +64,7 @@
                         </span>
                     </div>
                 </div>
-                <div v-show="(user.id != userid.id) & !userid.is_following & authorised" class="folow_btn">
-
+                <div v-show="(user.id != userid.id) & !userid.is_following & authorised & userid.is_verified & userid.is_active & user.is_verified" class="folow_btn">
                     <button @click="followed">
                         Подписаться
                     </button>
@@ -93,7 +92,7 @@
                     </div>
                     <div class="tabs-body">
                         <div class="tabs-body-item" v-show="activeTab === 1">
-                            <p v-if="result.length == 0 & (user.id == userid.id)" style="margin-top: 75px;">Здесь пока
+                            <p v-if="result.length == 0 & (user.id == userid.id)" style="margin-top: 75px; margin-bottom: 200px;">Здесь пока
                                 ничего
                                 нет... Тогда
                                 <button class="create" @click="goToUpload">
@@ -105,14 +104,14 @@
                             <button v-else v-show="(user.id == userid.id)" class="create" @click="goToUpload">
                                 Создать
                             </button>
-                            <p v-show="result.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
+                            <p v-show="result.length == 0 & (user.id != userid.id)" style="margin-top: 75px; margin-bottom: 200px;">
                                 В процессе создания...
                             </p>
                             <Searchimg :res="result" :urlstr="'posts/users/' + this.$route.params.id" />
 
                         </div>
                         <div class="tabs-body-item" v-show="activeTab === 2">
-                            <p v-if="liked.length == 0 & (user.id == userid.id)" style="margin-top: 75px;">Здесь
+                            <p v-if="liked.length == 0 & (user.id == userid.id)" style="margin-top: 75px; margin-bottom: 200px;">Здесь
                                 пусто...
                                 <button class="create" @click="goToHome">
                                     Вперед
@@ -121,7 +120,7 @@
                                 на поиски вдохновения!
                             </p>
 
-                            <p v-show="liked.length == 0 & (user.id != userid.id)" style="margin-top: 75px;">
+                            <p v-show="liked.length == 0 & (user.id != userid.id)" style="margin-top: 75px; margin-bottom: 200px;">
                                 Видимо, пока что не нашел...
                             </p>
                             <Searchimg :res="liked" :urlstr="'posts/users/' + this.$route.params.id + '/liked'" />
@@ -130,7 +129,6 @@
                             <div class="collections">
                                 <img src="../assets/img/svg/Newcollection.svg" alt="">
                             </div>
-
                         </div> -->
                     </div>
                 </div>
@@ -184,12 +182,8 @@ html {
     min-height: 100vh;
 }
 
-
-
-
 .userinfo {
-
-    width: 418px;
+    width: 800px;
     /* height: 433px; */
     margin-top: 60px;
     margin-left: auto;
@@ -225,8 +219,6 @@ html {
     font-weight: 400;
     line-height: 38.4px;
     text-align: left;
-
-
     margin-left: auto;
     margin-right: auto;
     margin-top: 9px;
@@ -269,7 +261,6 @@ html {
     margin-top: 40px;
 }
 
-
 p {
     color: rgba(71, 67, 25, 1);
 }
@@ -296,12 +287,10 @@ p {
 .tabs__wrap {
     position: sticky;
     margin-top: 47px;
-
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
 }
-
 
 .tabs {
 
@@ -342,8 +331,6 @@ button {
 }
 
 .tabs-btn {
-
-
     height: 50px;
     width: 280px;
     background-color: inherit;
@@ -362,10 +349,7 @@ button {
     z-index: 100;
 } */
 
-
 .tabs-btn.active {
-
-
     color: rgba(53, 50, 50, 1);
     border: 4px solid rgba(177, 167, 63, 1);
     border-bottom-color: rgb(255, 255, 255);
@@ -380,7 +364,6 @@ button {
     border: 2px solid rgba(177, 167, 63, 1)
 }
 
-
 .tabs-body-item {
     margin-top: 34px;
     display: flex;
@@ -394,14 +377,11 @@ button {
     font-weight: 400;
     line-height: 38.4px;
     text-align: left;
-
-
 }
 
 .create {
     width: 150px;
     height: 50px;
-
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;

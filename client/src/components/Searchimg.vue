@@ -1,15 +1,12 @@
 <template>
     <Report v-show="showreport" :showreport="showreport" :reportid="reportid" @showreport=showReport() />
-    <div :id="urlstr" class="wrapper__picture" style="position: relative;">
-
+    <div :id="urlstr" class="wrapper__picture" style="position: relative;" v-if="res.length > 0">
         <div id="list" v-if="res.length > 0">
-
             <div class="column1" v-if="column1.length > 0" :style=style(1)>
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column1.length"
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column1[(el - 1)].attachment"
                         :alt="'img ' + this.column1[(el - 1)].id" @click="goToPicturePost(this.column1[(el - 1)].id)">
-
 
                     <button v-show="!this.column1[(el - 1)].is_liked & user.is_verified" id="add" class="button__hov"
                         @click="liked(this.column1[(el - 1)])">
