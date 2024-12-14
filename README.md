@@ -1,23 +1,83 @@
-# HosteyPic
+# HosteyPic [RU]
+HosteyPic — это веб-приложение, которое позволяет пользователям делиться своими изображениями и находить вдохновение в работах других. Пользователи могут легко загружать свои работы, а также просматривать и оценивать творчество, загруженное другими пользователями.
 
-Данный проект является учебным в рамках курса "Проектирование Web-приложений".
+Приложение предлагает удобный интерфейс для поиска интересных изображений по тексту, что позволяет быстро находить то, что вам нужно. Кроме того, у каждого пользователя есть возможность сохранять понравившиеся картинки в своем аккаунте или скачивать их на устройство.
 
-This is a training project within the course “Designing Web-applications”.
+С HosteyPIC вы сможете не только делиться своим творчеством, но и вдохновляться работами других, создавая уникальное сообщество любителей искусства!
 
-# About
+Применяемые технологии:
+* FastAPI
+* Vue.js (сборщик Vite)
+* PostgreSQL
 
-HosteyPic - хостинг картинок с возможностью загрузки, тегирования, сохранения и добавления коллекций.
+Дополнительно:
+* Docker
+* MTA Postfix
+* Nginx
 
-HosteyPic - picture hosting with the ability to upload, tag, save and add collections.
+# Дизайн
+Дизайн в Figma: https://www.figma.com/design/QbEvjsL7XaaLD1h40qvyTh/HosteyPIC-(RELEASE)
+
+Зеркало: https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH/HosteyPIC
+
+Дизайн-проект также доступен в папке __docs__.
+
+# Развертывание
+Для локального развертывания используется compose-файл __docker-compose-dev.yml__ (Команда _docker-compose -f docker-compose-dev.yml up_).
+
+Развертывание на сервере через __docker-compose-dev.yml__. При условии настройки .env файла, наличия конфигурационных файлов для postfix и ngnix (опционально). Потребуется самостоятельная настройка фаервола.
+
+# Разработка
+В back-end составляющей применяется менеджер Poetry, установка зависимостей — через команду _poetry install_, наличие env/venv рекомендуется в локальной папке проекта. Запуск вне docker-среды — через команду _uvicorn hosteypic_server.main:app --host 0.0.0.0 --reload_. Перед этим применить миграции alembic, требуется инстанс PostgreSQL.
+
+Для front-end требуется наличие node.js и vue.js. Установка зависимостей — через команду _npm install_. Для развертывания вне среды docker использовать http-server (_npm install http-server_).
+
+# Наша команда
+
+* Forkenn (@OnBell) - team lead, back-end dev, sysadmin.
+* cerega123 (@cerega123) - front-end dev.
+* AnTiAl TM (@kolumbia101) - designer.
+* ru4sdevil (@ru4sdevil) - documenter.
+* Yury Generalov (@yury_kustik) - tester.
+
+# HosteyPic [EN]
+HosteyPic is a web application that allows users to share their images and find inspiration in the work of others. Users can easily upload their own work, as well as view and rate the creativity uploaded by other users.
+
+The app offers an easy-to-use interface to search for interesting images by text, allowing you to quickly find what you need. In addition, each user has the option to save their favorite pictures in their account or download them to their device.
+
+With HosteyPic you can not only share your art, but also be inspired by the works of others, creating a unique community of art lovers!
+
+Technologies used:
+* FastAPI
+* Vue.js (Vite tool)
+* PostgreSQL
+
+Additionally:
+* Docker
+* MTA Postfix
+* Nginx
 
 # Design
+Figma: https://www.figma.com/design/QbEvjsL7XaaLD1h40qvyTh/HosteyPIC-(RELEASE)
 
-https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH/HosteyPIC
+Mirror: https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH/HosteyPIC
+
+The design project is also available in the folder __docs__.
+
+# Deployment
+For local deployment, the __docker-compose-dev.yml__ compose file is used (command _docker-compose -f docker-compose-dev.yml up_).
+
+Deploy to the server via __docker-compose-dev.yml__. Setting up the .env file, having configuration files for postfix and ngnix (optional) is important. Self-configuration of firewall will be required.
+
+# Development
+The Poetry manager is used in the back-end component, dependencies are installed via the _poetry install_ command, env/venv availability is recommended in the local project folder. Run outside the docker environment via the command _uvicorn hosteypic_server.main:app --host 0.0.0.0.0 --reload_. Before applying alembic migrations, a PostgreSQL instance is required.
+
+Front-end requires node.js and vue.js. Install dependencies via the _npm install_ command. For deployment outside the docker environment, use http-server (_npm install http-server_).
 
 # Our Team
 
-Forkenn (@OnBell) - maintainer, back-end dev.
-cerega123 (@cerega123) - full-stack dev.
-AbTiAl TM (@kolumbia101) - front-end dev.
-ru4sdevil (@ru4sdevil) - documenter.
-Yury Generalov (@yury_kustik) - tester.
+* Forkenn (@OnBell) - team lead, back-end dev, sysadmin.
+* cerega123 (@cerega123) - front-end dev.
+* AnTiAl TM (@kolumbia101) - designer.
+* ru4sdevil (@ru4sdevil) - documenter.
+* Yury Generalov (@yury_kustik) - tester.
