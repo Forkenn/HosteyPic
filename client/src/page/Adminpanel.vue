@@ -399,7 +399,7 @@ button {
 
 .report_item {
     position: relative;
-    max-width: 574px;
+    width: 574px;
     flex-grow: 1;
     height: 400px;
     border-radius: 50px;
@@ -412,7 +412,6 @@ button {
 }
 
 .report_info {
-
     margin-top: 40px;
     margin-left: 30px;
     max-height: 128px;
@@ -430,7 +429,6 @@ button {
 }
 
 .report_body {
-
     margin: 20px 30px 20px 30px;
     width: 100%;
     height: calc(100% - 140px);
@@ -459,7 +457,6 @@ button {
 </style>
 
 <script>
-
 import HeaderAuth from '@/components/HeaderAuth.vue';
 import Bottom from '@/components/Bottom.vue'
 
