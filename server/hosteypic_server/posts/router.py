@@ -70,7 +70,7 @@ async def get_followed_posts(
         alch.select(Post)
         .join(Post.author.of_type(Author))
         .join(Author.followers.of_type(Follower), isouter=True)
-        .where(alch.and_(Follower.id == user.id, Author.id != user.id))
+        .where((Follower.id == user.id) & (Author.id != user.id) & (Author.is_active == True))
         .group_by(Post)
         .order_by(Post.timestamp.desc())
         .slice(start, end)
@@ -227,6 +227,9 @@ async def get_user_posts_by_id(
         user: User = Depends(current_optional_user)
 ) -> SPostsPreviews:
     user_resp: User = await session.get(User, user_id)
+    if not user_resp.is_active:
+        return {'count': 0, 'items': []}
+
     query = user_resp.posts.select().order_by(
         Post.timestamp.desc()
     ).slice(start, end)
