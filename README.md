@@ -16,9 +16,9 @@ HosteyPic — это веб-приложение, которое позволя�
 * Nginx
 
 # Дизайн
-Дизайн в Figma: https://www.figma.com/design/QbEvjsL7XaaLD1h40qvyTh/HosteyPIC-(RELEASE)
+Дизайн в Figma: https://www.figma.com/design/QbEvjsL7XaaLD1h40qvyTh
 
-Зеркало: https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH/HosteyPIC
+Зеркало: https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH
 
 Дизайн-проект также доступен в папке __docs__.
 
@@ -31,6 +31,9 @@ HosteyPic — это веб-приложение, которое позволя�
 В back-end составляющей применяется менеджер Poetry, установка зависимостей — через команду _poetry install_, наличие env/venv рекомендуется в локальной папке проекта. Запуск вне docker-среды — через команду _uvicorn hosteypic_server.main:app --host 0.0.0.0 --reload_. Перед этим применить миграции alembic, требуется инстанс PostgreSQL.
 
 Для front-end требуется наличие node.js и vue.js. Установка зависимостей — через команду _npm install_. Для развертывания вне среды docker использовать http-server (_npm install http-server_).
+
+# Документация
+Документация доступна в папке __docs__. Также имеются wiki-страницы с инструкциями.
 
 # Наша команда
 
@@ -58,9 +61,9 @@ Additionally:
 * Nginx
 
 # Design
-Figma: https://www.figma.com/design/QbEvjsL7XaaLD1h40qvyTh/HosteyPIC-(RELEASE)
+Figma: https://www.figma.com/design/QbEvjsL7XaaLD1h40qvyTh
 
-Mirror: https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH/HosteyPIC
+Mirror: https://www.figma.com/design/DSyShlF0uJwIiiJcHUFgNH
 
 The design project is also available in the folder __docs__.
 
@@ -73,6 +76,9 @@ Deploy to the server via __docker-compose-dev.yml__. Setting up the .env file, h
 The Poetry manager is used in the back-end component, dependencies are installed via the _poetry install_ command, env/venv availability is recommended in the local project folder. Run outside the docker environment via the command _uvicorn hosteypic_server.main:app --host 0.0.0.0.0 --reload_. Before applying alembic migrations, a PostgreSQL instance is required.
 
 Front-end requires node.js and vue.js. Install dependencies via the _npm install_ command. For deployment outside the docker environment, use http-server (_npm install http-server_).
+
+# Documentation
+Documentation is available in the __docs__ folder. Wiki pages with instructions are also available.
 
 # Our Team
 
