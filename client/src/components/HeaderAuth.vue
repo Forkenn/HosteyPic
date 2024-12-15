@@ -1,10 +1,6 @@
 <template>
-
-
-
     <Announcement v-show="showannouncement" @showannouncement=ShowAnnouncement :email="this.user.email" :edit="true" />
     <header class="header">
-
         <div v-show="loading" class="wrapper__header">
             <div v-if="!user.is_verified" @click="verefi(); ShowAnnouncement()" class="alert">
                 <p>Подтвердите почту!</p>
@@ -40,8 +36,6 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="nav">
                 <p style="margin-left: 0;" @click="goToHome">Главная</p>
                 <p @click="goToSubs">Подписки</p>
@@ -65,8 +59,6 @@
             </div>
         </div>
     </header>
-
-
 </template>
 
 <style scoped>
@@ -137,7 +129,6 @@ button {
 }
 
 .header__logo {
-
     font-family: Chewy;
     font-size: 48px;
     font-weight: 400;
@@ -154,21 +145,17 @@ button {
 
 .color__white {
     color: white;
-
-
 }
 
 .color__black {
     color: #474319;
 }
 
-
 .user__icon {
     width: 50px;
     height: 50px;
     margin-right: 80px;
     position: relative;
-
 }
 
 .user__icon img {
@@ -200,7 +187,6 @@ button {
     right: 80px; */
     border-radius: 0 0 20px 20px;
     background: rgba(239, 237, 217, 1);
-
 }
 
 .user__menu p {
@@ -211,7 +197,6 @@ button {
     text-align: center;
     margin-bottom: 11px;
     margin-top: 5px;
-
 }
 
 .user__menu .user__icon {
@@ -255,7 +240,6 @@ button:active {
     line-height: 19.2px;
     text-align: center;
     color: rgba(255, 255, 255, 1);
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -268,8 +252,6 @@ button:active {
     gap: 0px;
     border-radius: 0px 0px 16px 16px;
     background: rgba(189, 38, 38, 1);
-
-
 }
 
 .confirme {
@@ -279,8 +261,6 @@ button:active {
     line-height: 19.2px;
     text-align: center;
     color: rgba(255, 255, 255, 1);
-
-
     position: absolute;
     z-index: 2000;
     width: 211px;
@@ -290,8 +270,6 @@ button:active {
     gap: 0px;
     border-radius: 0px 0px 16px 16px;
     background: rgba(22, 127, 30, 1);
-
-
 }
 
 .nav {
@@ -311,7 +289,6 @@ button:active {
     font-weight: 400;
     line-height: 28.8px;
     text-align: left;
-
     color: #FFFFFF;
     cursor: pointer;
     margin-left: 30px;
@@ -319,10 +296,8 @@ button:active {
 </style>
 
 <script>
-
 import axios from 'axios';
 import Announcement from './Announcement.vue';
-
 
 export default {
     data() {
@@ -347,7 +322,6 @@ export default {
         Announcement
     },
     mounted() {
-
         const menu = document.getElementById('menu');
         const icon = document.getElementById('icon');
         document.addEventListener('click', (e) => {
@@ -531,7 +505,7 @@ export default {
             })
                 .then(response => {
                     this.userid.is_active = !this.userid.is_active
-
+                    window.location.reload();
                 })
                 .catch(error => {
                     if (error.status != null) {
@@ -551,6 +525,7 @@ export default {
             })
                 .then(response => {
                     this.userid.is_active = !this.userid.is_active
+                    window.location.reload();
                 })
                 .catch(error => {
                     if (error.status != null) {
@@ -609,7 +584,6 @@ export default {
             })
                 .then(response => {
                     this.goToHome()
-
                 })
                 .catch(error => {
                     if (error.status != null) {

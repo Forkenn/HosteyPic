@@ -1,11 +1,9 @@
 <template>
-
     <div class="page">
         <HeaderAuth />
         <div>
             <div class="menu">
                 <div class="tabs-header">
-
                     <button v-show="user_cur.is_superuser" class="tabs-btn" style="margin-top: 65px;"
                         @click="activeTab = 1" :class="{ active: activeTab === 1 }">Пользователи
                     </button>
@@ -20,7 +18,6 @@
         </div>
         <div class="tabs_body">
             <div class="tabs-body-item" v-show="activeTab === 1">
-
                 <div class="serach_wrap">
                     <label>
                         Пользователь
@@ -30,14 +27,14 @@
                             <input v-model="serach_user" v-on:keyup.enter="get_user()">
                         </div>
                         <div class="searchbar__icon">
-
                             <img src="../assets/img/svg/searchicon.svg" @click="get_user()" alt="">
                         </div>
                     </div>
                 </div>
                 <div class="user_wrap">
                     <div class="user_info" v-show="user.username">
-                        <img @click="goToUser" :src="'../../dist/uploads/avatars/original/' + user.avatar" alt="">
+                        <img v-if="user.is_active" @click="goToUser" :src="'../../dist/uploads/avatars/original/' + user.avatar" alt="">
+                        <img v-else @click="goToUser" :src="'../../dist/uploads/avatars/original/' + user.avatar" style="border: 4px solid rgb(255, 0, 0)" alt="">
                         <div class="user_text">
                             <p>{{ user.username }}</p>
                             <div class="sub">
@@ -70,7 +67,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="tabs-body-item" v-show="activeTab === 2">
                 <div class="user_wrap">
                     <label>Тег</label>
@@ -78,14 +74,11 @@
                         <div class="input">
                             <input v-model="serach_tag" id="idSearch">
                         </div>
-
                         <!-- <div class="searchbar__icon">
-
                             <img src="../assets/img/svg/searchicon.svg" @click="loadImg" alt="">
                         </div> -->
                     </div>
-                    <div v-show="serach_tag.length > 0" style="position: relative;     border-radius: 25px;     margin-top: 10px;
-    border: 4px solid rgb(5, 0, 49); overflow: hidden;">
+                    <div v-show="serach_tag.length > 0" style="position: relative; border-radius: 25px; margin-top: 10px; border: 4px solid rgb(5, 0, 49); overflow: hidden;">
                         <div id="searchResults" class="tagul">
                             <ul class="tagli" style="color: black;">
                                 <li v-for="el in tags.items">
@@ -105,12 +98,10 @@
                     </div>
                 </div>
             </div>
-
             <div class="tabs-body-item" style="background-color: white; max-width: 713px;" v-show="activeTab === 3">
                 <div class="completed" v-show="report.completed">
                     Жалоб нет! Все просто умнички!
                 </div>
-
                 <div v-show="!report.completed" v-for="(item, index ) in reports" :key="item.id">
                     <div className="report_item" v-for="value in item.items" :key="value.id">
                         <div class="close">
@@ -128,11 +119,9 @@
                                 </a>
                             </p>
                         </div>
-
                         <div class="report_body">
                             <p>{{ value.body }}</p>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -146,7 +135,6 @@
 button {
     cursor: pointer;
 }
-
 
 a {
     /* text-decoration: none; */
@@ -250,7 +238,6 @@ a {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-
 }
 
 .btn_user {
@@ -283,9 +270,6 @@ button {
 }
 
 .searchbar {
-
-
-
     /* max-width: 835px; */
     height: 40px;
     margin-left: auto;
@@ -296,24 +280,19 @@ button {
     border-radius: 20px;
     border: 2px solid #B1A73F;
     opacity: 0px;
-
-
     background: #FFFFFF;
-
     display: flex;
     justify-content: space-between;
 
 }
 
 .searchbar__icon {
-
     margin-right: 10px;
     display: flex;
     align-items: center;
 }
 
 .searchbar .input {
-
     margin-left: 10px;
     position: relative;
     max-width: 835px;
@@ -331,10 +310,7 @@ button {
     font-weight: 400;
     line-height: 19.2px;
     text-align: left;
-
-
     /* position: absolute; */
-
     width: 100%;
     height: 100%;
     border: 0;
@@ -344,12 +320,8 @@ button {
     background: none;
 }
 
-
-
 .searchbar input::-webkit-input-placeholder {
     color: rgba(71, 67, 25, 0.7);
-
-
 }
 
 .searchbar input:focus::placeholder {
@@ -366,8 +338,6 @@ button {
     scroll-margin: 20px;
     /* background-color: black; */
 }
-
-
 
 .hide {
     display: none;
@@ -398,7 +368,6 @@ button {
     overflow: hidden;
 }
 
-
 .user_text p {
     font-family: Balsamiq Sans;
     font-size: 32px;
@@ -409,8 +378,6 @@ button {
 
     width: 100%;
 }
-
-
 
 .user_text .sub p {
     font-family: Balsamiq Sans;
@@ -488,8 +455,6 @@ button {
     line-height: 57.6px;
     text-align: left;
     color: rgba(71, 67, 25, 1);
-
-
 }
 </style>
 
@@ -778,7 +743,6 @@ export default {
             })
                 .then(response => {
                     window.location.reload();
-
                 })
                 .catch(error => {
                     if (error.status != null) {
