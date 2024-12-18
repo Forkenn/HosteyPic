@@ -440,7 +440,6 @@ button:active {
 .tagli:hover {
     background: rgba(224, 220, 178, 1);
 
-
 }
 
 .maxvalue p {
@@ -527,7 +526,7 @@ export default {
 
         });
         document.querySelector('#idSearch').oninput = (event) => {
-            let val = event.target.value.trim();
+            let val = event.target.value.trim().toLowerCase();
             let itemli = document.querySelectorAll('.tagli');
             if (val != '') {
                 this.hidetag(true);
