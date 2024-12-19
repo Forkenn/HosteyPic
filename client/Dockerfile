@@ -6,7 +6,15 @@ ENV VITE_BACKEND_URL='http://localhost/api/'
 
 COPY package*.json ./
 RUN npm install 
-COPY . .
+
+VOLUME dist ./dist
+COPY public ./public
+COPY src ./src
+COPY *.html ./
+COPY *.conf ./
+COPY *.json ./
+COPY *.js ./
+
 RUN npm run build
 
 FROM nginx:1.27.2-alpine AS production-stage
