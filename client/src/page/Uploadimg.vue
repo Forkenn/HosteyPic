@@ -6,7 +6,6 @@
                 <input id="file" type="file" @change="onFileSelected" hidden accept="image/*,.png,.jpeg,.jpg" />
                 <div v-if="!droped" onclick="file.click()" class="drag__drop" @dragover.prevent="onDragOver"
                     @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
-
                     <div>
                         <div class="text">
                             <p>Выберите файл</p>
@@ -19,8 +18,6 @@
                             <p>загрузка изображений до 20 Мб</p>
                         </div>
                     </div>
-
-
                 </div>
                 <div v-else class="dropimg__wrap">
                     <!-- {{ (this.ima.width) }} -->
@@ -33,19 +30,15 @@
                                 <img src="../assets/img/svg/reset.svg" alt="">
                             </div>
                         </div>
-
-
                         <div v-show="!this.$route.query.id"
                             style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                            <button @click="UploadImg">Опубликовать</button>
+                            <button style="justify-content: center;" @click="UploadImg">Опубликовать</button>
                         </div>
                         <div v-show="this.$route.query.id"
                             style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                            <button @click="editImg">Сохранить</button>
+                            <button style="justify-content: center;" @click="editImg">Сохранить</button>
                         </div>
                     </div>
-
-
                 </div>
                 <div :class="[{ input__wrap: droped }, { disable: !droped }]">
                     <label>Название</label>
@@ -93,7 +86,6 @@
                     </div>
                     <AddTag :ArrayTag="ArrayTag" />
                 </div>
-
             </div>
         </div>
         <Bottom />
@@ -105,7 +97,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import '../assets/reset.css';
 
-
 .page {
     display: flex;
     flex-direction: column;
@@ -114,7 +105,6 @@
 }
 
 .wrap {
-
     overflow: hidden;
     margin-bottom: 40px;
 }
@@ -134,18 +124,12 @@
 
 .drag__drop {
     background: rgba(239, 237, 217, 1);
-
     align-self: flex-start;
     margin-left: 80px;
     width: 420px;
     height: 600px;
-
     border-radius: 50px;
-
-
     border: 4px dashed rgba(177, 167, 63, 1);
-
-
 }
 
 .input__wrap {
@@ -159,19 +143,15 @@
     flex-direction: column;
     margin-right: 80px;
     align-items: flex-start;
-
 }
 
 label {
-
     font-family: Balsamiq Sans;
     font-size: 32px;
     font-weight: 400;
     line-height: 38.4px;
     margin-left: 20px;
     color: rgba(71, 67, 25, 1);
-
-
 }
 
 textarea {
@@ -191,15 +171,12 @@ textarea {
     margin-bottom: 20px;
     height: 40px;
     color: rgba(71, 67, 25, 1);
-
     caret-color: rgba(71, 67, 25, 1);
-
 }
 
 textarea ::placeholder {
     color: rgba(71, 67, 25, 0.7);
     margin-left: 20px;
-
 }
 
 textarea:focus::placeholder {
@@ -207,7 +184,6 @@ textarea:focus::placeholder {
 }
 
 input {
-
     box-sizing: border-box;
     font-family: Balsamiq Sans;
     font-size: 16px;
@@ -231,7 +207,6 @@ input {
 input ::placeholder {
     color: rgba(71, 67, 25, 0.7);
     margin-left: 20px;
-
 }
 
 input:focus::placeholder {
@@ -243,8 +218,6 @@ input:focus::placeholder {
     /* width: 840px; */
     padding-top: 8px;
     align-items: center;
-
-
 }
 
 .description {
@@ -260,14 +233,11 @@ input:focus::placeholder {
     text-align: center;
     max-height: 80px;
     color: rgba(71, 67, 25, 1);
-
 }
 
 .download {
-
     margin-top: 26px;
     margin-left: 190px;
-
 }
 
 .text2 {
@@ -397,7 +367,6 @@ button:active {
     line-height: 16.8px;
     text-align: left;
     color: rgba(189, 38, 38, 1);
-
 }
 
 .wrap_tagul {
@@ -433,13 +402,10 @@ button:active {
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
     color: rgba(71, 67, 25, 1);
-
-
 }
 
 .tagli:hover {
     background: rgba(224, 220, 178, 1);
-
 }
 
 .maxvalue p {
@@ -448,7 +414,6 @@ button:active {
     font-weight: 400;
     line-height: 16.8px;
     text-align: left;
-
 }
 
 .hide {
@@ -768,9 +733,7 @@ export default {
                 }
             })
                 .then(response => {
-
                     this.$router.push({ name: 'userview', params: { id: this.user.id } })
-
                 })
                 .catch(error => {
                     if (error.status != null) {
@@ -809,7 +772,7 @@ export default {
                     }
                 })
                     .then(response => {
-
+                        this.$router.push({ name: 'userview', params: { id: this.user.id } })
                     })
                     .catch(error => {
                         if (error.status != null) {
