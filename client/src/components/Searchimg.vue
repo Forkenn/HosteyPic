@@ -2,7 +2,7 @@
     <Report v-show="showreport" :showreport="showreport" :reportid="reportid" @showreport=showReport() />
     <div :id="urlstr" class="wrapper__picture" style="position: relative;" v-if="res.length > 0">
         <div id="list" v-if="res.length > 0">
-            <div class="column1" v-if="column1.length > 0" :style=style(1)>
+            <div class="column1" v-if="column1.length > 0" :style=style(1) id="column1">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column1.length"
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column1[(el - 1)].attachment"
@@ -38,7 +38,7 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                             style="background: none;"></button>
                 </div>
             </div>
-            <div class="column2" :style=style(2) v-if="column2.length > 0 & this.k >= 2">
+            <div id="column2" class="column2" :style=style(2) v-if="column2.length > 0 & this.k >= 2">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column2.length"
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column2[(el - 1)].attachment"
@@ -72,7 +72,7 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                     </div>
                 </div>
             </div>
-            <div class="column3" :style=style(3) v-if="column3.length > 0 & this.k >= 3">
+            <div id="column3" class="column3" :style=style(3) v-if="column3.length > 0 & this.k >= 3">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column3.length"
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column3[(el - 1)].attachment"
@@ -107,7 +107,7 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                     </div>
                 </div>
             </div>
-            <div class="column4" :style=style(4) v-if="column4.length > 0 & this.k >= 4">
+            <div id="column4" class="column4" :style=style(4) v-if="column4.length > 0 & this.k >= 4">
                 <div v-for="(el, index) in this.countImg" :key="index" className="item">
                     <img class="picture" v-if="el - 1 < this.column4.length"
                         v-bind:src="'../../dist/uploads/attachments/362x/' + this.column4[(el - 1)].attachment"
@@ -267,9 +267,15 @@ export default {
         window.addEventListener('scroll', () => {
             const documentReact = document.documentElement.getBoundingClientRect();
             this.verticalScroll = window.scrollY;
+            let documentimg1 = document.getElementById('column1').lastElementChild.getBoundingClientRect().bottom;
+            let documentimg2 = document.getElementById('column2').lastElementChild.getBoundingClientRect().bottom;
+            let documentimg3 = document.getElementById('column3').lastElementChild.getBoundingClientRect().bottom;
+            let documentimg4 = document.getElementById('column4').lastElementChild.getBoundingClientRect().bottom;
+            let heightMin = Math.min(documentimg1, documentimg2, documentimg3, documentimg4);
 
+            // console.log(heightMin, document.documentElement.clientHeight)
             // this.style()
-            if (documentReact.bottom < document.documentElement.clientHeight + 300) {
+            if (heightMin < document.documentElement.clientHeight + 300) {
 
                 if (this.countImg + 4 < this.column1.length) {
                     this.countImg += 4
