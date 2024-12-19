@@ -13,7 +13,6 @@
                     <img :style="this.styleobj" :src="'../../dist/uploads/attachments/original/' + image.attachment"
                         alt="">
                 </div>
-
                 <div class="info_wrap">
                     <div class="actio_wrap">
 
@@ -46,12 +45,11 @@
                                     <img width="30px" src="../assets/img/svg/Trash.svg" alt="Trash">
                                 </button>
                             </div>
-                            <div class="button_act">
+                            <div v-if="user && user.is_verified" class="button_act">
                                 <button @click="showReport" style=" background: rgba(189, 38, 38, 1);">
                                     <img width="30px" src="../assets/img/svg/AlertCircle.svg" alt="Alert">
                                 </button>
                             </div>
-
                             <div class="button_act">
                                 <button>
                                     <a download :download="image.name"

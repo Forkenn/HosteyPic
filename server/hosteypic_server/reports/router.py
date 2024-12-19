@@ -14,7 +14,7 @@ from hosteypic_server.reports.schemas import SReports
 
 router = APIRouter(prefix='/reports', tags=['Reports'])
 
-current_optional_user = fastapi_users.current_user(optional=True, active=True)
+current_user = fastapi_users.current_user(active=True, verified=True)
 current_moderator = RoleManager(is_moderator=True)
 
 @router.get('')
@@ -41,7 +41,7 @@ async def create_report(
         post_id: int,
         text_body: str,
         session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_optional_user)
+        user: User = Depends(current_user)
 ):
     query = alch.select(Post.id).where(Post.id == post_id)
     post = (await session.execute(query)).first()

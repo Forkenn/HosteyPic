@@ -12,7 +12,7 @@
                         @click="liked(this.column1[(el - 1)])">
                         <img src="../assets/img/svg/Heart.svg" alt="" style="background: none;">
                     </button>
-                    <button id="report" class="button__hov" @click="showReport(this.column1[(el - 1)].id)"><img
+                    <button v-show="user && user.is_verified" id="report" class="button__hov" @click="showReport(this.column1[(el - 1)].id)"><img
                             src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
 
                     <button v-show="this.column1[(el - 1)].is_liked & user.is_verified" style="background: rgba(177, 167, 63, 1);
@@ -51,7 +51,7 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-                        <button id="report" class="button__hov" @click="showReport(this.column2[(el - 1)].id)"><img
+                        <button v-show="user && user.is_verified" id="report" class="button__hov" @click="showReport(this.column2[(el - 1)].id)"><img
                                 src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
                         <button v-show="!this.column2[(el - 1)].is_liked & user.is_verified" id="add"
                             class="button__hov" @click="liked(this.column2[(el - 1)])">
@@ -85,7 +85,7 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-                        <button id="report" class="button__hov" @click="showReport(this.column3[(el - 1)].id)"><img
+                        <button v-show="user && user.is_verified" id="report" class="button__hov" @click="showReport(this.column3[(el - 1)].id)"><img
                                 src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
 
                         <button v-show="!this.column3[(el - 1)].is_liked & user.is_verified" id="add"
@@ -120,7 +120,7 @@ border: 2px solid rgba(255, 255, 255, 1)" id="add" class="button__hov" @click="u
                                 <img src="../assets/img/svg/downloadmini.svg" alt="" style="background: none;">
                             </a>
                         </button>
-                        <button id="report" class="button__hov" @click="showReport(this.column4[(el - 1)].id)"><img
+                        <button v-show="user && user.is_verified" id="report" class="button__hov" @click="showReport(this.column4[(el - 1)].id)"><img
                                 src="../assets/img/svg/AlertCircle.svg" alt="" style="background: none;"></button>
                         <button v-show="!this.column4[(el - 1)].is_liked & user.is_verified" id="add"
                             class="button__hov" @click="liked(this.column4[(el - 1)])">

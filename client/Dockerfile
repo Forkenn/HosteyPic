@@ -1,4 +1,4 @@
-FROM node:22 AS build-stage
+FROM node:22-alpine AS build-stage
 #RUN npm install -g http-server
 #RUN npm install -g vue
 WORKDIR /app
@@ -6,10 +6,18 @@ ENV VITE_BACKEND_URL='http://localhost/api/'
 
 COPY package*.json ./
 RUN npm install 
-COPY . .
+
+VOLUME dist ./dist
+COPY public ./public
+COPY src ./src
+COPY *.html ./
+COPY *.conf ./
+COPY *.json ./
+COPY *.js ./
+
 RUN npm run build
 
-FROM nginx:1.27.2 AS production-stage
+FROM nginx:1.27.2-alpine AS production-stage
 
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY --from=build-stage /app/nginx.conf /etc/nginx/nginx.conf
