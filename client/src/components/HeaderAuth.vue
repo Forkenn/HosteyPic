@@ -12,7 +12,7 @@
                 <p> <span class="color__white">Hostey</span>
                     <span class="color__black">PIC</span>
                 </p>
-                <img v-show="this.$route.name == 'userview' & user.is_moderator & user.id != this.$route.params.id"
+                <img v-show="(this.$route.name == 'userview' && user.id != this.$route.params.id && ((user.is_moderator && !userid.is_moderator) || user.is_superuser))"
                     style="margin-left: 40px;" @click="show_moder()" src="../assets/img/svg/Settings.svg" alt="">
                 <div v-show="showmoder" class="moder_menu">
                     <div class="moder_head">
