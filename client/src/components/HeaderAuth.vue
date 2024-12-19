@@ -261,6 +261,9 @@ button:active {
     line-height: 19.2px;
     text-align: center;
     color: rgba(255, 255, 255, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     z-index: 2000;
     width: 211px;
