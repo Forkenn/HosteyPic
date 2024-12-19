@@ -1,11 +1,6 @@
 <template>
-
-
-
     <div v-if="showreport">
-
         <div @click="hide()" class="gray">
-
         </div>
         <div class="wrap" v-if="showreport">
             <div class="title">
@@ -79,14 +74,13 @@
 .count {
     position: absolute;
     right: 12px;
-    bottom: -15px;
+    bottom: -20px;
     font-family: Balsamiq Sans;
     font-size: 14px;
     font-weight: 400;
     line-height: 16.8px;
     text-align: left;
     color: rgba(71, 67, 25, 1);
-
 }
 
 textarea {
