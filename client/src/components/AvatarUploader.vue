@@ -13,7 +13,6 @@
             <img v-if="cropImg" :src="cropImg" alt="Cropped Image" />
             <div v-else class="crop-placeholder" />
         </div>
-
     </div>
 </template>
 
@@ -107,6 +106,28 @@ export default {
     },
 };
 </script>
+
+<style>
+.cropper-view-box {
+  display: block;
+  height: 100%;
+  outline: 1px solid #b1a73f !important;
+  outline-color: #b1a73f !important;
+  overflow: hidden;
+  width: 100%;
+}
+
+.cropper-line {
+  background-color: #b1a73f !important;
+}
+
+.cropper-point {
+  background-color: #b1a73f !important;
+  height: 5px;
+  opacity: 0.75;
+  width: 5px;
+}
+</style>
 
 <style scoped>
 input[type="file"] {
