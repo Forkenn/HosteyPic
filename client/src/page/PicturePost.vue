@@ -399,14 +399,11 @@ export default {
                 })
                     .then(response => {
                         if (response.status == 200) {
-
                             this.userid = response.data
                         }
-
-
                     })
                     .catch(error => {
-                        console.log(error.message);
+                        this.$router.push({ name: 'codeerrorview', query: { ErrorNum: error.status } })
                     })
                     .finally(() => {
                         this.visable.userid = true
@@ -414,7 +411,7 @@ export default {
 
             })
             .catch(error => {
-                console.log(error.message);
+                this.$router.push({ name: 'codeerrorview', query: { ErrorNum: error.status } })
             })
             .finally(() => {
                 this.visable.post = true
@@ -434,7 +431,6 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     this.user = response.data
-
                     // this.moder = response.data.is_moderator
                     this.authorised = true
                 }
@@ -487,13 +483,11 @@ export default {
                 }
             })
                 .then(response => {
-
                     this.image.is_liked = true
                     this.image.likes_count++
-
                 })
                 .catch(error => {
-                    console.log(error)
+                    //console.log(error)
                 });
         },
         unliked() {
@@ -507,13 +501,12 @@ export default {
                 }
             })
                 .then(response => {
-
                     this.image.is_liked = false
                     this.image.likes_count--
 
                 })
                 .catch(error => {
-                    console.log(error)
+                    //console.log(error)
                 });
         },
         deletePost() {
@@ -527,12 +520,11 @@ export default {
                 }
             })
                 .then(response => {
-
                     this.$router.push({ name: 'homeview' })
 
                 })
                 .catch(error => {
-                    console.log(error)
+                    //console.log(error)
                 });
         },
         followed() {
@@ -581,7 +573,6 @@ export default {
             this.$router.push({ name: 'uploadimgview', query: { id: this.$route.params.id } })
         },
     },
-
 }
 
 </script>

@@ -457,7 +457,7 @@ export default {
                 }
             })
             .catch(error => {
-                console.log(error.message);
+                //console.log(error.message);
             })
             .finally(() => {
                 this.visable.user = true
@@ -516,19 +516,12 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     this.userid = response.data
-
-
                 }
 
             })
             .catch(error => {
                 if (error.status != null) {
-                    this.$router.push({
-                        name: 'codeerrorview',
-                        query: {
-                            ErrorNum: error.status
-                        }
-                    })
+                    this.$router.push({ name: 'codeerrorview', query: { ErrorNum: error.status } })
                 }
             });
         // this.loadImg(this.countImg);
