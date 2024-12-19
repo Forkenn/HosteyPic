@@ -1,7 +1,7 @@
 from typing import List
 from tempfile import SpooledTemporaryFile
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageOps
 
 from .config import Config
 from .storage import StorageManager
@@ -53,6 +53,7 @@ class ImageManager():
     @classmethod
     def _save_image(cls, image_file: SpooledTemporaryFile, avatar: bool = False) -> str | None:
         image: Image.Image = Image.open(image_file).convert('RGB')
+        image = ImageOps.exif_transpose(image)
         original_path = cls.ORIG_ATTACHMENT_PATH
         resize_path = cls.ATTACHMENT_PATH
         sizes = cls.ATTACHMENT_SIZES
@@ -87,6 +88,7 @@ class ImageManager():
                     strict_filename=filename
                 )
 
+        image.close()
         return filename
     
     @classmethod

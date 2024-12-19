@@ -8,7 +8,6 @@ from concurrent.futures import ThreadPoolExecutor
 from fastapi import APIRouter, UploadFile, status, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from sqlalchemy.sql import func
 
 from hosteypic_server.database import get_async_session
 from hosteypic_server.image import ImageManager
@@ -20,7 +19,9 @@ from hosteypic_server.likes.models import Like
 from hosteypic_server.posts.schemas import (
     SPostRead, SPostsPreviews, SPostCreate, SPostEdit
 )
-from hosteypic_server.posts.tools import get_validate_post, get_post_previews
+from hosteypic_server.posts.tools import (
+    get_validate_post, get_post_previews, get_posts_by_tags, get_posts_by_query
+)
 from hosteypic_server.exceptions import (
     FileTypeException, FIleParamsException, NotFoundException
 )
@@ -70,7 +71,7 @@ async def get_followed_posts(
         alch.select(Post)
         .join(Post.author.of_type(Author))
         .join(Author.followers.of_type(Follower), isouter=True)
-        .where(alch.and_(Follower.id == user.id, Author.id != user.id))
+        .where((Follower.id == user.id) & (Author.id != user.id) & (Author.is_active == True))
         .group_by(Post)
         .order_by(Post.timestamp.desc())
         .slice(start, end)
@@ -90,19 +91,13 @@ async def search_last_posts(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_optional_user)
 ) -> SPostsPreviews:
-    query = (
-        alch.select(Post)
-        .where(
-            func.to_tsvector(
-                Post.lang,
-                func.coalesce(Post.title, '')
-                .concat(' ')
-                .concat(func.coalesce(Post.body, ''))
-            )
-            .bool_op("@@")(func.plainto_tsquery(q))
-        ).slice(start, end)
-    )
-    posts = (await session.execute(query)).scalars().all()
+    if not q.startswith('@'):
+        posts = await get_posts_by_query(start, end, q, session)
+    else:
+        q = q.removeprefix('@ ')
+        q = q.strip()
+        tags = q.split(', ')
+        posts = await get_posts_by_tags(start, end, tags, session)
 
     if not user:
         return {'count': len(posts), 'items': posts}
@@ -227,6 +222,9 @@ async def get_user_posts_by_id(
         user: User = Depends(current_optional_user)
 ) -> SPostsPreviews:
     user_resp: User = await session.get(User, user_id)
+    if not user_resp.is_active:
+        return {'count': 0, 'items': []}
+
     query = user_resp.posts.select().order_by(
         Post.timestamp.desc()
     ).slice(start, end)

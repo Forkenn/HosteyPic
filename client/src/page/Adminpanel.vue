@@ -1,11 +1,9 @@
 <template>
-
     <div class="page">
         <HeaderAuth />
         <div>
             <div class="menu">
                 <div class="tabs-header">
-
                     <button v-show="user_cur.is_superuser" class="tabs-btn" style="margin-top: 65px;"
                         @click="activeTab = 1" :class="{ active: activeTab === 1 }">Пользователи
                     </button>
@@ -20,7 +18,6 @@
         </div>
         <div class="tabs_body">
             <div class="tabs-body-item" v-show="activeTab === 1">
-
                 <div class="serach_wrap">
                     <label>
                         Пользователь
@@ -30,14 +27,16 @@
                             <input v-model="serach_user" v-on:keyup.enter="get_user()">
                         </div>
                         <div class="searchbar__icon">
-
                             <img src="../assets/img/svg/searchicon.svg" @click="get_user()" alt="">
                         </div>
                     </div>
                 </div>
                 <div class="user_wrap">
                     <div class="user_info" v-show="user.username">
-                        <img @click="goToUser" :src="'../../dist/uploads/avatars/original/' + user.avatar" alt="">
+                        <img v-if="user.is_active" @click="goToUser"
+                            :src="'../../dist/uploads/avatars/original/' + user.avatar" alt="">
+                        <img v-else @click="goToUser" :src="'../../dist/uploads/avatars/original/' + user.avatar"
+                            style="border: 4px solid rgb(255, 0, 0)" alt="">
                         <div class="user_text">
                             <p>{{ user.username }}</p>
                             <div class="sub">
@@ -70,7 +69,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="tabs-body-item" v-show="activeTab === 2">
                 <div class="user_wrap">
                     <label>Тег</label>
@@ -78,21 +76,35 @@
                         <div class="input">
                             <input v-model="serach_tag" id="idSearch">
                         </div>
-
                         <!-- <div class="searchbar__icon">
-
                             <img src="../assets/img/svg/searchicon.svg" @click="loadImg" alt="">
                         </div> -->
                     </div>
-                    <div v-show="serach_tag.length > 0" style="position: relative;     border-radius: 25px;     margin-top: 10px;
-    border: 4px solid rgb(5, 0, 49); overflow: hidden;">
+                    <div style="position: relative;">
+                        <label class="error_inp" v-if="alredy_name">
+                            Тег уже есть
+                        </label>
+                    </div>
+                    <div class="wrap_tagul" style="position: absolute; top: 510px;"
+                        v-show="serach_tag.length > 0 & showtag" id="tagul">
+                        <div id="searchResults" class="tagul">
+                            <ul style="color: black;">
+                                <li class="tagli" v-for="(el, index) in tags.items"
+                                    @click="curtag(el.id, el.name, index)">
+                                    {{ el.name }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- </div>
+                    <div v-show="serach_tag.length > 0" style="position: relative; border-radius: 25px; margin-top: 10px; border: 4px solid rgb(5, 0, 49); overflow: hidden;">
                         <div id="searchResults" class="tagul">
                             <ul class="tagli" style="color: black;">
                                 <li v-for="el in tags.items">
                                     {{ el.name }}</li>
                             </ul>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="btn_wrap">
                     <div style="display: flex; justify-content: space-between; width: calc(100% - 50px);">
@@ -105,12 +117,10 @@
                     </div>
                 </div>
             </div>
-
             <div class="tabs-body-item" style="background-color: white; max-width: 713px;" v-show="activeTab === 3">
                 <div class="completed" v-show="report.completed">
                     Жалоб нет! Все просто умнички!
                 </div>
-
                 <div v-show="!report.completed" v-for="(item, index ) in reports" :key="item.id">
                     <div className="report_item" v-for="value in item.items" :key="value.id">
                         <div class="close">
@@ -128,11 +138,9 @@
                                 </a>
                             </p>
                         </div>
-
                         <div class="report_body">
                             <p>{{ value.body }}</p>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -146,7 +154,6 @@
 button {
     cursor: pointer;
 }
-
 
 a {
     /* text-decoration: none; */
@@ -250,7 +257,6 @@ a {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-
 }
 
 .btn_user {
@@ -283,9 +289,6 @@ button {
 }
 
 .searchbar {
-
-
-
     /* max-width: 835px; */
     height: 40px;
     margin-left: auto;
@@ -296,24 +299,19 @@ button {
     border-radius: 20px;
     border: 2px solid #B1A73F;
     opacity: 0px;
-
-
     background: #FFFFFF;
-
     display: flex;
     justify-content: space-between;
 
 }
 
 .searchbar__icon {
-
     margin-right: 10px;
     display: flex;
     align-items: center;
 }
 
 .searchbar .input {
-
     margin-left: 10px;
     position: relative;
     max-width: 835px;
@@ -331,10 +329,7 @@ button {
     font-weight: 400;
     line-height: 19.2px;
     text-align: left;
-
-
     /* position: absolute; */
-
     width: 100%;
     height: 100%;
     border: 0;
@@ -344,30 +339,56 @@ button {
     background: none;
 }
 
-
-
 .searchbar input::-webkit-input-placeholder {
     color: rgba(71, 67, 25, 0.7);
-
-
 }
 
 .searchbar input:focus::placeholder {
     color: transparent;
 }
 
+.wrap_tagul {
+    position: relative;
+    border-radius: 20px;
+    margin-top: 10px;
+    width: 300px;
+    height: 200px;
+    background: rgba(239, 237, 217, 1);
+    border: 2px solid rgba(177, 167, 63, 1);
+    overflow: hidden;
+}
+
 .tagul {
-    /* position: absolute; */
-    padding: 20px;
-    width: 100%;
-    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px 5px 5px 20px;
+    width: calc(100% - 5px);
     max-height: 200px;
-    overflow: scroll;
+    overflow: auto;
     scroll-margin: 20px;
     /* background-color: black; */
 }
 
+.tagli {
+    margin-top: 10px;
+    font-family: Balsamiq Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.2px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: rgba(71, 67, 25, 1);
 
+
+}
+
+.tagli:hover {
+    background: rgba(224, 220, 178, 1);
+
+
+}
 
 .hide {
     display: none;
@@ -398,7 +419,6 @@ button {
     overflow: hidden;
 }
 
-
 .user_text p {
     font-family: Balsamiq Sans;
     font-size: 32px;
@@ -409,8 +429,6 @@ button {
 
     width: 100%;
 }
-
-
 
 .user_text .sub p {
     font-family: Balsamiq Sans;
@@ -432,7 +450,7 @@ button {
 
 .report_item {
     position: relative;
-    max-width: 574px;
+    width: 574px;
     flex-grow: 1;
     height: 400px;
     border-radius: 50px;
@@ -445,7 +463,6 @@ button {
 }
 
 .report_info {
-
     margin-top: 40px;
     margin-left: 30px;
     max-height: 128px;
@@ -463,7 +480,6 @@ button {
 }
 
 .report_body {
-
     margin: 20px 30px 20px 30px;
     width: 100%;
     height: calc(100% - 140px);
@@ -488,13 +504,25 @@ button {
     line-height: 57.6px;
     text-align: left;
     color: rgba(71, 67, 25, 1);
+}
 
+.error_inp {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    margin: 0;
+    margin-left: 10px;
+    font-family: Balsamiq Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.8px;
+    text-align: left;
+    color: rgba(189, 38, 38, 1);
 
 }
 </style>
 
 <script>
-
 import HeaderAuth from '@/components/HeaderAuth.vue';
 import Bottom from '@/components/Bottom.vue'
 
@@ -503,12 +531,19 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            tags: "",
+            tags: [],
+            alredy_name: false,
             link: import.meta.env.VITE_FRONTEND_URL,
             reports: [],
+            showtag: false,
             activeTab: 1,
             serach_user: "",
             serach_tag: "",
+            currenttag: {
+                name: "",
+                id: 0,
+                index: 0,
+            },
             report: {
                 page: 1,
                 loadstop: true,
@@ -529,25 +564,35 @@ export default {
         });
 
 
-        document.querySelector('#idSearch').oninput = function () {
-            let val = this.value.trim();
-            let itemli = document.querySelectorAll('.tagli li');
+        const menu = document.getElementById('tagul');
+        const inp = document.getElementById('idSearch');
+
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) & !inp.contains(e.target) & this.showtag) {
+                this.hidetag(false)
+            }
+
+
+        });
+        document.querySelector('#idSearch').oninput = (event) => {
+            let val = event.target.value.trim().toLowerCase();
+            let itemli = document.querySelectorAll('.tagli');
             if (val != '') {
-                itemli.forEach(function (elem) {
+                this.hidetag(true);
+                this.alredy_name = false;
+                itemli.forEach((elem) => {
                     if (elem.innerText.search(val) == -1) {
                         elem.classList.add('hide');
-                    }
-                    else {
+                    } else {
                         elem.classList.remove('hide');
                     }
                 });
-            }
-            else {
-                itemli.forEach(function (elem) {
+            } else {
+                itemli.forEach((elem) => {
                     elem.classList.remove('hide');
                 });
             }
-        }
+        };
 
 
         axios({
@@ -594,7 +639,7 @@ export default {
         })
             .then(response => {
                 this.tags = response.data
-
+                console.log(this.tags)
             })
             .catch(error => {
                 if (error.status != null) {
@@ -636,6 +681,9 @@ export default {
     },
     methods:
     {
+        hidetag(val) {
+            this.showtag = val
+        },
         get_user() {
 
 
@@ -778,13 +826,19 @@ export default {
             })
                 .then(response => {
                     window.location.reload();
-
                 })
                 .catch(error => {
                     if (error.status != null) {
                         console.log(error)
                     }
                 });
+        },
+        curtag(id, name, index) {
+            this.currenttag.name = name
+            this.currenttag.id = id
+            this.currenttag.index = index
+            this.serach_tag = name
+            this.hidetag(false)
         },
         add_tag() {
             axios({
@@ -792,7 +846,7 @@ export default {
                 method: 'post',
                 url: (import.meta.env.VITE_BACKEND_URL + `tags`),
                 data: {
-                    name: this.serach_tag.toLowerCase()
+                    name: this.serach_tag.toLowerCase().trim()
                 },
                 withCredentials: true,
                 headers: {
@@ -800,12 +854,36 @@ export default {
                 }
             })
                 .then(response => {
-                    this.tags.items.push({ name: this.serach_tag.toLowerCase() })
+                    axios({
+                        timeoute: 1000,
+                        method: 'get',
+                        url: (import.meta.env.VITE_BACKEND_URL + `tags`),
+                        withCredentials: true,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            this.tags = response.data
+                            this.serach_tag = ""
+                        })
+                        .catch(error => {
+                            if (error.status != null) {
+                                this.$router.push({
+                                    name: 'codeerrorview',
+                                    query: {
+                                        ErrorNum: error.status
+                                    }
+                                })
+                            }
+                        });
 
                 })
                 .catch(error => {
                     if (error.status != null) {
-                        console.log(error)
+                        if (error.status == 400) {
+                            this.alredy_name = true
+                        }
                     }
                 });
         },
@@ -813,17 +891,16 @@ export default {
             axios({
                 timeoute: 1000,
                 method: 'delete',
-                url: (import.meta.env.VITE_BACKEND_URL + `tags`),
-                data: {
-                    name: this.serach_tag
-                },
+                url: (import.meta.env.VITE_BACKEND_URL + `tags/${this.currenttag.id}`),
+
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
                 .then(response => {
-                    this.user = {}
+                    this.tags.items.splice(this.currenttag.index, 1)
+                    this.serach_tag = ""
 
                 })
                 .catch(error => {

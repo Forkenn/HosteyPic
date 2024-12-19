@@ -4,9 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>main screen</title>
-
     </head>
-
     <body>
         <div v-if="show">
             <Login :login1="login" @authorised1="authorised1" @show_ch='show_login' />
@@ -15,13 +13,13 @@
         <div v-show="visable.user" class="page">
             <HeaderNoAuth v-if="!authorised" @login='login_ch' @show_ch='show_login' />
             <HeaderAuth v-if="authorised" />
-
-
             <div class="userinfo__wrap">
                 <div class="userinfo">
-                    <div class="userIcon">
-                        <img style="border-radius: 50%;" :src="'../../dist/uploads/avatars/200x/' + userid.avatar"
-                            alt="">
+                    <div v-if="userid.is_active" class="userIcon">
+                        <img style="border-radius: 50%;" :src="'../../dist/uploads/avatars/200x/' + userid.avatar" alt="">
+                    </div>
+                    <div v-else class="userIconBanned">
+                        <img style="border-radius: 50%;" :src="'../../dist/uploads/avatars/200x/' + userid.avatar" alt="">
                     </div>
                     <div class="userName">
                         <p>{{ userid.username }}
@@ -32,10 +30,9 @@
                         <span class="countsubscribers">
                             <p>Подписчиков: {{ userid.followers_count }} </p>
                         </span>
-
                     </div>
                     <div class="socialmedia"
-                        v-if="userid.github_link != null | userid.gitlab_link != null | userid.ok_link != null | userid.vk_link != null">
+                        v-if="userid.github_link || userid.gitlab_link || userid.ok_link || userid.vk_link">
                         <div v-if="userid.github_link" class="github">
                             <a :href=userid.github_link target="_blank">
                                 <img src="../assets/img/svg/GitHub.svg" alt="">
@@ -78,15 +75,12 @@
             <div class="tabs__wrap">
                 <div class="create-line"></div>
                 <div class="tabs">
-
                     <div class="tabs-header">
-
                         <button class="tabs-btn" @click="activeTab = 1" :class="{ active: activeTab === 1 }">Созданные
                         </button>
                         <button class="tabs-btn" @click="activeTab = 2"
                             :class="{ active: activeTab === 2 }">Понравившееся
                         </button>
-
                         <!-- <button class="tabs-btn" @click="activeTab = 3" :class="{ active: activeTab === 3 }">Альбомы
                         </button> -->
                     </div>
@@ -98,7 +92,6 @@
                                 <button class="create" @click="goToUpload">
                                     Создай
                                 </button>
-
                                 что-нибудь!
                             </p>
                             <button v-else v-show="(user.id == userid.id)" class="create" @click="goToUpload">
@@ -108,7 +101,6 @@
                                 В процессе создания...
                             </p>
                             <Searchimg :res="result" :urlstr="'posts/users/' + this.$route.params.id" />
-
                         </div>
                         <div class="tabs-body-item" v-show="activeTab === 2">
                             <p v-if="liked.length == 0 & (user.id == userid.id)" style="margin-top: 75px; margin-bottom: 200px;">Здесь
@@ -116,10 +108,8 @@
                                 <button class="create" @click="goToHome">
                                     Вперед
                                 </button>
-
                                 на поиски вдохновения!
                             </p>
-
                             <p v-show="liked.length == 0 & (user.id != userid.id)" style="margin-top: 75px; margin-bottom: 200px;">
                                 Видимо, пока что не нашел...
                             </p>
@@ -135,8 +125,6 @@
             </div>
             <Bottom />
         </div>
-
-
     </body>
 </template>
 
@@ -203,6 +191,15 @@ html {
     border-radius: 50%;
 }
 
+.userIconBanned {
+    height: 208px;
+    width: 208px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 4px solid rgb(255, 0, 0);
+    border-radius: 50%;
+}
+
 .userName {
     margin-left: auto;
     margin-right: auto;
@@ -252,7 +249,6 @@ html {
 .ok {
     margin-right: 14px;
 }
-
 
 .text_about {
     display: flex;
@@ -437,7 +433,6 @@ export default {
             ok: "",
             show_about: true,
         }
-
     },
     watch: {
         '$route.params.id': function () {
@@ -462,7 +457,7 @@ export default {
                 }
             })
             .catch(error => {
-                console.log(error.message);
+                //console.log(error.message);
             })
             .finally(() => {
                 this.visable.user = true
@@ -521,19 +516,12 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     this.userid = response.data
-
-
                 }
 
             })
             .catch(error => {
                 if (error.status != null) {
-                    this.$router.push({
-                        name: 'codeerrorview',
-                        query: {
-                            ErrorNum: error.status
-                        }
-                    })
+                    this.$router.push({ name: 'codeerrorview', query: { ErrorNum: error.status } })
                 }
             });
         // this.loadImg(this.countImg);
