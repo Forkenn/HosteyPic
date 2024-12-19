@@ -11,7 +11,7 @@ from hosteypic_server.auth.manager import fastapi_users, RoleManager
 from hosteypic_server.database import get_async_session
 from hosteypic_server.exceptions import (
     FileTypeException, FIleParamsException, AlreadyExistException, YourselfException,
-    BannedException, NotFoundException
+    BannedException, NotFoundException, NotAllowedException
 )
 from hosteypic_server.image import ImageManager
 from hosteypic_server.auth.schemas import SUsername
@@ -60,7 +60,7 @@ async def get_user_by_id(
     if not user_resp:
         raise NotFoundException()
 
-    response = SUserReadSingle(**user_resp.__dict__)                # TODO: fix stupid code
+    response = SUserReadSingle(**user_resp.__dict__)
     response.is_following = None
     if user:
         response.is_following = await user.is_following(user_resp)
@@ -195,6 +195,9 @@ async def ban_user_by_id(
     user_resp: User = await session.get(User, user_id)
     if not user_resp:
         raise NotFoundException()
+    
+    if user_resp.is_moderator and not user.is_superuser:
+        raise NotAllowedException()
 
     user_resp.is_active = False
     await session.commit()
@@ -210,6 +213,9 @@ async def unban_user_by_id(
     user_resp: User = await session.get(User, user_id)
     if not user_resp:
         raise NotFoundException()
+
+    if user_resp.is_moderator and not user.is_superuser:
+        raise NotAllowedException()
 
     user_resp.is_active = True
     await session.commit()
