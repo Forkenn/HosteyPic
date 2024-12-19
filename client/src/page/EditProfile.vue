@@ -167,7 +167,6 @@
     min-height: 100vh;
 }
 
-
 .menu {
     position: relative;
     max-width: 1440px;
@@ -209,9 +208,7 @@
 }
 
 .tabs-btn.active {
-
     background: rgba(224, 220, 178, 1);
-
 }
 
 .error_inp {
@@ -226,7 +223,6 @@
     line-height: 16.8px;
     text-align: left;
     color: rgba(189, 38, 38, 1);
-
 }
 
 .tabs_body {
@@ -251,13 +247,11 @@
     font-weight: 400;
     line-height: 28.8px;
     text-align: left;
-
     border-radius: 50px;
     width: 100%;
 }
 
 .wrap__edit {
-
     width: 482px;
     /* height: 1145px; */
     margin: auto;
@@ -351,10 +345,8 @@ textarea {
     font-weight: 400;
     line-height: 19.2px;
     text-align: left;
-
     width: 100%;
     height: 96px;
-
     border-radius: 16px;
     border: 2px solid #B1A73F;
     outline: none;
@@ -374,14 +366,13 @@ textarea::placeholder {
 .count {
     position: absolute;
     right: 12px;
-    bottom: 1px;
+    bottom: -20px;
     font-family: Balsamiq Sans;
     font-size: 14px;
     font-weight: 400;
     line-height: 16.8px;
     text-align: left;
     color: rgba(71, 67, 25, 1);
-
 }
 
 input {
@@ -451,8 +442,6 @@ p {
     font-weight: 400;
     line-height: 19.2px;
     text-align: center;
-
-
     color: rgba(71, 67, 25, 1);
     width: 153px;
     height: 50px;
@@ -470,7 +459,6 @@ button {
 }
 
 .conf_email {
-
     margin-top: 27px;
     height: 39px;
     border-radius: 30px;
@@ -481,8 +469,6 @@ button {
     line-height: 19.2px;
     text-align: center;
     color: rgba(71, 67, 25, 1);
-
-
 }
 
 .editavatar {
