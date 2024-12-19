@@ -45,7 +45,7 @@
                                     <img width="30px" src="../assets/img/svg/Trash.svg" alt="Trash">
                                 </button>
                             </div>
-                            <div v-if="user.authorised && user.is_verified" class="button_act">
+                            <div v-if="user && user.is_verified" class="button_act">
                                 <button @click="showReport" style=" background: rgba(189, 38, 38, 1);">
                                     <img width="30px" src="../assets/img/svg/AlertCircle.svg" alt="Alert">
                                 </button>
