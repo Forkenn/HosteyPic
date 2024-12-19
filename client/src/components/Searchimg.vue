@@ -267,11 +267,17 @@ export default {
         window.addEventListener('scroll', () => {
             const documentReact = document.documentElement.getBoundingClientRect();
             this.verticalScroll = window.scrollY;
-            let documentimg1 = document.getElementById('column1').lastElementChild.getBoundingClientRect().bottom;
-            let documentimg2 = document.getElementById('column2').lastElementChild.getBoundingClientRect().bottom;
-            let documentimg3 = document.getElementById('column3').lastElementChild.getBoundingClientRect().bottom;
-            let documentimg4 = document.getElementById('column4').lastElementChild.getBoundingClientRect().bottom;
-            let heightMin = Math.min(documentimg1, documentimg2, documentimg3, documentimg4);
+
+            let documentimg1 = document.getElementById('column1');
+            let documentimg2 = document.getElementById('column2');
+            let documentimg3 = document.getElementById('column3');
+            let documentimg4 = document.getElementById('column4');
+            if (!documentimg1 || !documentimg2 || !documentimg3 || !documentimg4) {
+                return
+            }
+            let heightMin = Math.min(documentimg1.lastElementChild.getBoundingClientRect().bottom, documentimg2.lastElementChild.getBoundingClientRect().bottom,
+                documentimg3.lastElementChild.getBoundingClientRect().bottom, documentimg4.lastElementChild.getBoundingClientRect().bottom);
+
 
             // console.log(heightMin, document.documentElement.clientHeight)
             // this.style()
