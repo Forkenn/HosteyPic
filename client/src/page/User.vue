@@ -32,7 +32,7 @@
                         </span>
                     </div>
                     <div class="socialmedia"
-                        v-if="userid.github_link != null | userid.gitlab_link != null | userid.ok_link != null | userid.vk_link != null">
+                        v-if="userid.github_link || userid.gitlab_link || userid.ok_link || userid.vk_link">
                         <div v-if="userid.github_link" class="github">
                             <a :href=userid.github_link target="_blank">
                                 <img src="../assets/img/svg/GitHub.svg" alt="">
