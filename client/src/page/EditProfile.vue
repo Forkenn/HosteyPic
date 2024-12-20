@@ -533,7 +533,7 @@ export default {
     watch: {
         'password.second': function (newval) {
 
-            let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*#?&]{6,}$/
+            let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*\.>\?\|;'\{\}\[\]:~+\-\(\)])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*\.>\?\|;'\{\}\[\]:~+\-\(\)]{6,}$/
             if (newval.length > 0)
                 this.valid_pas = !reg.test(newval)
         },

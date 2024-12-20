@@ -27,7 +27,7 @@ class SUserCreate(SUsername, schemas.CreateUpdateDictModel):
     @classmethod
     def validate_password(cls, password: str) -> str:
         re_for_pw: re.Pattern[str] = re.compile(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*#?&]{6,}$"
+            r"^(?=.*[0-9])(?=.*[!@#$%^&*\.>\?\|;'\{\}\[\]:~+\-\(\)])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*\.>\?\|;'\{\}\[\]:~+\-\(\)]{6,}$"
         )
         if not re_for_pw.match(password):
             raise ValueError("Password does not meet the requirements")
