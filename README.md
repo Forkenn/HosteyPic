@@ -1,4 +1,6 @@
 # HosteyPic [RU]
+**MIRRORED FROM [GITLAB REPOSITORY](https://gitlab.com/OnBell/hosteypic)**
+
 HosteyPic — это веб-приложение, которое позволяет пользователям делиться своими изображениями и находить вдохновение в работах других. Пользователи могут легко загружать свои работы, а также просматривать и оценивать творчество, загруженное другими пользователями.
 
 Приложение предлагает удобный интерфейс для поиска интересных изображений по тексту, что позволяет быстро находить то, что вам нужно. Кроме того, у каждого пользователя есть возможность сохранять понравившиеся картинки в своем аккаунте или скачивать их на устройство.
@@ -37,13 +39,15 @@ HosteyPic — это веб-приложение, которое позволя�
 
 # Наша команда
 
-* Forkenn (@OnBell) - team lead, back-end dev, sysadmin.
-* cerega123 (@cerega123) - front-end dev.
-* AnTiAl TM (@kolumbia101) - designer.
-* ru4sdevil (@ru4sdevil) - documenter.
-* Yury Generalov (@yury_kustik) - tester.
+* Forkenn ([@OnBell](https://gitlab.com/OnBell "GitLab"), [@forkenn](https://github.com/forkenn "GitHub")) - team lead, back-end dev, sysadmin.
+* cerega123 ([@cerega123](https://gitlab.com/cerega123)) - front-end dev.
+* AnTiAl TM ([@kolumbia101](https://gitlab.com/)) - designer.
+* ru4sdevil ([@ru4sdevil](https://gitlab.com/ru4sdevil)) - documenter.
+* Yury Generalov ([@yury_kustik](https://gitlab.com/yury_kustik)) - tester.
 
 # HosteyPic [EN]
+**MIRRORED FROM [GITLAB REPOSITORY](https://gitlab.com/OnBell/hosteypic)**
+
 HosteyPic is a web application that allows users to share their images and find inspiration in the work of others. Users can easily upload their own work, as well as view and rate the creativity uploaded by other users.
 
 The app offers an easy-to-use interface to search for interesting images by text, allowing you to quickly find what you need. In addition, each user has the option to save their favorite pictures in their account or download them to their device.
@@ -82,8 +86,8 @@ Documentation is available in the __docs__ folder. Wiki pages with instructions 
 
 # Our Team
 
-* Forkenn (@OnBell) - team lead, back-end dev, sysadmin.
-* cerega123 (@cerega123) - front-end dev.
-* AnTiAl TM (@kolumbia101) - designer.
-* ru4sdevil (@ru4sdevil) - documenter.
-* Yury Generalov (@yury_kustik) - tester.
+* Forkenn ([@OnBell](https://gitlab.com/OnBell "GitLab"), [@forkenn](https://github.com/forkenn "GitHub")) - team lead, back-end dev, sysadmin.
+* cerega123 ([@cerega123](https://gitlab.com/cerega123)) - front-end dev.
+* AnTiAl TM ([@kolumbia101](https://gitlab.com/)) - designer.
+* ru4sdevil ([@ru4sdevil](https://gitlab.com/ru4sdevil)) - documenter.
+* Yury Generalov ([@yury_kustik](https://gitlab.com/yury_kustik)) - tester.
